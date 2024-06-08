@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b41f6791-fa91-4d59-963f-7cfb0670fa2c" name="Changes" comment="Fixed minor glitch on routing">
+    <list default="true" id="b41f6791-fa91-4d59-963f-7cfb0670fa2c" name="Changes" comment="Added more links">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/svelte.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/svelte.config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -25,18 +26,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "ni-ms"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;ni-ms&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/ni-ms/portfolio.git",
-    "accountId": "b7893abd-28f5-475a-8820-477f6392866e"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/ni-ms/portfolio.git&quot;,
+    &quot;accountId&quot;: &quot;b7893abd-28f5-475a-8820-477f6392866e&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
@@ -46,21 +47,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "/home/vzadmin/WebstormProjects/portfolio",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "ts.external.directory.path": "/home/vzadmin/WebstormProjects/portfolio/node_modules/typescript/lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/vzadmin/WebstormProjects/portfolio&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/home/vzadmin/WebstormProjects/portfolio/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/routes/work" />
@@ -85,7 +86,9 @@
       <option name="presentableId" value="Default" />
       <updated>1717649798727</updated>
       <workItem from="1717649799904" duration="839000" />
-      <workItem from="1717650656395" duration="51867000" />
+      <workItem from="1717650656395" duration="53290000" />
+      <workItem from="1717858054826" duration="1920000" />
+      <workItem from="1717870372982" duration="759000" />
     </task>
     <task id="LOCAL-00001" summary="Added files">
       <option name="closed" value="true" />
@@ -279,7 +282,31 @@
       <option name="project" value="LOCAL" />
       <updated>1717834015173</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="Added Links">
+      <option name="closed" value="true" />
+      <created>1717836230031</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1717836230031</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Glitch with portfolio ; sometimes the hyperlinks dont work...">
+      <option name="closed" value="true" />
+      <created>1717836638915</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1717836638915</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Added more links">
+      <option name="closed" value="true" />
+      <created>1717836839509</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1717836839509</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -309,6 +336,9 @@
     <MESSAGE value="added base to all hrefs?" />
     <MESSAGE value="Checking if process env base works" />
     <MESSAGE value="Fixed minor glitch on routing" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed minor glitch on routing" />
+    <MESSAGE value="Added Links" />
+    <MESSAGE value="Glitch with portfolio ; sometimes the hyperlinks dont work..." />
+    <MESSAGE value="Added more links" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added more links" />
   </component>
 </project>

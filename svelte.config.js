@@ -22,10 +22,17 @@ const config = {
 		}),
 		paths: {
 			// The below glitches on first load
-			base: process.argv.includes('dev') ? '' : path
+			// base: process.argv.includes('dev') ? '' : path
 			// base: process.argv.includes('dev') ? '' : '/portfolio'
-			// base: '/portfolio'
-		}
+			base: '/portfolio'
+		},
+		// prerender: {
+		// 	entries: [
+		// 		'/about',
+		// 		'/contact',
+		// 		'/expertise'
+		// 	]
+		// }
 	}
 };
 

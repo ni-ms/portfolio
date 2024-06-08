@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b41f6791-fa91-4d59-963f-7cfb0670fa2c" name="Changes" comment="set portfolio as base">
+    <list default="true" id="b41f6791-fa91-4d59-963f-7cfb0670fa2c" name="Changes" comment="Fixed minor glitch on routing">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/about/+page.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/about/+page.svelte" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/svelte.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/svelte.config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -86,7 +85,7 @@
       <option name="presentableId" value="Default" />
       <updated>1717649798727</updated>
       <workItem from="1717649799904" duration="839000" />
-      <workItem from="1717650656395" duration="50017000" />
+      <workItem from="1717650656395" duration="51867000" />
     </task>
     <task id="LOCAL-00001" summary="Added files">
       <option name="closed" value="true" />
@@ -248,7 +247,39 @@
       <option name="project" value="LOCAL" />
       <updated>1717832901503</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="set portfolio as base">
+      <option name="closed" value="true" />
+      <created>1717833185357</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1717833185357</updated>
+    </task>
+    <task id="LOCAL-00022" summary="added base to all hrefs?">
+      <option name="closed" value="true" />
+      <created>1717833504779</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1717833504779</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Checking if process env base works">
+      <option name="closed" value="true" />
+      <created>1717833689724</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1717833689724</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Fixed minor glitch on routing">
+      <option name="closed" value="true" />
+      <created>1717834015173</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1717834015173</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -275,6 +306,9 @@
     <MESSAGE value="Set base path" />
     <MESSAGE value="Set export const prerender = true" />
     <MESSAGE value="set portfolio as base" />
-    <option name="LAST_COMMIT_MESSAGE" value="set portfolio as base" />
+    <MESSAGE value="added base to all hrefs?" />
+    <MESSAGE value="Checking if process env base works" />
+    <MESSAGE value="Fixed minor glitch on routing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed minor glitch on routing" />
   </component>
 </project>

@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { fade } from 'svelte/transition';
-	import {base} from '$app/paths';
+	import { base } from '$app/paths';
 
+	console.log(base);
 	$: currentPage = $page.url.pathname;
 </script>
 

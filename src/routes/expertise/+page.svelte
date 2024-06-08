@@ -11,7 +11,7 @@
 	}
 
 	let cards = [
-		{ title: 'OEE Software', text: 'Some text' },
+		{ title: 'OEE Software', text: 'Some text', link: 'https://github.com/ni-ms/oee_software_melss' },
 		{ title: 'AI Real Time Chat', text: 'Some other text' },
 		{ title: 'Full Stack Car Parking', text: 'Some other text' },
 		{ title: 'Neural Networks', text: 'Some other text' },
@@ -179,6 +179,9 @@
 			<div class="card bg-gray-700 text-white w-[200px] h-[200px] m-2 p-4 rounded-b-3xl shadow">
 				<h2 class="font-bold">{card.title}</h2>
 				<p>{card.text}</p>
+				{#if card.link}
+					<a href="{card.link}" class="btn">View</a>
+				{/if}
 			</div>
 		{/each}
 	</div>

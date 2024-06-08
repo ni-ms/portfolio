@@ -19,7 +19,9 @@ const config = {
 			strict: true
 		}),
 		paths: {
-			base: process.argv.includes('dev') ? '' : process.env.BASE_PATH
+			// The below glitches on first load
+			// base: process.argv.includes('dev') ? '' : process.env.BASE_PATH
+			base: process.argv.includes('dev') ? '' : '/portfolio'
 			// base: '/portfolio'
 		}
 	}

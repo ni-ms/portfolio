@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b41f6791-fa91-4d59-963f-7cfb0670fa2c" name="Changes" comment="Fixed base url">
+    <list default="true" id="b41f6791-fa91-4d59-963f-7cfb0670fa2c" name="Changes" comment="Changed config">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/svelte.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/svelte.config.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vite.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/vite.config.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -86,7 +85,7 @@
       <option name="presentableId" value="Default" />
       <updated>1717649798727</updated>
       <workItem from="1717649799904" duration="839000" />
-      <workItem from="1717650656395" duration="46974000" />
+      <workItem from="1717650656395" duration="47309000" />
     </task>
     <task id="LOCAL-00001" summary="Added files">
       <option name="closed" value="true" />
@@ -144,7 +143,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717829579480</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Changed config">
+      <option name="closed" value="true" />
+      <created>1717829841678</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1717829841678</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -166,6 +173,7 @@
     <MESSAGE value="Added deploy setting" />
     <MESSAGE value="Fixed Deploy settings for sveltekit" />
     <MESSAGE value="Fixed base url" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed base url" />
+    <MESSAGE value="Changed config" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed config" />
   </component>
 </project>

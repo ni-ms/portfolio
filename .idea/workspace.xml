@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b41f6791-fa91-4d59-963f-7cfb0670fa2c" name="Changes" comment="Changed config">
+    <list default="true" id="b41f6791-fa91-4d59-963f-7cfb0670fa2c" name="Changes" comment="Set base path">
+      <change afterPath="$PROJECT_DIR$/src/routes/+layout.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/navbar.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/navbar.svelte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/+layout.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/+layout.svelte" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/svelte.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/svelte.config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -17,9 +18,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="TypeScript File" />
         <option value="+layout.svelte" />
         <option value="footer.svelte" />
+        <option value="TypeScript File" />
       </list>
     </option>
   </component>
@@ -86,7 +87,7 @@
       <option name="presentableId" value="Default" />
       <updated>1717649798727</updated>
       <workItem from="1717649799904" duration="839000" />
-      <workItem from="1717650656395" duration="48979000" />
+      <workItem from="1717650656395" duration="49586000" />
     </task>
     <task id="LOCAL-00001" summary="Added files">
       <option name="closed" value="true" />
@@ -192,7 +193,47 @@
       <option name="project" value="LOCAL" />
       <updated>1717831926573</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Added baes to hrefs">
+      <option name="closed" value="true" />
+      <created>1717832156724</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1717832156724</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Set base path">
+      <option name="closed" value="true" />
+      <created>1717832418401</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1717832418401</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Set base path">
+      <option name="closed" value="true" />
+      <created>1717832531884</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1717832531884</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Set base path">
+      <option name="closed" value="true" />
+      <created>1717832553963</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1717832553963</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Set base path">
+      <option name="closed" value="true" />
+      <created>1717832581762</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1717832581762</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -215,6 +256,8 @@
     <MESSAGE value="Fixed Deploy settings for sveltekit" />
     <MESSAGE value="Fixed base url" />
     <MESSAGE value="Changed config" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changed config" />
+    <MESSAGE value="Added baes to hrefs" />
+    <MESSAGE value="Set base path" />
+    <option name="LAST_COMMIT_MESSAGE" value="Set base path" />
   </component>
 </project>

@@ -1,9 +1,7 @@
-<script>
+<script lang="ts">
 	import '../app.css';
 	import Navbar from '$lib/navbar.svelte';
 	import Footer from '$lib/footer.svelte';
-	export const prerender = true;
-	export const trailingSlash = 'always';
 </script>
 
 <div class="flex flex-col min-h-screen">

@@ -4,12 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b41f6791-fa91-4d59-963f-7cfb0670fa2c" name="Changes" comment="Added deploy setting">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/deploy.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/deploy.yml" afterDir="false" />
+    <list default="true" id="b41f6791-fa91-4d59-963f-7cfb0670fa2c" name="Changes" comment="Fixed base url">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/+layout.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/+layout.svelte" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/svelte.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/svelte.config.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/vite.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/vite.config.ts" afterDir="false" />
     </list>
@@ -90,7 +86,7 @@
       <option name="presentableId" value="Default" />
       <updated>1717649798727</updated>
       <workItem from="1717649799904" duration="839000" />
-      <workItem from="1717650656395" duration="46341000" />
+      <workItem from="1717650656395" duration="46974000" />
     </task>
     <task id="LOCAL-00001" summary="Added files">
       <option name="closed" value="true" />
@@ -124,7 +120,31 @@
       <option name="project" value="LOCAL" />
       <updated>1717828470954</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Fixed Deploy settings for sveltekit">
+      <option name="closed" value="true" />
+      <created>1717829267057</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1717829267057</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Fixed Deploy settings for sveltekit">
+      <option name="closed" value="true" />
+      <created>1717829330859</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1717829330859</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Fixed base url">
+      <option name="closed" value="true" />
+      <created>1717829579480</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1717829579480</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -144,6 +164,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Added files" />
     <MESSAGE value="Added deploy setting" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added deploy setting" />
+    <MESSAGE value="Fixed Deploy settings for sveltekit" />
+    <MESSAGE value="Fixed base url" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed base url" />
   </component>
 </project>

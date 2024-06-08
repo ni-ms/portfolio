@@ -19,7 +19,8 @@ const config = {
 			strict: true
 		}),
 		paths: {
-			base: process.argv.includes('dev') ? '' : process.env.BASE_PATH
+			// base: process.argv.includes('dev') ? '' : process.env.BASE_PATH
+			base: '/portfolio'
 		}
 	}
 };

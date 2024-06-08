@@ -19,7 +19,7 @@ const config = {
 			strict: true
 		}),
 		paths: {
-			base: process.argv.includes('dev') ? '' : 'https://ni-ms.github.io/portfolio/'
+			base: process.argv.includes('dev') ? '' : '/portfolio/'
 		}
 	}
 };

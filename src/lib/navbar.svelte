@@ -18,7 +18,6 @@
 				<li><a href="{base}/about" class="btn mb-2">About</a></li>
 				<li><a href="{base}/expertise" class="btn mb-2">Expertise</a></li>
 				<li><a href="{base}/contact" class="btn mb-2">Contact</a></li>
-
 			</ul>
 		</div>
 

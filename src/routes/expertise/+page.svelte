@@ -12,12 +12,12 @@
 
 	let cards = [
 		{ title: 'OEE Software', text: 'Some text', link: 'https://github.com/ni-ms/oee_software_melss' },
-		{ title: 'AI Real Time Chat', text: 'Some other text' },
-		{ title: 'Full Stack Car Parking', text: 'Some other text' },
-		{ title: 'Neural Networks', text: 'Some other text' },
-		{ title: 'Device Key Server', text: 'Some other text' },
-		{ title: 'Full Stack Todo List', text: 'Some other text' },
-		{ title: 'FPS Game', text: 'Some other text' },
+		{ title: 'AI Real Time Chat', text: 'Some other text', link:'https://github.com/ni-ms/real-time-chat' },
+		{ title: 'Full Stack Car Parking', text: 'Some other text', link:'https://github.com/ni-ms/Car_Park_Front_End' },
+		{ title: 'Neural Networks', text: 'Some other text', link:'https://github.com/ni-ms/coursera_neural_networks_and_dl' },
+		{ title: 'Device Key Server', text: 'Some other text', link:'https://github.com/ni-ms/device_key_server' },
+		{ title: 'Full Stack Todo List', text: 'Some other text', link:'https://github.com/ni-ms/todo-full-stack' },
+		{ title: 'FPS Game', text: 'Some other text' , link:'https://github.com/ni-ms/fps_game'},
 		{ title: 'Rust Chat App', text: 'Some other text' },
 		{ title: 'Grammar for C', text: 'Some other text' },
 		{ title: 'Chat App', text: 'Some other text' },

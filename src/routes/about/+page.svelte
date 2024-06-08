@@ -3,7 +3,7 @@
 </script>
 
 <div class="p-10 md:p-32 flex flex-col md:flex-row items-center">
-	<img src="https://via.placeholder.com/150" alt="Placeholder Image" class="mb-5 md:mb-0 md:mr-5 animate-fade-in" />
+<!--	<img src="https://via.placeholder.com/150" alt="Placeholder Image" class="mb-5 md:mb-0 md:mr-5 animate-fade-in" />-->
 	<p class="text-2xl md:text-xl text-justify" in:fade>
 		Yo! I'm Nikhil, and I am designer and software developer. I love working on tech in a creative way to build stuff
 		that matters.

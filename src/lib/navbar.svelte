@@ -4,7 +4,8 @@
 	import { base } from '$app/paths';
 
 	console.log(base);
-	$: currentPage = $page.url.pathname;
+	$: currentPage = `${base}${$page.url.pathname}`;
+	console.log(currentPage);
 </script>
 
 <div class="navbar bg-base-100">
@@ -23,7 +24,7 @@
 		</div>
 
 		<a href="{base}/" class="btn btn-ghost text-xl transition-container text-center min-w-32">
-			{#if currentPage === '/'}
+			{#if currentPage === base}
 				<span transition:fade>Nikhil MS</span>
 			{:else}
 				<span transition:fade>Home</span>

@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b41f6791-fa91-4d59-963f-7cfb0670fa2c" name="Changes" comment="removed unnecessary hrefs">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/about/+page.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/about/+page.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/contact/+page.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/contact/+page.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/expertise/+page.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/expertise/+page.svelte" afterDir="false" />
-    </list>
+    <list default="true" id="b41f6791-fa91-4d59-963f-7cfb0670fa2c" name="Changes" comment="Checking base url on each page" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -89,7 +84,7 @@
       <workItem from="1717649799904" duration="839000" />
       <workItem from="1717650656395" duration="53290000" />
       <workItem from="1717858054826" duration="1920000" />
-      <workItem from="1717870372982" duration="2867000" />
+      <workItem from="1717870372982" duration="3080000" />
     </task>
     <task id="LOCAL-00001" summary="Added files">
       <option name="closed" value="true" />
@@ -331,7 +326,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717914299520</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="Checking base url on each page">
+      <option name="closed" value="true" />
+      <created>1717914684910</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1717914684910</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -366,6 +369,7 @@
     <MESSAGE value="Added more links" />
     <MESSAGE value="Checking if hyperlinks work" />
     <MESSAGE value="removed unnecessary hrefs" />
-    <option name="LAST_COMMIT_MESSAGE" value="removed unnecessary hrefs" />
+    <MESSAGE value="Checking base url on each page" />
+    <option name="LAST_COMMIT_MESSAGE" value="Checking base url on each page" />
   </component>
 </project>

@@ -1,5 +1,8 @@
 <script>
 	import { fade } from 'svelte/transition';
+	import { base } from '$app/paths';
+
+	console.log(base);
 
 	function goToLinkedIn() {
 		window.location.href = 'https://www.linkedin.com/in/nikhil-sharma-39056a237/';

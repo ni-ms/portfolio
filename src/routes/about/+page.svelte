@@ -1,5 +1,8 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
+	import { base } from '$app/paths';
+
+	console.log(base);
 </script>
 
 <div class="p-10 md:p-32 flex flex-col md:flex-row items-center">

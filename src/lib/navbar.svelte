@@ -5,7 +5,7 @@
 
 	console.log(base);
 	$: currentPage = `${base}${$page.url.pathname}`;
-	console.log(currentPage);
+	console.log('Current Page is:', currentPage);
 </script>
 
 <div class="navbar bg-base-100">

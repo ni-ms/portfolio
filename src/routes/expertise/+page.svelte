@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
-	import { base } from '$app/paths';
 
 	// Define the interface for the timeline data
 	interface TimelineItem {
@@ -164,12 +163,12 @@
 		<div tabindex="0" role="button" class="btn m-1">Click</div>
 		<ul
 			class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 h-[300px]">
-			<li class="block"><a href="{base}/">All</a></li>
-			<li class="block"><a href="{base}/">Full Stack</a></li>
-			<li class="block"><a href="{base}/">Back End</a></li>
-			<li class="block"><a href="{base}/">Machine Learning</a></li>
-			<li class="block"><a href="{base}/">Game Development</a></li>
-			<li class="block"><a href="{base}/">Miscellaneous</a></li>
+			<li class="block"><a href="http://www.google.com">All</a></li>
+			<li class="block"><a href="http://www.google.com">Full Stack</a></li>
+			<li class="block"><a href="http://www.google.com">Back End</a></li>
+			<li class="block"><a href="http://www.google.com">Machine Learning</a></li>
+			<li class="block"><a href="http://www.google.com">Game Development</a></li>
+			<li class="block"><a href="http://www.google.com">Miscellaneous</a></li>
 		</ul>
 
 	</div>

@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b41f6791-fa91-4d59-963f-7cfb0670fa2c" name="Changes" comment="Added more links">
+    <list default="true" id="b41f6791-fa91-4d59-963f-7cfb0670fa2c" name="Changes" comment="Checking if hyperlinks work">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/svelte.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/svelte.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/expertise/+page.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/expertise/+page.svelte" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,7 +87,7 @@
       <workItem from="1717649799904" duration="839000" />
       <workItem from="1717650656395" duration="53290000" />
       <workItem from="1717858054826" duration="1920000" />
-      <workItem from="1717870372982" duration="759000" />
+      <workItem from="1717870372982" duration="2426000" />
     </task>
     <task id="LOCAL-00001" summary="Added files">
       <option name="closed" value="true" />
@@ -306,7 +305,23 @@
       <option name="project" value="LOCAL" />
       <updated>1717836839509</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="Checking if hyperlinks work">
+      <option name="closed" value="true" />
+      <created>1717871182126</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1717871182126</updated>
+    </task>
+    <task id="LOCAL-00029" summary="Checking if hyperlinks work">
+      <option name="closed" value="true" />
+      <created>1717871399091</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1717871399091</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -339,6 +354,7 @@
     <MESSAGE value="Added Links" />
     <MESSAGE value="Glitch with portfolio ; sometimes the hyperlinks dont work..." />
     <MESSAGE value="Added more links" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added more links" />
+    <MESSAGE value="Checking if hyperlinks work" />
+    <option name="LAST_COMMIT_MESSAGE" value="Checking if hyperlinks work" />
   </component>
 </project>

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
-	import { base } from '$app/paths';
-
-	console.log(base);
+	// import { base } from '$app/paths';
+	//
+	// console.log(base);
 
 	// Define the interface for the timeline data
 	interface TimelineItem {

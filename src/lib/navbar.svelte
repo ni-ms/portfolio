@@ -4,9 +4,9 @@
 	import { base } from '$app/paths';
 	import { onMount } from 'svelte';
 
-	$: console.log('Base is: ', base);
+	// $: console.log('Base is: ', base);
 	$: currentPage = `${base}${$page.route.id}`;
-	$: console.log('Current Page is:', currentPage);
+	// $: console.log('Current Page is:', currentPage);
 	let aboutHref: string = '';
 	let expertiseHref: string = '';
 	let contactHref: string = '';
@@ -17,9 +17,9 @@
 		expertiseHref = `${base}/expertise`;
 		contactHref = `${base}/contact`;
 
-		console.log('About Href is:', aboutHref);
-		console.log('Expertise Href is:', expertiseHref);
-		console.log('Contact Href is:', contactHref);
+		// console.log('About Href is:', aboutHref);
+		// console.log('Expertise Href is:', expertiseHref);
+		// console.log('Contact Href is:', contactHref);
 
 	});
 </script>

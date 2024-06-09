@@ -3,9 +3,9 @@
 	import { fade } from 'svelte/transition';
 	import { base } from '$app/paths';
 
-	console.log(base);
-	$: currentPage = `${base}${$page.url.pathname}`;
-	console.log('Current Page is:', currentPage);
+	$: console.log(base);
+	$: currentPage = `${base}${$page.route.id}`;
+	$: console.log('Current Page is:', currentPage);
 </script>
 
 <div class="navbar bg-base-100">
@@ -24,7 +24,7 @@
 		</div>
 
 		<a href="{base}/" class="btn btn-ghost text-xl transition-container text-center min-w-32">
-			{#if currentPage === base}
+			{#if currentPage === base+'/'}
 				<span transition:fade>Nikhil MS</span>
 			{:else}
 				<span transition:fade>Home</span>

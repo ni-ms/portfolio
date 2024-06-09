@@ -2,10 +2,26 @@
 	import { page } from '$app/stores';
 	import { fade } from 'svelte/transition';
 	import { base } from '$app/paths';
+	import { onMount } from 'svelte';
 
-	$: console.log(base);
+	$: console.log('Base is: ', base);
 	$: currentPage = `${base}${$page.route.id}`;
 	$: console.log('Current Page is:', currentPage);
+	let aboutHref: string = '';
+	let expertiseHref: string = '';
+	let contactHref: string = '';
+
+
+	onMount(() => {
+		aboutHref = `${base}/about`;
+		expertiseHref = `${base}/expertise`;
+		contactHref = `${base}/contact`;
+
+		console.log('About Href is:', aboutHref);
+		console.log('Expertise Href is:', expertiseHref);
+		console.log('Contact Href is:', contactHref);
+
+	});
 </script>
 
 <div class="navbar bg-base-100">
@@ -17,14 +33,14 @@
 				</svg>
 			</div>
 			<ul class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-				<li><a href="{base}/about" class="btn mb-2">About</a></li>
-				<li><a href="{base}/expertise" class="btn mb-2">Expertise</a></li>
-				<li><a href="{base}/contact" class="btn mb-2">Contact</a></li>
+				<li><a href="{aboutHref}" class="btn mb-2">About</a></li>
+				<li><a href="{expertiseHref}" class="btn mb-2">Expertise</a></li>
+				<li><a href="{contactHref}" class="btn mb-2">Contact</a></li>
 			</ul>
 		</div>
 
 		<a href="{base}/" class="btn btn-ghost text-xl transition-container text-center min-w-32">
-			{#if currentPage === base+'/'}
+			{#if currentPage === base + '/'}
 				<span transition:fade>Nikhil MS</span>
 			{:else}
 				<span transition:fade>Home</span>
@@ -35,9 +51,9 @@
 	<div class="navbar-end hidden lg:flex">
 		<ul class="menu menu-horizontal px-1">
 
-			<li><a href="{base}/about" class="btn mr-2">About</a></li>
-			<li><a href="{base}/expertise" class="btn mr-2">Expertise</a></li>
-			<li><a href="{base}/contact" class="btn mr-2">Contact</a></li>
+			<li><a href="{aboutHref}" class="btn mr-2">About</a></li>
+			<li><a href="{expertiseHref}" class="btn mr-2">Expertise</a></li>
+			<li><a href="{contactHref}" class="btn mr-2">Contact</a></li>
 		</ul>
 	</div>
 </div>

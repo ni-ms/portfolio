@@ -11,4 +11,6 @@ Open this branch in Traycer, attach or reference the build brief and both refere
 
 On mobile, stack the headline, course preview, play button, and project list. Playing opens an expanded viewport-filling game overlay with a directional pad, jump and reset buttons, and a clear exit. The handoff specifies multi-touch input, safe-area spacing, scroll/focus restoration, and mobile verification.
 
+The implementation stack is Vite, React, TypeScript, Three.js/React Three Fiber, Drei, Rapier, and GSAP with its React integration and ScrollTrigger. The brief also defines camera calibration, finished geometry, PBR materials, lighting/shadows, optional postprocessing, quality presets, and repeatable screenshot comparisons. These are build requirements; application code and dependencies have not been installed in this handoff branch.
+
 The handoff intentionally contains no application scaffold or installed dependencies. The brief specifies the replacement stack, appearance, interactions, content placeholders, and acceptance checks. Personal information from LinkedIn has not been supplied. There is no portrait on the landing page.

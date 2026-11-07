@@ -92,6 +92,21 @@ Construct an original angular route emblem and reuse its visual logic in the fav
 
 Use procedural meshes and materials wherever practical so the demo needs no missing paid model, remote asset pack, or external design service. Define render geometry, collision volumes, spawn points, and checkpoints from one course configuration so visuals and physics stay aligned.
 
+### Visual fidelity pipeline
+
+The reference images are generated raster concepts, not source 3D scenes. There is no supplied model, light rig, font package, or material library to import. Reconstruct those ingredients and iterate against the references. Installing the chosen libraries does not by itself satisfy the visual requirement, and a functional unlit box blockout is not the finished scene.
+
+1. **Calibrate composition first:** establish a locked desktop reference camera, course bounds, roof heights, and key landmark positions before adding animation. Start with an orthographic camera; use restrained perspective only if it matches better. Tune zoom, target, azimuth, and elevation against the image. Keep separate explicit presets for desktop, mobile preview, and mobile play; resize must not silently reset a tuned view. Record these settings in the scene configuration.
+2. **Finish the geometry:** build bevels that catch the light, credible stair thickness, roof parapets, slender rails, HVAC housings/louvers, planters, platform supports, and small surface seams. Plain sharp-edged cubes with flat colors are only the blockout. Use sensible normals and sufficiently smooth bevels without wasting polygons on unseen surfaces. Geometry that affects the silhouette must be modeled rather than painted into a texture.
+3. **Author assets when needed:** procedural meshes are acceptable if they reach the target. If richer mesh work or baked lighting is needed, use an available local tool such as Blender and export optimized glTF/GLB. Keep editable scene sources or a reproducible generation script under `design/scene/`, runtime models under `public/models/`, and required local textures under `public/textures/`. Keep simple collision meshes separate from detailed render meshes. Do not make completion depend on a missing model or a new paid asset purchase.
+4. **Use physically based materials:** concrete should have subtle albedo variation and restrained normal/roughness detail, with metalness near zero and high roughness as an initial tuning point. Rails and HVAC details need distinct material responses. Set texture scale consistently across surfaces; avoid stretched concrete, repetitive oversized grain, and glossy plastic roofs. Use local original or properly licensed textures. Three.js provides a metallic/roughness PBR workflow through [MeshStandardMaterial](https://threejs.org/docs/pages/MeshStandardMaterial.html).
+5. **Build a deliberate light rig:** use a soft directional key from above-left/front, restrained fill/environment illumination, and deep but readable shadows. Enable cast/receive shadows on the appropriate geometry and fit the shadow camera tightly to the course. Start around a 2048px main shadow map on desktop and 1024px on mobile, then profile and tune bias/softness. Match shadow direction and contrast rather than increasing light intensity until the concrete washes out.
+6. **Ground the architecture:** add contact darkening beneath stairs, roofs, rails, and planters using authored/baked ambient occlusion or a measured lightweight real-time AO pass. Preserve dynamic player shadows. If static contact or accumulated shadows are cached, do not bake the moving player into them or leave a ghost after movement. Do not stack multiple heavy shadow/AO techniques without demonstrating a visual benefit.
+7. **Control color and glow:** use the chosen R3F/Three.js version's color-management pipeline correctly, with sRGB display output, a consistent tone-mapping/exposure setup, and appropriate texture color spaces. ACES filmic is a starting point to tune against the image, not a reason to apply a second tone-mapping or gamma pass. Lime beacons may use emissive surfaces and very restrained bloom; white type and concrete should remain crisp. If using `@react-three/postprocessing`, keep one compatible composer and make effects optional on weaker devices. Check renderer defaults against the installed version's [Canvas documentation](https://r3f.docs.pmnd.rs/api/canvas).
+8. **Match the 2D design equally carefully:** select and self-host licensed fonts, measure heading width/weight/line spacing, match margins and rules, and tune label positions at the reference viewport sizes. Render interface text in HTML/SVG, outside scene postprocessing. The project thumbnails should come from the same world/assets and lighting rather than unrelated stock pictures.
+
+Expose camera, lighting, exposure, shadow, material, and quality parameters in a small typed scene configuration. Include a deterministic visual-review mode that freezes idle animation, uses a fixed seed and player position, waits for fonts/assets/shadows to settle, and makes desktop/mobile captures repeatable. This mode should be available through a documented local development or test flag, not an extra public-facing settings panel.
+
 ## Game behavior
 
 The mini-game must be enjoyable and optional. All work, résumé content, and contact navigation remain accessible without playing, even if WebGL fails or JavaScript is still loading.
@@ -116,7 +131,18 @@ The mini-game must be enjoyable and optional. All work, résumé content, and co
 
 ## Implementation foundation
 
-Start a fresh **Vite + React + TypeScript** project. Use **Three.js through React Three Fiber**, with Drei utilities and Rapier integration where they simplify reliable physics and scene controls. Select current mutually compatible stable dependency versions during implementation and commit the lockfile. Do not reuse the deleted app's dependencies or lockfile.
+Start a fresh **Vite + React + TypeScript** project using the following implementation stack. Select current mutually compatible stable dependency versions during implementation and commit the lockfile. Do not reuse the deleted app's dependencies or lockfile.
+
+| Responsibility | Technology and use |
+| --- | --- |
+| Application and semantic UI | React, TypeScript, Vite, and CSS custom properties for the visual system. |
+| Real-time 3D | `three` and `@react-three/fiber` for the course, renderer, camera, and scene lifecycle. |
+| Scene utilities | `@react-three/drei` for useful camera, HTML-label, asset-loading, and performance helpers; import only what is used. |
+| Game physics | `@react-three/rapier` for reliable controller/collision behavior; keep collision meshes simple. |
+| Motion | **`gsap` and `@gsap/react` are required**. Use GSAP timelines for deliberate interface/camera transitions and ScrollTrigger for restrained section reveals. |
+| Optional finishing effects | `@react-three/postprocessing` only when a measured AO/bloom/antialiasing treatment improves fidelity within the performance budget. |
+| Visual asset authoring | Procedural meshes, or locally authored Blender-to-glTF/GLB assets when needed for the fidelity described above. Blender is an authoring tool, not a runtime dependency. |
+| Verification | Focused logic tests plus Playwright browser checks and visual-review captures at the specified desktop/mobile sizes. |
 
 Suggested separation of responsibilities, with equivalent clean organization acceptable:
 
@@ -128,6 +154,20 @@ Suggested separation of responsibilities, with equivalent clean organization acc
 - `tests/`: focused controller/checkpoint and browser interaction coverage.
 
 Keep game simulation outside React state updates on every frame. Separate the HTML portfolio from the canvas so the content remains usable without 3D. Provide `npm run dev`, `npm run build`, `npm run preview`, `npm run typecheck`, and an appropriate focused test command.
+
+### GSAP motion direction and integration
+
+Motion should reinforce the miniature-world theme while preserving the approved resting composition. Implement a small coherent motion system rather than adding unrelated effects to every element.
+
+- **Intro:** a short staggered reveal for the eyebrow, headline, copy, and call to action; start around 12–20px of translation over 0.6–0.9 seconds, with restrained easing. Content must remain visible and usable if animations do not initialize; do not wait for the 3D bundle to finish before exposing navigation.
+- **Route identity:** draw the small SVG route using a stroke-dash animation and light up its checkpoint dots in sequence. Reuse this treatment for relevant section accents. An extra SVG animation plugin is unnecessary for a simple path draw.
+- **Scene transitions:** animate overview-to-play and recenter transitions over roughly 0.6–0.9 seconds, tuning to prevent disorientation. Use the same stable camera presets defined for fidelity review. Suspend idle drift and cancel any conflicting camera tween when play begins; keep the player visible throughout.
+- **Interface transitions:** use short opacity/transform transitions for the mobile menu, game overlay, project details, button arrows, and hover/focus feedback. Start around 0.2–0.35 seconds. When opening mobile play, controls should be usable immediately rather than waiting for a decorative timeline.
+- **ScrollTrigger:** reveal project rows and subsequent sections as they enter view, with modest motion and small staggers. Preserve native scrolling; do not pin the whole landing page, require scrubbed scrolling to access content, or add a smooth-scroll library by default. Recalculate relevant triggers after layout/font changes, without creating duplicate instances.
+- **React lifecycle:** scope animations to their component refs using `useGSAP()` from `@gsap/react`; clean up timelines, callbacks, and triggers on teardown or mode changes. Use context-safe handlers when creating animations from later events. Follow the [official GSAP React integration guide](https://gsap.com/resources/React/).
+- **Responsive motion:** use `gsap.matchMedia()` for breakpoint/input differences and `prefers-reduced-motion`. Reduced-motion mode shows the final composition directly, disables idle drift/pulsing and large travel, and uses immediate camera changes or minimal fades. Revert media-specific animation setup when conditions change, as described in the [GSAP matchMedia documentation](https://gsap.com/docs/v3/GSAP/gsap.matchMedia()/).
+- **One owner per property:** GSAP may tween a camera-rig parameter object or non-physical visual properties. The R3F render loop applies those parameters. Rapier/controller logic owns player motion; do not tween player rigid bodies, moving collision surfaces, or gravity with GSAP. Avoid having GSAP and the frame loop independently write the same camera transform.
+- **Render scheduling:** use the R3F renderer for drawing, not a second rendering loop in GSAP. If rendering on demand, invalidate while GSAP-driven scene values are changing and stop when motion settles; active gameplay still needs its normal simulation/render loop. See the [R3F performance guidance](https://r3f.docs.pmnd.rs/advanced/scaling-performance).
 
 ### Content and links
 
@@ -144,26 +184,29 @@ Keep game simulation outside React state updates on every frame. Separate the HT
 - Respect reduced motion and provide a pause/exit control. Use semantic headings, sufficient contrast, visible focus, descriptive control labels, accessible modal focus management, and keyboard-operable navigation. Put a short scene description outside the canvas; the game is not the only way to reach content.
 - Lazy-load the 3D bundle without delaying the text/navigation. Show a stable, intentional local loading/fallback view for the scene area. On WebGL failure, preserve the page and direct links with a useful message rather than a blank or broken hero.
 - Cap device pixel ratio, reuse meshes/materials, minimize draw calls and expensive effects, and reduce shadows/detail on small devices. Pause unnecessary rendering/physics when hidden or offscreen. Avoid a heavy postprocessing chain for a subtle glow.
+- Define desktop and mobile quality presets. Keep architecture, composition, typography, and material character consistent; scale DPR, shadow resolution, greenery density, and optional postprocessing first. Profile actual devices or state the test environment. Aim for 60fps on a suitable desktop and stable, responsive play on a representative phone; do not claim a universal frame-rate guarantee from one browser run.
 
 ## Implementation and verification plan
 
 Break the work into focused phases, then execute them:
 
 1. Scaffold the new project, add tokens/content data, and reproduce the semantic responsive layout and typography.
-2. Build the rooftop diorama, camera, materials, shadows, greenery, HTML labels, and scene loading/fallback.
+2. Build and visually calibrate the rooftop diorama, camera presets, finished materials/geometry, shadows/AO, greenery, HTML labels, and scene loading/fallback. Capture and review the static composition before layering motion on top.
 3. Add the actual player controller, reliable collision course, checkpoints, keyboard/multi-touch input, expanded mobile play dialog, focus/scroll lifecycle, and reset/exit behavior.
-4. Finish content sections, real navigation, demo detail panels, mobile layout, accessibility, performance, and documentation.
+4. Finish content sections, real navigation, demo detail panels, mobile layout, the GSAP motion system, accessibility, quality presets, and documentation.
 5. Run appropriate checks and compare browser screenshots against both references, including the mobile landing and expanded play states. Iterate on visible mismatches before finishing.
 
 Verification must cover more than whether the app compiles:
 
 - Production build and TypeScript check pass. Document the commands and results.
 - Compare a browser screenshot at 1585 by 992 against `design/parkour-portfolio-reference.png`. Check text positions and sizes, scene scale and camera, visual hierarchy, lime/concrete materials, breathing room, and selected-work strip. Also inspect 1440 by 900 and mobile views.
+- Save deterministic visual-review screenshots and an annotated comparison or opacity overlay under `design/verification/`. Review and correct composition/camera first, then finished geometry, materials/lighting/shadows, typography/spacing, and finally effects. A fully working game with visibly unfinished gray-box architecture does not pass the visual acceptance requirement. Report any remaining visual differences honestly; an AI raster reference is not an existing 3D asset or a guarantee of pixel-identical reconstruction.
 - Capture mobile landing and active-play screenshots separately at 390 by 844 and compare them to the corresponding screens in `design/parkour-portfolio-mobile-reference.png`. Also inspect 360 by 740, a tablet viewport, and a phone landscape viewport. Verify safe-area spacing, readable labels, a visible next landing area, no clipped touch controls, and no horizontal overflow. Do not compare the entire two-screen presentation image as though it were one page screenshot.
 - Verify movement, jumps, stairs, wall/platform collision, reachable gaps, checkpoint progression, falling/respawn, and R reset. Check that reset clears velocity, diagonal speed is normalized, and changing frame rate does not destabilize movement.
 - Verify game keys do not capture normal page input; Escape and blur clear input and release focus. Test checkpoint actions and all navigation links without playing.
 - Test simultaneous movement plus jump with two touch pointers, held directions, diagonal movement, a finger leaving its button, `pointercancel`, lost pointer capture, blur, reset, and exit. Verify no stuck input, no page scrolling during the active overlay, restored scrolling/focus after exit, and ordinary scrolling/zoom outside play mode. Confirm progress survives entering/exiting the overlay and orientation changes without duplicate physics loops.
 - Test the mobile menu, reduced motion, keyboard navigation, game-dialog/project-modal focus, checkpoint section actions from the overlay, and a simulated WebGL failure/fallback. Confirm no portrait appears on the landing page at any breakpoint.
+- Verify the GSAP intro, section reveals, menu/overlay transitions, and camera transitions with normal and reduced motion. Repeated opening/closing, React development remounts, breakpoint changes, and orientation changes must not multiply timelines/triggers, leave text hidden, fight the gameplay camera, or leak animation work.
 - Check for browser console errors and missing assets. Add focused tests for real movement/checkpoint/input risks rather than superficial snapshots of every component.
 
 Finish with concise setup/run instructions, the implemented feature list, verification results, and any remaining genuine limitation. List exactly which content fields still need the owner's LinkedIn information. The target is a polished usable portfolio and a working miniature parkour game matching the approved demo, not a rough starter page.

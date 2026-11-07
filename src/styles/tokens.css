@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --color-bg: #101414;
+  --color-bg-translucent: rgba(16, 20, 20, 0.85);
+  --color-bg-subtle: #141919;
+  --color-surface: #171d1e;
+  --color-surface-hover: #21292b;
+  --color-border: #232c2d;
+  --color-border-light: rgba(242, 241, 234, 0.12);
+  --color-border-accent: rgba(214, 255, 100, 0.35);
+
+  --color-text: #F2F1EA;
+  --color-text-muted: #8E9596;
+  --color-text-dim: #565F60;
+  --color-accent: #D6FF64;
+  --color-accent-hover: #E3FF88;
+  --color-accent-dim: rgba(214, 255, 100, 0.12);
+  --color-concrete: #C8CAC7;
+
+  --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --pad-desktop: 56px;
+  --pad-mobile: 24px;
+  --header-height: 88px;
+
+  --transition-fast: 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+  --focus-ring: 2px solid var(--color-accent);
+  --focus-offset: 3px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  overflow-x: hidden;
+}
+
+body.scroll-locked {
+  overflow: hidden !important;
+  touch-action: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  background: none;
+  border: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

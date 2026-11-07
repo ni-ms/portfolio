@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Header } from './components/Header';
 import { MobileMenu } from './components/MobileMenu';
 import { Hero } from './components/Hero';
@@ -7,6 +7,10 @@ import { Explorations } from './components/Explorations';
 import { Resume } from './components/Resume';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
+import { DioramaCanvas } from './game/DioramaCanvas';
+import { GameOverlay } from './game/GameOverlay';
+import { gameStore, useGameStore } from './game/gameStore';
+import { usePageMotion } from './motion/usePageMotion';
 
 export interface AppProps {
   canvasSlot?: React.ReactNode;
@@ -21,10 +25,30 @@ export default function App({
   onDroneView,
   onStartExploring,
   onPlayMobile,
-  is3dActive = false,
+  is3dActive,
 }: AppProps = {}) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
+  const [recenterSignal, setRecenterSignal] = useState(0);
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  // Synchronize gameStore mode
+  const currentMode = useGameStore((s) => s.mode);
+  const isPlaying = is3dActive !== undefined ? is3dActive : currentMode !== 'preview';
+
+  // Responsive breakpoint tracking
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobileViewport(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // GSAP motion orchestration (intro reveals, route SVG animation, ScrollTrigger)
+  usePageMotion({ containerRef });
 
   const handleToggleMenu = () => {
     setIsMobileMenuOpen((prev) => !prev);
@@ -41,8 +65,38 @@ export default function App({
     }
   };
 
+  const handleDroneView = () => {
+    setRecenterSignal((s) => s + 1);
+    gameStore.getState().actions.recenterDroneView();
+    if (onDroneView) onDroneView();
+  };
+
+  const handleStartExploring = () => {
+    gameStore.getState().actions.setMode('play-inline');
+    if (onStartExploring) onStartExploring();
+  };
+
+  const handlePlayMobile = () => {
+    gameStore.getState().actions.setMode('play-overlay');
+    if (onPlayMobile) onPlayMobile();
+  };
+
+  const handleOverlayExit = () => {
+    gameStore.getState().actions.setMode('preview');
+  };
+
+  // Default integrated 3D canvas if custom canvasSlot is not provided
+  const activeCanvas = canvasSlot ?? (
+    <DioramaCanvas
+      mode={currentMode}
+      isMobile={isMobileViewport}
+      recenterSignal={recenterSignal}
+      onSelectCheckpoint={handleNavigateSection}
+    />
+  );
+
   return (
-    <div className="portfolio-app">
+    <div className="portfolio-app" ref={containerRef}>
       {/* Keyboard Accessibility Skip Link */}
       <a href="#main-content" className="skip-link">
         Skip to main content
@@ -65,25 +119,46 @@ export default function App({
       {/* Main Semantic Landmark */}
       <main id="main-content">
         <Hero
-          canvasSlot={canvasSlot}
-          isPlaying={is3dActive}
-          onDroneView={onDroneView}
-          onStartExploring={onStartExploring}
-          onPlayMobile={onPlayMobile}
+          canvasSlot={activeCanvas}
+          isPlaying={isPlaying}
+          onDroneView={handleDroneView}
+          onStartExploring={handleStartExploring}
+          onPlayMobile={handlePlayMobile}
           onNavigateSection={handleNavigateSection}
         />
 
-        <Projects />
+        <div className="scroll-reveal-section">
+          <Projects />
+        </div>
 
-        <Explorations />
+        <div className="scroll-reveal-section">
+          <Explorations />
+        </div>
 
-        <Resume />
+        <div className="scroll-reveal-section">
+          <Resume />
+        </div>
 
-        <Contact />
+        <div className="scroll-reveal-section">
+          <Contact />
+        </div>
       </main>
 
       {/* Site Footer */}
       <Footer />
+
+      {/* Viewport-filling Mobile Game Overlay (Right mockup screen at 390x844) */}
+      {currentMode === 'play-overlay' && (
+        <GameOverlay onExit={handleOverlayExit}>
+          <DioramaCanvas
+            mode="play-overlay"
+            isMobile={true}
+            recenterSignal={recenterSignal}
+            showMarkers={false}
+            onSelectCheckpoint={handleNavigateSection}
+          />
+        </GameOverlay>
+      )}
     </div>
   );
 }

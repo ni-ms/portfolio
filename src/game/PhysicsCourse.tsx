@@ -1,6 +1,7 @@
 import React from 'react';
 import { RigidBody, CuboidCollider } from '@react-three/rapier';
-import { gameStore, useGameStore } from './gameStore';
+import { gameStore } from './gameStore';
+import { COURSE_BOUNDS, CHECKPOINTS } from './courseConfig';
 import type { CheckpointId } from '../types/game';
 
 export interface PhysicsCourseProps {
@@ -10,10 +11,8 @@ export interface PhysicsCourseProps {
 
 export function PhysicsCourse({
   children,
-  showVisuals = true,
+  showVisuals: _showVisuals = false,
 }: PhysicsCourseProps) {
-  const currentCheckpointId = useGameStore((s) => s.currentCheckpointId);
-
   const handleCheckpointEnter = (id: CheckpointId) => {
     gameStore.getState().actions.reachCheckpoint(id);
   };
@@ -22,274 +21,186 @@ export function PhysicsCourse({
     gameStore.getState().actions.respawnPlayer();
   };
 
+  const bounds = COURSE_BOUNDS;
+
   return (
     <group name="physics-course">
-      {/* 1. START ROOFTOP PLATFORM (Foreground-Left) */}
+      {/* 0. GROUND SLAB BASE */}
       <RigidBody
         type="fixed"
-        position={[-3.5, 0.5, 3.5]}
+        position={bounds.groundSlab.position}
         friction={0.8}
         restitution={0}
-        userData={{ type: 'platform', name: 'start-rooftop' }}
+        userData={{ type: 'ground', name: 'ground-slab' }}
       >
-        <CuboidCollider args={[2.2, 0.5, 2.2]} />
-        {showVisuals && (
-          <mesh castShadow receiveShadow>
-            <boxGeometry args={[4.4, 1.0, 4.4]} />
-            <meshStandardMaterial color="#C8CAC7" roughness={0.7} metalness={0.05} />
-          </mesh>
-        )}
+        <CuboidCollider args={[bounds.groundSlab.size[0] / 2, bounds.groundSlab.size[1] / 2, bounds.groundSlab.size[2] / 2]} />
       </RigidBody>
 
-      {/* 2. SMOOTH STAIRS RAMP 1 (Start -> Work Rooftop) */}
-      {/*
-        Using an inclined smooth ramp collider over stairs to eliminate capsule edge-snagging.
-        Angle ~ 19.5 degrees: spans from z=1.3 (y=1.0) to z=-1.5 (y=3.0)
-      */}
+      {/* 1. START ROOFTOP (Foreground-Left) */}
       <RigidBody
         type="fixed"
-        position={[-4.2, 1.9, 0.8]}
-        rotation={[-0.32, 0, 0]}
+        position={bounds.startRooftop.mainSlab.position}
         friction={0.8}
         restitution={0}
-        userData={{ type: 'ramp', name: 'start-to-work-ramp' }}
+        userData={{ type: 'platform', name: 'start-rooftop-main' }}
       >
-        <CuboidCollider args={[1.2, 0.2, 2.0]} />
-        {showVisuals && (
-          <mesh castShadow receiveShadow>
-            <boxGeometry args={[2.4, 0.4, 4.0]} />
-            <meshStandardMaterial color="#C8CAC7" roughness={0.7} metalness={0.05} />
-          </mesh>
-        )}
+        <CuboidCollider args={[bounds.startRooftop.mainSlab.size[0] / 2, bounds.startRooftop.mainSlab.size[1] / 2, bounds.startRooftop.mainSlab.size[2] / 2]} />
       </RigidBody>
 
-      {/* 3. WORK ROOFTOP PLATFORM (Back-Left, 01 / WORK) */}
+      {/* Start Lower Landing */}
       <RigidBody
         type="fixed"
-        position={[-5.0, 2.5, -4.0]}
+        position={bounds.startRooftop.lowerLanding.position}
         friction={0.8}
         restitution={0}
-        userData={{ type: 'platform', name: 'work-rooftop' }}
+        userData={{ type: 'platform', name: 'start-lower-landing' }}
       >
-        <CuboidCollider args={[2.5, 0.5, 2.5]} />
-        {showVisuals && (
-          <mesh castShadow receiveShadow>
-            <boxGeometry args={[5.0, 1.0, 5.0]} />
-            <meshStandardMaterial color="#C8CAC7" roughness={0.7} metalness={0.05} />
-          </mesh>
-        )}
+        <CuboidCollider args={[bounds.startRooftop.lowerLanding.size[0] / 2, bounds.startRooftop.lowerLanding.size[1] / 2, bounds.startRooftop.lowerLanding.size[2] / 2]} />
       </RigidBody>
 
-      {/* Work Rooftop HVAC Obstacle Colliders */}
+      {/* Start Stairs Smooth Ramp */}
       <RigidBody
         type="fixed"
-        position={[-6.2, 3.5, -5.2]}
-        friction={0.5}
-        userData={{ type: 'obstacle', name: 'hvac-unit' }}
-      >
-        <CuboidCollider args={[0.7, 0.5, 0.9]} />
-        {showVisuals && (
-          <mesh castShadow receiveShadow>
-            <boxGeometry args={[1.4, 1.0, 1.8]} />
-            <meshStandardMaterial color="#7A8284" roughness={0.5} metalness={0.3} />
-          </mesh>
-        )}
-      </RigidBody>
-
-      {/* 4. INTERMEDIATE STEPPING BEAMS (Work -> Explorations) */}
-      <RigidBody
-        type="fixed"
-        position={[-1.8, 3.4, -4.6]}
-        friction={0.8}
-        userData={{ type: 'platform', name: 'stepping-beam-1' }}
-      >
-        <CuboidCollider args={[0.7, 0.15, 0.5]} />
-        {showVisuals && (
-          <mesh castShadow receiveShadow>
-            <boxGeometry args={[1.4, 0.3, 1.0]} />
-            <meshStandardMaterial color="#B0B4B2" roughness={0.6} />
-          </mesh>
-        )}
-      </RigidBody>
-
-      <RigidBody
-        type="fixed"
-        position={[-0.2, 3.8, -4.8]}
-        friction={0.8}
-        userData={{ type: 'platform', name: 'stepping-beam-2' }}
-      >
-        <CuboidCollider args={[0.7, 0.15, 0.5]} />
-        {showVisuals && (
-          <mesh castShadow receiveShadow>
-            <boxGeometry args={[1.4, 0.3, 1.0]} />
-            <meshStandardMaterial color="#B0B4B2" roughness={0.6} />
-          </mesh>
-        )}
-      </RigidBody>
-
-      {/* 5. EXPLORATIONS ROOFTOP PLATFORM (Center, 02 / EXPLORATIONS) */}
-      <RigidBody
-        type="fixed"
-        position={[2.0, 3.8, -5.0]}
+        position={bounds.startRooftop.stairs.position}
+        rotation={[0.42, 0, 0]}
         friction={0.8}
         restitution={0}
-        userData={{ type: 'platform', name: 'explorations-rooftop' }}
+        userData={{ type: 'ramp', name: 'start-stairs-ramp' }}
       >
-        <CuboidCollider args={[2.5, 0.5, 2.5]} />
-        {showVisuals && (
-          <mesh castShadow receiveShadow>
-            <boxGeometry args={[5.0, 1.0, 5.0]} />
-            <meshStandardMaterial color="#C8CAC7" roughness={0.7} metalness={0.05} />
-          </mesh>
-        )}
+        <CuboidCollider args={[bounds.startRooftop.stairs.width / 2, 0.15, bounds.startRooftop.stairs.run / 1.5]} />
       </RigidBody>
 
-      {/* Planter Obstacle on Explorations Roof */}
+      {/* 2. WORK ROOFTOP (Back-Left, 01 / WORK) */}
       <RigidBody
         type="fixed"
-        position={[3.4, 4.6, -4.0]}
-        friction={0.6}
-        userData={{ type: 'obstacle', name: 'planter-box' }}
-      >
-        <CuboidCollider args={[0.6, 0.3, 1.2]} />
-        {showVisuals && (
-          <mesh castShadow receiveShadow>
-            <boxGeometry args={[1.2, 0.6, 2.4]} />
-            <meshStandardMaterial color="#5E6566" roughness={0.8} />
-          </mesh>
-        )}
-      </RigidBody>
-
-      {/* 6. SMOOTH STAIRS RAMP 2 (Explorations -> Résumé) */}
-      {/* Inclined ramp from Explorations (y=4.3) to Résumé (y=5.8) */}
-      <RigidBody
-        type="fixed"
-        position={[4.6, 5.0, -3.0]}
-        rotation={[0.24, 0.45, 0]}
+        position={bounds.workRooftop.mainSlab.position}
         friction={0.8}
         restitution={0}
-        userData={{ type: 'ramp', name: 'explorations-to-resume-ramp' }}
+        userData={{ type: 'platform', name: 'work-rooftop-main' }}
       >
-        <CuboidCollider args={[1.2, 0.2, 2.0]} />
-        {showVisuals && (
-          <mesh castShadow receiveShadow>
-            <boxGeometry args={[2.4, 0.4, 4.0]} />
-            <meshStandardMaterial color="#C8CAC7" roughness={0.7} metalness={0.05} />
-          </mesh>
-        )}
+        <CuboidCollider args={[bounds.workRooftop.mainSlab.size[0] / 2, bounds.workRooftop.mainSlab.size[1] / 2, bounds.workRooftop.mainSlab.size[2] / 2]} />
       </RigidBody>
 
-      {/* 7. RÉSUMÉ ROOFTOP PLATFORM (Far Right, 03 / RÉSUMÉ) */}
+      {/* Work Rooftop HVAC Obstacles */}
+      {bounds.workRooftop.hvacUnits.map((hvac, i) => (
+        <RigidBody
+          key={`hvac-${i}`}
+          type="fixed"
+          position={[hvac.position[0], hvac.position[1] + hvac.size[1] / 2, hvac.position[2]]}
+          friction={0.5}
+          userData={{ type: 'obstacle', name: `hvac-${i}` }}
+        >
+          <CuboidCollider args={[hvac.size[0] / 2, hvac.size[1] / 2, hvac.size[2] / 2]} />
+        </RigidBody>
+      ))}
+
+      {/* 3. CENTRAL EXPLORATION ROOFTOP (02 / EXPLORATIONS) */}
       <RigidBody
         type="fixed"
-        position={[7.0, 5.3, -1.0]}
+        position={bounds.explorationRooftop.upperTerrace.position}
         friction={0.8}
         restitution={0}
-        userData={{ type: 'platform', name: 'resume-rooftop' }}
+        userData={{ type: 'platform', name: 'explorations-upper-terrace' }}
       >
-        <CuboidCollider args={[2.5, 0.5, 2.5]} />
-        {showVisuals && (
-          <mesh castShadow receiveShadow>
-            <boxGeometry args={[5.0, 1.0, 5.0]} />
-            <meshStandardMaterial color="#C8CAC7" roughness={0.7} metalness={0.05} />
-          </mesh>
-        )}
+        <CuboidCollider args={[bounds.explorationRooftop.upperTerrace.size[0] / 2, bounds.explorationRooftop.upperTerrace.size[1] / 2, bounds.explorationRooftop.upperTerrace.size[2] / 2]} />
       </RigidBody>
 
-      {/* 8. CHECKPOINT SENSOR TRIGGERS */}
-      {/* 01 / WORK SENSOR */}
       <RigidBody
         type="fixed"
-        position={[-5.0, 3.5, -4.0]}
+        position={bounds.explorationRooftop.lowerTerrace.position}
+        friction={0.8}
+        restitution={0}
+        userData={{ type: 'platform', name: 'explorations-lower-terrace' }}
+      >
+        <CuboidCollider args={[bounds.explorationRooftop.lowerTerrace.size[0] / 2, bounds.explorationRooftop.lowerTerrace.size[1] / 2, bounds.explorationRooftop.lowerTerrace.size[2] / 2]} />
+      </RigidBody>
+
+      {/* Exploration Stairs Ramp */}
+      <RigidBody
+        type="fixed"
+        position={bounds.explorationRooftop.stairs.position}
+        rotation={[-0.45, 0, 0]}
+        friction={0.8}
+        restitution={0}
+        userData={{ type: 'ramp', name: 'explorations-stairs-ramp' }}
+      >
+        <CuboidCollider args={[bounds.explorationRooftop.stairs.width / 2, 0.2, bounds.explorationRooftop.stairs.run / 1.5]} />
+      </RigidBody>
+
+      {/* Planters on Exploration Roof */}
+      {bounds.explorationRooftop.planters.map((planter, i) => (
+        <RigidBody
+          key={`planter-${i}`}
+          type="fixed"
+          position={[planter.position[0], planter.position[1] + planter.size[1] / 2, planter.position[2]]}
+          friction={0.6}
+          userData={{ type: 'obstacle', name: `planter-${i}` }}
+        >
+          <CuboidCollider args={[planter.size[0] / 2, planter.size[1] / 2, planter.size[2] / 2]} />
+        </RigidBody>
+      ))}
+
+      {/* 4. RÉSUMÉ ROOFTOP (Far-Right, 03 / RÉSUMÉ) */}
+      <RigidBody
+        type="fixed"
+        position={bounds.resumeRooftop.mainSlab.position}
+        friction={0.8}
+        restitution={0}
+        userData={{ type: 'platform', name: 'resume-rooftop-main' }}
+      >
+        <CuboidCollider args={[bounds.resumeRooftop.mainSlab.size[0] / 2, bounds.resumeRooftop.mainSlab.size[1] / 2, bounds.resumeRooftop.mainSlab.size[2] / 2]} />
+      </RigidBody>
+
+      {/* Résumé Stairs Ramp */}
+      <RigidBody
+        type="fixed"
+        position={bounds.resumeRooftop.stairs.position}
+        rotation={[-0.42, 0, 0]}
+        friction={0.8}
+        restitution={0}
+        userData={{ type: 'ramp', name: 'resume-stairs-ramp' }}
+      >
+        <CuboidCollider args={[bounds.resumeRooftop.stairs.width / 2, 0.2, bounds.resumeRooftop.stairs.run / 1.5]} />
+      </RigidBody>
+
+      {/* 5. STEPPING PLATFORMS & CONNECTING BEAMS */}
+      {bounds.steppingPlatforms.map((plat) => (
+        <RigidBody
+          key={plat.id}
+          type="fixed"
+          position={plat.position}
+          friction={0.8}
+          userData={{ type: 'platform', name: plat.id }}
+        >
+          <CuboidCollider args={[plat.size[0] / 2, plat.size[1] / 2, plat.size[2] / 2]} />
+        </RigidBody>
+      ))}
+
+      {/* 6. CHECKPOINT SENSOR TRIGGERS */}
+      {CHECKPOINTS.map((cp) => (
+        <RigidBody
+          key={`trigger-${cp.id}`}
+          type="fixed"
+          sensor
+          position={[cp.position[0], cp.position[1] + 0.8, cp.position[2]]}
+          onIntersectionEnter={() => handleCheckpointEnter(cp.id)}
+          userData={{ type: 'sensor', checkpointId: cp.id }}
+        >
+          <CuboidCollider args={[1.2, 1.2, 1.2]} />
+        </RigidBody>
+      ))}
+
+      {/* 7. FALL DETECTION / RESPAWN KILL PLANE (Below course at y = -4.0) */}
+      <RigidBody
+        type="fixed"
         sensor
-        onIntersectionEnter={(payload) => {
-          if (payload.other.rigidBodyObject?.userData?.type === 'player') {
-            handleCheckpointEnter('cp-work');
-          }
-        }}
+        position={[1.0, -4.0, 0.5]}
+        onIntersectionEnter={handleKillPlaneEnter}
+        userData={{ type: 'kill-plane' }}
       >
-        <CuboidCollider args={[1.2, 0.8, 1.2]} />
-        {showVisuals && (
-          <mesh position={[0, 0, 0]}>
-            <cylinderGeometry args={[0.8, 0.8, 0.05, 32]} />
-            <meshStandardMaterial
-              color="#D6FF64"
-              emissive="#D6FF64"
-              emissiveIntensity={currentCheckpointId === 'cp-work' ? 0.9 : 0.4}
-              transparent
-              opacity={0.75}
-            />
-          </mesh>
-        )}
+        <CuboidCollider args={[45.0, 1.0, 40.0]} />
       </RigidBody>
 
-      {/* 02 / EXPLORATIONS SENSOR */}
-      <RigidBody
-        type="fixed"
-        position={[2.0, 4.8, -5.0]}
-        sensor
-        onIntersectionEnter={(payload) => {
-          if (payload.other.rigidBodyObject?.userData?.type === 'player') {
-            handleCheckpointEnter('cp-explorations');
-          }
-        }}
-      >
-        <CuboidCollider args={[1.2, 0.8, 1.2]} />
-        {showVisuals && (
-          <mesh position={[0, 0, 0]}>
-            <cylinderGeometry args={[0.8, 0.8, 0.05, 32]} />
-            <meshStandardMaterial
-              color="#D6FF64"
-              emissive="#D6FF64"
-              emissiveIntensity={currentCheckpointId === 'cp-explorations' ? 0.9 : 0.4}
-              transparent
-              opacity={0.75}
-            />
-          </mesh>
-        )}
-      </RigidBody>
-
-      {/* 03 / RÉSUMÉ SENSOR */}
-      <RigidBody
-        type="fixed"
-        position={[7.0, 6.3, -1.0]}
-        sensor
-        onIntersectionEnter={(payload) => {
-          if (payload.other.rigidBodyObject?.userData?.type === 'player') {
-            handleCheckpointEnter('cp-resume');
-          }
-        }}
-      >
-        <CuboidCollider args={[1.2, 0.8, 1.2]} />
-        {showVisuals && (
-          <mesh position={[0, 0, 0]}>
-            <cylinderGeometry args={[0.8, 0.8, 0.05, 32]} />
-            <meshStandardMaterial
-              color="#D6FF64"
-              emissive="#D6FF64"
-              emissiveIntensity={currentCheckpointId === 'cp-resume' ? 0.9 : 0.4}
-              transparent
-              opacity={0.75}
-            />
-          </mesh>
-        )}
-      </RigidBody>
-
-      {/* 9. FALL DETECTION KILL PLANE (y = -6.0) */}
-      <RigidBody
-        type="fixed"
-        position={[0, -6.0, 0]}
-        sensor
-        onIntersectionEnter={(payload) => {
-          if (payload.other.rigidBodyObject?.userData?.type === 'player') {
-            handleKillPlaneEnter();
-          }
-        }}
-      >
-        <CuboidCollider args={[75, 0.5, 75]} />
-      </RigidBody>
-
-      {/* Custom children (e.g. Worker 2's detailed visual scene or decorations) */}
       {children}
     </group>
   );

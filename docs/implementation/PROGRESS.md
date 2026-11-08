@@ -48,3 +48,12 @@
 - Reviewer 43c541ce resumed with expectReply=true for bounded R1–R6 re-review at f05de7b. Original author holds edits; only untracked T03-review.md is expected in worker checkout. Author claims 63 units/typecheck/build and 96 diagnostics pass; independent verdict pending.
 - T04 original author still repairing eight gameplay blockers. No T05 release. Active agents four including coordinator/T03 author/T04 author/T03 reviewer.
 - Exact next action: consume explicit reviewer verdict; ACK and assign any remaining original blockers or serially integrate accepted T03 commits and wire root pages. Record combined checks. No new dependency-ready coordinator code while review outstanding.
+
+## Current repair wave (supersedes older active-review entries)
+
+- Integration checkpoint before this record 49c89fe. T01/T02 done; T03/T04 candidates still unintegrated. No final visual/gameplay acceptance claimed.
+- T03 re-review f05de7b returned REQUEST_CHANGES; coordinator ACKed and assigned four precise residual repair groups via T03-repair2-f05de7b. Original owner explicitly ACKed. Remaining: actual hover/badge/eyebrow contrast, text-free chip/document/curve artwork without unsupported hardware claims, neutral gameSlot/theme fallback + first-screen project spacing, prominent About/Résumé headings and grouping/escaped-selector fix. Preserve accepted improvements and correct benchmark. Reviewer 43c541ce archived; appended report copied to root.
+- T04 repair 30f6bdf received/ACKed via broker response e9967eeb. Original owner claims 14 reviewer cases plus full continuous earned route, typecheck/38 units; these are not acceptance yet. Source changes include sensor exclusion, course adjustments, lifecycle/focus/touch/pause.
+- Independent reviewer fd6a9ad5 resumed and explicitly ACKed T04-rereview-30f6bdf. Checking all eight blockers, real uninterrupted traversal, and new hardcoded scroll visibility/stair-assist/test-setup mechanisms. Original author holds edits. Report/code and original/revised ignored drivers remain in gameplay worktree.
+- Active four agents: coordinator, T03 author, T04 author, T04 reviewer. No additional reviewer until a slot is released.
+- Exact next action: process T04 explicit REVIEW or T03 repaired READY_FOR_REVIEW; ACK results, retain reports/evidence, assign bounded repairs or integrate only accepted commits with combined checks. T05 stays blocked. Dirty root paths only this checkpoint/report copy.

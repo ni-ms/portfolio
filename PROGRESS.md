@@ -36,3 +36,11 @@
 - Current integration HEAD before this checkpoint a3a8d93; dirty coordinator paths Footer/test adjustments plus state/progress/report. Next: run affected foundation checks, commit, create codex/portfolio-T03-pages worktree from checkpoint, dispatch T03 under revision-1 contracts.
 
 - T02 integration regression check complete: foundation E2E 20/20 PASS, typecheck PASS, all units 53/53 PASS; .agent-runs/T02-integrated-*.log. Integration code ready for T03 worktree.
+
+## Active T03/T04
+
+- Current integrated content checkpoint 78c225d86413ec564b2014387d183f87902d5add. T03 owner 002edc86-6823-4b57-bf38-15704ce1b297, Antigravity gemini-3.8-flash high, fresh session/worktree /Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t03-pages, branch codex/portfolio-T03-pages.
+- T03 owns src/pages/**, src/components/** EXCEPT Header/MobileMenu/Footer (coordinator), src/styles/pages.css, public/images/projects/**, report T03.md, verification/T03/** and ignored harness. No root/package/global token/state changes. Old components cannot be deleted while LegacyHome imports them; coordinator will remove old adapter at integration.
+- Worker mounts PortfolioPages({path,gameSlot}) in ignored port-3003 harness using real router/theme/Header/Footer. Coordinator later connects App and removes LegacyHome. Both themes/each page/narrow screenshots required.
+- T04 remains owner 29765d14 on its separate worktree/port 3004. No dependent world work until gameplay review. T02 worker released and asked to self-archive.
+- Exact next action: receive/ACK explicit T03 or T04 report, inspect diff/screenshots/interaction evidence, assign independent review for cross-cutting changes, integrate serially. Do not infer completion from ACK.

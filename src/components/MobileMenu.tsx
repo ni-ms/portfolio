@@ -72,7 +72,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
                   }}
                   
                 >
-                  <span className="mobile-menu-index">0{index + 1}</span>
+                  <span className="mobile-menu-index" aria-hidden="true">0{index + 1}</span>
                   <span className="mobile-menu-label">{item.label}</span>
                 </a>
               </li>

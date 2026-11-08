@@ -47,6 +47,10 @@ The helper validates the handoff and prints bounded context packets. It does not
 
 ## Current state
 
-Only the handoff, references, and repository cleanup have been prepared. Application source is unchanged. Before the redesign, the baseline has 43 passing unit tests and a passing TypeScript check; rerun checks on the execution checkout. Existing browser assertions still describe the old placeholder UI and must be migrated alongside the redesign.
+Execution is underway: T01 supplies persisted themes and the route/navigation foundation. Follow docs/implementation/state.json and PROGRESS.md for the current ticket. Existing legacy browser assertions are being migrated as the dependent page/game tickets complete. Run the bounded foundation checks with `npx playwright test tests/e2e/foundation.spec.ts`.
 
 Superseded mockups and old reference screenshots were removed. Keep fresh verification images under design/verification/; they are generated evidence rather than approved design inputs.
+
+## Route hosting
+
+The app uses browser History API routes. Vite dev/preview supports direct page refresh. A production static host must rewrite document requests such as /projects/fastcode, /resume and /about to /index.html while serving assets normally; no deployment is performed by this task.

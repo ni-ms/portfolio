@@ -1,33 +1,87 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+
 export const routes = ['/', '/projects', '/projects/fastcode', '/projects/scottypi', '/projects/langmetric', '/resume', '/about'];
+const titles: Record<string, string> = { '/': 'Home', '/projects': 'Projects', '/projects/fastcode': 'FastCode', '/projects/scottypi': 'ScottyPi', '/projects/langmetric': 'Langmetric', '/resume': 'Résumé', '/about': 'About' };
 const RouterContext = createContext({ path: '/', navigate: (_href: string) => {} });
+const pathname = () => window.location.pathname.replace(/\/$/, '') || '/';
+const newKey = () => `portfolio-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
 export function RouterProvider({ children }: { children: ReactNode }) {
-  const [path, setPath] = useState(() => typeof window === 'undefined' ? '/' : window.location.pathname.replace(/\/$/, '') || '/');
+  const [path, setPath] = useState(() => typeof window === 'undefined' ? '/' : pathname());
   const [revision, setRevision] = useState(0);
+  const historyKey = useRef('');
+  const positions = useRef(new Map<string, [number, number]>());
+  const restorePosition = useRef<[number, number] | null>(null);
+  const commitNavigation = () => {
+    setPath(pathname());
+    setRevision(value => value + 1);
+    window.dispatchEvent(new Event('portfolio:navigate'));
+  };
+  const navigate = (href: string) => {
+    positions.current.set(historyKey.current, [window.scrollX, window.scrollY]);
+    historyKey.current = newKey();
+    history.pushState({ ...history.state, portfolioKey: historyKey.current }, '', href);
+    restorePosition.current = null;
+    commitNavigation();
+  };
+
   useEffect(() => {
-    const sync = () => { setPath(window.location.pathname.replace(/\/$/, '') || '/'); setRevision(value => value + 1); };
+    historyKey.current = history.state?.portfolioKey || newKey();
+    history.replaceState({ ...history.state, portfolioKey: historyKey.current }, '', location.href);
+    const previousRestoration = history.scrollRestoration;
+    history.scrollRestoration = 'manual';
+    const recordScroll = () => positions.current.set(historyKey.current, [window.scrollX, window.scrollY]);
+    const sync = () => {
+      historyKey.current = history.state?.portfolioKey || newKey();
+      restorePosition.current = positions.current.get(historyKey.current) || [0, 0];
+      commitNavigation();
+    };
     const click = (event: MouseEvent) => {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       const a = (event.target as Element)?.closest('a');
       if (!a || a.target || a.hasAttribute('download')) return;
       const url = new URL(a.href, location.href);
       if (url.origin !== location.origin || a.getAttribute('href')?.startsWith('#')) return;
-      event.preventDefault(); navigate(url.pathname + url.search + url.hash);
+      event.preventDefault();
+      navigate(url.pathname + url.search + url.hash);
     };
-    window.addEventListener('popstate', sync); document.addEventListener('click', click);
-    return () => { window.removeEventListener('popstate', sync); document.removeEventListener('click', click); };
+    window.addEventListener('popstate', sync);
+    window.addEventListener('scroll', recordScroll, { passive: true });
+    document.addEventListener('click', click);
+    return () => {
+      history.scrollRestoration = previousRestoration;
+      window.removeEventListener('popstate', sync);
+      window.removeEventListener('scroll', recordScroll);
+      document.removeEventListener('click', click);
+    };
   }, []);
-  const navigate = (href: string) => { history.pushState({}, '', href); setPath(location.pathname.replace(/\/$/, '') || '/'); setRevision(value => value + 1); window.dispatchEvent(new Event('portfolio:navigate')); };
+
   useEffect(() => {
-    const name = !routes.includes(path) ? 'Page not found' : path === '/' ? 'Home' : path.split('/').pop()!;
-    document.title = `${name === 'resume' ? 'Résumé' : name.charAt(0).toUpperCase() + name.slice(1)} — Nikhil Sharma`;
+    document.title = `${titles[path] || 'Page not found'} — Nikhil Sharma`;
     const frame = requestAnimationFrame(() => {
-      if (location.hash) document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView();
-      else window.scrollTo(0, 0);
-      document.querySelector<HTMLElement>('#main-content')?.focus({ preventScroll: true });
+      let target: HTMLElement | null = null;
+      if (location.hash) {
+        let id = location.hash.slice(1);
+        try { id = decodeURIComponent(id); } catch { /* Treat malformed fragments literally. */ }
+        target = document.getElementById(id);
+      }
+      const saved = restorePosition.current;
+      if (saved) window.scrollTo({ left: saved[0], top: saved[1], behavior: 'instant' });
+      else if (target) target.scrollIntoView({ behavior: 'instant' });
+      else window.scrollTo({ left: 0, top: 0, behavior: 'instant' });
+      restorePosition.current = null;
+      const focusTarget = target || document.querySelector<HTMLElement>('#main-content');
+      if (focusTarget) {
+        if (!focusTarget.hasAttribute('tabindex')) {
+          focusTarget.setAttribute('tabindex', '-1');
+          focusTarget.addEventListener('blur', () => focusTarget.removeAttribute('tabindex'), { once: true });
+        }
+        focusTarget.focus({ preventScroll: true });
+      }
     });
     return () => cancelAnimationFrame(frame);
   }, [path, revision]);
+
   return <RouterContext.Provider value={{ path, navigate }}>{children}</RouterContext.Provider>;
 }
 export const useNavigation = () => useContext(RouterContext);

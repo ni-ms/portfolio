@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "phase": "executing",
-  "activeTicket": "T02,T04",
+  "activeTicket": "T03,T04",
   "tasks": {
     "T01": {
       "status": "done",
@@ -11,15 +11,19 @@
       "resultPatch": null
     },
     "T02": {
-      "status": "review",
+      "status": "done",
       "owner": "ba28c059-20fd-49ea-bcf1-c064cea2e04e",
-      "resultCommit": null,
+      "resultCommit": "a3a8d93",
       "report": "docs/implementation/reports/T02.md",
       "resultPatch": null,
       "branch": "codex/portfolio-T02-content",
       "worktree": "/Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t02-content",
       "baseCommit": "6211600b3f6030be422684d22d4908df5515b28b",
-      "candidateCommit": "744ab4dadccbb58ed7aa99c80e5943e8efd7e997"
+      "candidateCommit": "744ab4dadccbb58ed7aa99c80e5943e8efd7e997",
+      "sourceCommits": [
+        "744ab4dadccbb58ed7aa99c80e5943e8efd7e997",
+        "a0d16f22d47558fcfe1ce89c575986ffcdf2f77b"
+      ]
     },
     "T03": {
       "status": "pending",

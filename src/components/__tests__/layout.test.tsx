@@ -200,8 +200,8 @@ describe('Semantic UI and Responsive Layout Components', () => {
 
       const footerHtml = renderToString(<Footer />);
       expect(footerHtml).toContain('Nearly 3 years');
-      expect(footerHtml).toContain('/about#contact');
-      expect(footerHtml).toContain('/resume');
+      expect(footerHtml).toContain('mailto:nikhilmsha@gmail.com');
+      expect(footerHtml).toContain('https://linkedin.com/in/nikhilmsha');
     });
   });
 

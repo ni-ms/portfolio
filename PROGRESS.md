@@ -27,3 +27,12 @@
 - Scoped repairs requested from original owner with expectReply=true: remove unsupported Langmetric high-volume/query-bottleneck wording, clarify in-progress M.S., keep implementation/provenance notes out of public qualifier copy, strengthen binary download checks, retain reproducible export source/recipe, correct report owner/result metadata.
 - T04 ACK explicitly received; implementing in separate gameplay worktree. T05 remains blocked until reviewed/integrated T04 evidence.
 - Current dirty paths are coordinator state/progress only; workers own their isolated paths. Exact next action: consume repaired T02 READY_FOR_REVIEW, inspect repair diff, integrate serially and rerun checks. Await actual T04 report independently; ACK alone is not completion.
+
+## T02 accepted
+
+- T02 repaired source commits 744ab4d/a0d16f2 ACKed, reviewed and integrated as 282fe79/a3a8d93. Factual model and actual PDF/DOCX downloads present; repeatable export HTML/script retained. Coordinator typecheck, 53/53 units and build PASS. Both PDF pages independently inspected.
+- Shared Footer now uses central confirmed Email/GitHub/LinkedIn links. T02 done; content owner released after INTEGRATED notice.
+- T03 is dependency-ready and will use a fresh isolated worker/session. T04 remains independent in progress; at most two coding workers remain active. Graph permits T03 after integrated T02, without waiting for unrelated T04.
+- Current integration HEAD before this checkpoint a3a8d93; dirty coordinator paths Footer/test adjustments plus state/progress/report. Next: run affected foundation checks, commit, create codex/portfolio-T03-pages worktree from checkpoint, dispatch T03 under revision-1 contracts.
+
+- T02 integration regression check complete: foundation E2E 20/20 PASS, typecheck PASS, all units 53/53 PASS; .agent-runs/T02-integrated-*.log. Integration code ready for T03 worktree.

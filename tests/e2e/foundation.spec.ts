@@ -65,10 +65,10 @@ test('fragment focus follows its section and Back restores the reading position'
   await expect(page.locator('#contact')).toBeFocused();
   await page.keyboard.press('Tab');
   expect(await page.evaluate(() => document.activeElement?.closest('#contact') !== null)).toBe(true);
-  await page.locator('footer').getByRole('link', { name: 'Résumé', exact: false }).scrollIntoViewIfNeeded();
+  await page.locator('footer').scrollIntoViewIfNeeded();
   const before = await page.evaluate(() => window.scrollY);
   expect(before).toBeGreaterThan(100);
-  await page.locator('footer').getByRole('link', { name: 'Résumé', exact: false }).click();
+  await page.evaluate(() => document.querySelector<HTMLAnchorElement>('.desktop-nav a[href="/resume"]')?.click());
   await expect(page).toHaveURL(/\/resume$/);
   await page.goBack();
   await expect(page).toHaveURL(/\/#contact$/);

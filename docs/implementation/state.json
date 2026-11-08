@@ -26,7 +26,7 @@
       ]
     },
     "T03": {
-      "status": "in_progress",
+      "status": "review",
       "owner": "002edc86-6823-4b57-bf38-15704ce1b297",
       "resultCommit": null,
       "report": "docs/implementation/reports/T03.md",
@@ -34,10 +34,13 @@
       "branch": "codex/portfolio-T03-pages",
       "worktree": "/Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t03-pages",
       "baseCommit": "78c225d86413ec564b2014387d183f87902d5add",
-      "candidateCommit": "f05de7b811806300a8d59848dcfc529e80d643d1",
-      "reviewer": null,
-      "reviewVerdict": "request_changes",
-      "repairCorrelation": "T03-repair2-f05de7b"
+      "candidateCommit": "9bcce4d5de56c18caaef463a8dfcdca52557d57f",
+      "reviewer": "43c541ce-dffe-45b7-90f6-3ea2e84e1fe4",
+      "reviewVerdict": "repair_review",
+      "repairCorrelation": "T03-repair2-f05de7b",
+      "currentHarness": "codex",
+      "currentModel": "gpt-6.1-sol",
+      "currentEffort": "high"
     },
     "T04": {
       "status": "in_progress",

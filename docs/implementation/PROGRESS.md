@@ -1,36 +1,13 @@
-# Current execution progress
+# Execution recovery
 
-## Preparation complete
-
-The existing app is intact. Only handoff files, factual source packaging, and obsolete-reference cleanup were prepared.
-
-## Current objective
-
-Execute T01, then the ready tickets through T08. No implementation ticket has started. See state.json for authoritative statuses.
-
-## Available inputs
-
-Approved ten green dark/light mockups under design/mockups/current-theme/.
-Factual content in docs/portfolio-content.json.
-Original résumé in design/source/Resume_Nikhil_Sharma_2026-11.docx.
-No actual headshot; use the small neutral placeholder.
-
-## Next action
-
-Run node scripts/traycer-handoff.mjs check, inspect git status, then load packet T01. Record actual agent/browser/A2A/worktree/compaction capability availability. Ensure new handoff inputs reach any worker worktree before dispatch.
-
-## Verification
-
-Preparation checks completed on 2026-11-08:
-- Handoff helper syntax/check/status/packet commands pass. Eight tickets, valid dependency graph, ten valid approved PNG files, portable content and matching original résumé copy verified.
-- npm test: 43 tests pass across three files.
-- npm run typecheck: passes.
-- npm run build: passes. Existing production JavaScript bundle is about 3.58 MB minified / 1.22 MB gzip; Vite reports a large-chunk warning. T05/T06/T08 must address loading and measure performance rather than suppress the warning.
-- git diff --check: passes; no application source, test, or package file changes were made during preparation.
-- Old design/input archive was verified outside the repository before cleanup. Design references reduced from about 64 MB to 17 MB.
-
-No redesigned pages or upgraded game have been implemented or browser-verified. Legacy E2E tests were not run for this documentation/reference cleanup; T08 migrates their old UI expectations and performs integrated browser verification.
-
-## Recovery pointers
-
-No active worker, branch result, or report yet. Coordinator should record current branch/base SHA, dirty files, assigned owners, and an exact next action here when execution starts. Do not overwrite unrelated user changes.
+- Coordinator: 328379e6-9fdd-49e1-8842-9aeabbcf0abe; integration branch traycer/portfolio-noble-walrus.
+- Current input commit: 36ecdb2; source checkout /Users/nikms/Documents/projects/portfolio remains untouched, including its uncommitted handoff and editor files. Exact approved inputs copied and committed here.
+- T01 foundation implemented, awaiting independent review. T02/T04 are next after acceptance.
+- Baseline: typecheck and build passed; 43 unit tests passed but npm test collected Playwright and failed. vitest.config.ts now separates runners. Old initial bundle ~3.58 MB (1.22 MB gzip), 3D still eager until T06.
+- Capabilities: native Traycer A2A Chat workers, worktree tool, Antigravity Gemini 3.8 Flash, Codex Sol review, shell, local Chromium/Playwright, readable PNGs, in-app browser present. No context meter or explicit compaction/session rollover API exposed; use one substantial ticket per worker session. rg unavailable; use bounded find/grep.
+- Applied traycer-execute and loop-protocol. Native provider subagents unused.
+- T01 checks: typecheck passed; unit suite 43/43; local Chromium verified dark despite light OS, light toggle, route navigation, reload persistence, direct missing route. Logs .agent-runs/.
+- Development server: Traycer shell 304bbdae-3887-475c-94af-48dc12500477, http://localhost:3000; browser on same host, no port forward needed.
+- Shared interfaces: CONTRACTS.md revision 1. No worker has ownership yet.
+- Dirty paths are the T01 foundation and report/state only; run git status --short for exact list.
+- Exact next action: independent T01 review, repair findings, commit/mark done, then load packets T02 and T04, create isolated codex/ worktrees from integrated HEAD, dispatch one content and one gameplay worker.

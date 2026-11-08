@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "phase": "handoff_prepared",
-  "activeTicket": null,
+  "phase": "executing",
+  "activeTicket": "T01",
   "tasks": {
     "T01": {
-      "status": "pending",
-      "owner": null,
+      "status": "review",
+      "owner": "328379e6-9fdd-49e1-8842-9aeabbcf0abe",
       "resultCommit": null,
       "report": "docs/implementation/reports/T01.md",
       "resultPatch": null

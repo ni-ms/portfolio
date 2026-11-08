@@ -1884,3 +1884,13 @@
     gap: 16px;
   }
 }
+
+/* Shared route and theme foundations. */
+.route-shell { min-height: 65vh; padding: 80px var(--pad-desktop); }
+.theme-toggle { width: 44px; height: 44px; font-size: 30px; margin-left: 24px; flex-shrink: 0; }
+.header-container { border-bottom: 1px solid var(--color-border-light); }
+.header-brand { margin-right: auto; }
+.nav-link[aria-current="page"] { color: var(--color-text); border-bottom: 3px solid var(--color-accent); padding-bottom: 9px; }
+.site-footer nav { display: flex; gap: 32px; }
+.site-footer nav a { color: var(--color-text); }
+@media(max-width:768px){ .route-shell{padding:48px 24px}.site-footer nav{gap:20px}.theme-toggle{margin-left:0;margin-right:16px} }

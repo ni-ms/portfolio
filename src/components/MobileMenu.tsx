@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { portfolioData } from '../content/portfolio';
+import { navigation } from '../routing/Router';
 import { RouteEmblem } from './RouteEmblem';
 import { useFocusTrap } from '../hooks/useFocusTrap';
 
@@ -45,7 +45,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
         <div className="mobile-menu-header">
           <div className="mobile-menu-brand">
             <RouteEmblem size={20} />
-            <span className="brand-name">{portfolioData.owner.name}</span>
+            <span className="brand-name">Navigation</span>
           </div>
           <button
             type="button"
@@ -62,15 +62,15 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
 
         <nav className="mobile-menu-nav" aria-label="Mobile primary navigation">
           <ul className="mobile-menu-list">
-            {portfolioData.navigation.map((item, index) => (
-              <li key={item.id} className="mobile-menu-item">
+            {navigation.map((item, index) => (
+              <li key={item.href} className="mobile-menu-item">
                 <a
                   href={item.href}
                   className="mobile-menu-link"
                   onClick={() => {
                     onClose();
                   }}
-                  {...(item.isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                  
                 >
                   <span className="mobile-menu-index">0{index + 1}</span>
                   <span className="mobile-menu-label">{item.label}</span>
@@ -82,8 +82,8 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
 
         <div className="mobile-menu-footer">
           <div className="mobile-menu-meta">
-            <p className="mobile-menu-headline">{portfolioData.owner.headline}</p>
-            <p className="mobile-menu-location">{portfolioData.owner.location}</p>
+            <p className="mobile-menu-headline">Software & Applied AI Engineer</p>
+            <p className="mobile-menu-location">Carnegie Mellon · Expected 2027</p>
           </div>
           <div className="mobile-menu-pace">
             <RouteEmblem size={14} />

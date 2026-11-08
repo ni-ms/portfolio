@@ -22,13 +22,13 @@ describe('Semantic UI and Responsive Layout Components', () => {
 
       // Emblem & Name
       expect(html).toContain('route-emblem');
-      expect(html).toContain(portfolioData.owner.name);
+      expect(html).toContain('Nikhil Sharma');
 
       // Navigation links
-      expect(html).toContain('WORK');
-      expect(html).toContain('EXPLORATIONS');
-      expect(html).toContain('RÉSUMÉ');
-      expect(html).toContain('CONTACT ↗');
+      expect(html).toContain('Home');
+      expect(html).toContain('Projects');
+      expect(html).toContain('Résumé');
+      expect(html).toContain('About');
 
       // Accessibility attributes
       expect(html).toContain('aria-label="Primary navigation"');
@@ -57,10 +57,10 @@ describe('Semantic UI and Responsive Layout Components', () => {
       expect(html).toContain('aria-label="Mobile navigation menu"');
 
       // Destinations
-      expect(html).toContain('WORK');
-      expect(html).toContain('EXPLORATIONS');
-      expect(html).toContain('RÉSUMÉ');
-      expect(html).toContain('CONTACT ↗');
+      expect(html).toContain('Home');
+      expect(html).toContain('Projects');
+      expect(html).toContain('Résumé');
+      expect(html).toContain('About');
 
       // Pace caption
       expect(html).toContain('EXPLORE AT YOUR OWN PACE');
@@ -199,9 +199,9 @@ describe('Semantic UI and Responsive Layout Components', () => {
       expect(contactHtml).toContain(`mailto:${portfolioData.contact.emailPlaceholder}`);
 
       const footerHtml = renderToString(<Footer />);
-      expect(footerHtml).toContain(portfolioData.owner.name);
-      expect(footerHtml).toContain('COURSE RUNTIME: STABLE');
-      expect(footerHtml).toContain('BACK TO TOP ↑');
+      expect(footerHtml).toContain('Nearly 3 years');
+      expect(footerHtml).toContain('/about#contact');
+      expect(footerHtml).toContain('/resume');
     });
   });
 

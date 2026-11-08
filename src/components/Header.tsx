@@ -1,5 +1,6 @@
 import React from 'react';
-import { portfolioData } from '../content/portfolio';
+import { navigation, useNavigation } from '../routing/Router';
+import { useTheme } from '../theme/ThemeProvider';
 import { RouteEmblem } from './RouteEmblem';
 
 interface HeaderProps {
@@ -13,23 +14,25 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleMenu,
   menuButtonRef,
 }) => {
+  const { path } = useNavigation();
+  const { theme, toggleTheme } = useTheme();
   return (
     <header className="site-header" role="banner">
       <div className="header-container">
-        <a href="#hero" className="header-brand" aria-label={`${portfolioData.owner.name} - Home`}>
+        <a href="/" className="header-brand" aria-label="Nikhil Sharma — Home">
           <RouteEmblem size={24} />
-          <span className="brand-name">{portfolioData.owner.name}</span>
+
         </a>
 
         {/* Desktop Navigation */}
         <nav className="desktop-nav" aria-label="Primary navigation">
           <ul className="nav-list">
-            {portfolioData.navigation.map((item) => (
-              <li key={item.id} className="nav-item">
+            {navigation.map((item) => (
+              <li key={item.href} className="nav-item">
                 <a
                   href={item.href}
                   className="nav-link"
-                  {...(item.isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                  aria-current={(path === item.href || (item.href !== '/' && path.startsWith(item.href + '/'))) ? 'page' : undefined}
                 >
                   {item.label}
                 </a>
@@ -38,6 +41,7 @@ export const Header: React.FC<HeaderProps> = ({
           </ul>
         </nav>
 
+        <button className="theme-toggle" type="button" onClick={toggleTheme} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`} title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>{theme === 'dark' ? '☾' : '☼'}</button>
         {/* Mobile Menu Button */}
         <button
           ref={menuButtonRef}

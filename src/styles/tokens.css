@@ -88,3 +88,9 @@ button {
     scroll-behavior: auto !important;
   }
 }
+
+:root[data-theme="light"] {
+  --color-bg: #F2F1EA; --color-bg-translucent: rgba(242,241,234,.92); --color-bg-subtle: #e9e9e1;
+  --color-surface: #e4e6df; --color-surface-hover: #daddd5; --color-border: #c8cdc4;
+  --color-border-light: rgba(16,20,20,.16); --color-text: #101414; --color-text-muted: #565f60; --color-text-dim: #565f60;
+}

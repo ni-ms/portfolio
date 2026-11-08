@@ -40,3 +40,11 @@
 - Review also verified 96 route/theme/viewport states, proper navigation/focus/history, theme persistence/download, no overflow/errors, exact 539/684 DOM bar ratio; preserve those successes. Screenshot count/main-presence assertions do not prove fidelity.
 - Original owner sent T03-repair-7d4c7a2 with expectReply=true and complete report. Must restore approved compositions, factual copy, acid-lime palette, contrast, theme-appropriate imagery; refresh captures and measured browser assertions. Extra public/images/about/** grant for architectural illustration.
 - Both T03/T04 are in repair, none accepted. Exact next: on repaired READY_FOR_REVIEW, ACK actual commit/evidence, inspect bounded diff/captures, resume independent reviewer for repair acceptance. No new code/ticket is dependency-ready on coordinator meanwhile.
+
+## T03 first repair re-review
+
+- Integration still at accepted T01/T02 code; latest checkpoint before this record 3b7edf3. T03 source repair ea5e430/report f05de7b received and explicitly ACKed via broker response d07fff5e; not accepted/integrated.
+- Coordinator inspected refreshed Home dark/light captures: dominant name, side-by-side slot and shorter previews restored. Remaining concern: dense miniature-text project art; fallback slot still visibly boxed/dark in light theme. Actual game/world/perimeter integration remains T06, but T03 fallback/art duties still apply.
+- Reviewer 43c541ce resumed with expectReply=true for bounded R1–R6 re-review at f05de7b. Original author holds edits; only untracked T03-review.md is expected in worker checkout. Author claims 63 units/typecheck/build and 96 diagnostics pass; independent verdict pending.
+- T04 original author still repairing eight gameplay blockers. No T05 release. Active agents four including coordinator/T03 author/T04 author/T03 reviewer.
+- Exact next action: consume explicit reviewer verdict; ACK and assign any remaining original blockers or serially integrate accepted T03 commits and wire root pages. Record combined checks. No new dependency-ready coordinator code while review outstanding.

@@ -1,15 +1,13 @@
 # Execution recovery
 
-- Coordinator: 328379e6-9fdd-49e1-8842-9aeabbcf0abe; integration branch traycer/portfolio-noble-walrus.
-- Current input commit: 36ecdb2; source checkout /Users/nikms/Documents/projects/portfolio remains untouched, including its uncommitted handoff and editor files. Exact approved inputs copied and committed here.
-- T01 foundation implemented; independent review found four routing P2s, now repaired and awaiting repair-commit review. T02/T04 are next after acceptance.
-- Baseline: typecheck and build passed; 43 unit tests passed but npm test collected Playwright and failed. vitest.config.ts now separates runners. Old initial bundle ~3.58 MB (1.22 MB gzip), 3D still eager until T06.
-- Capabilities: native Traycer A2A Chat workers, worktree tool, Antigravity Gemini 3.8 Flash, Codex Sol review, shell, local Chromium/Playwright, readable PNGs, in-app browser present. No context meter or explicit compaction/session rollover API exposed; use one substantial ticket per worker session. rg unavailable; use bounded find/grep.
-- Applied traycer-execute and loop-protocol. Native provider subagents unused.
-- T01 checks: typecheck/build passed; unit suite 43/43; permanent foundation E2E 20/20 across desktop, phone sizes and tablet; local Chromium verified dark despite light OS, light toggle, route navigation, reload persistence, direct missing route. Logs .agent-runs/.
-- Development server: Traycer shell 304bbdae-3887-475c-94af-48dc12500477, http://localhost:3000; browser on same host, no port forward needed.
-- Shared interfaces: CONTRACTS.md revision 1. No worker has ownership yet.
-- Dirty paths are the T01 foundation and report/state only; run git status --short for exact list.
-- Exact next action: independent T01 repair review, mark done, then load packets T02 and T04, create isolated codex/ worktrees from integrated HEAD, dispatch one content and one gameplay worker.
-
-- Recovery checkpoint: all four review findings repaired; see reports/T01-review.md and T01.md. Working branch includes final regression tests. Remaining tickets T02–T08 pending, none restarted. Next action is repair review acceptance, then isolated T02/T04 workers. No unapproved source checkout changes.
+- Coordinator 328379e6-9fdd-49e1-8842-9aeabbcf0abe; branch traycer/portfolio-noble-walrus; worktree is attached noble-walrus checkout.
+- T01 DONE, approved code e5b494004e0711ff20374cad079786d32b8747ab. Review report T01-review.md. Input commit 36ecdb2 preserved all approved handoff/mockups/content from dirty source checkout without modifying it.
+- Checks: typecheck/build PASS, units 43/43 PASS, foundation E2E 20/20 PASS across 1585x992, 390x844, 360x740, 768x1024. Independent original bug repros also pass. Logs .agent-runs/T01-*.log.
+- Ready: T02 content and T04 gameplay, independent worktrees. T03 depends on T02; T05 depends on T04. T06–T08 remain pending.
+- Shared contracts: CONTRACTS.md revision 1; realPortfolio.ts, PortfolioPages({path,gameSlot}), GameExperience({theme,onNavigate}). Coordinator owns packages/root/global tokens/state/integration.
+- Capabilities: Traycer Chat A2A, worktrees, Antigravity gemini-3.8-flash high, Codex gpt-6.1-sol max review, shell, local Chromium/Playwright and in-app browser; PNGs readable. No measured context/compaction/session reset API. One substantial ticket per worker session. rg unavailable; use targeted grep/find.
+- Applied traycer-execute/loop-protocol. No native provider subagents. At most two implementation workers/four agents total.
+- Dev shell 304bbdae-3887-475c-94af-48dc12500477 runs http://localhost:3000 on this host. No forward needed.
+- Baseline npm test wrongly collected Playwright; fixed runner separation, retained existing checks. Old Home/game awaits dependent tickets, so no visual/gameplay completion claim yet.
+- Source checkout /Users/nikms/Documents/projects/portfolio and unrelated editor/settings changes remain untouched.
+- Exact next action: commit this T01 acceptance checkpoint, create two codex/ worktrees from new HEAD, dispatch bounded T02 and T04 workers using published contracts, record ownership, and await explicit reports.

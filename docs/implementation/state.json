@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "phase": "executing",
-  "activeTicket": "T01",
+  "activeTicket": "T02",
   "tasks": {
     "T01": {
-      "status": "review",
+      "status": "done",
       "owner": "328379e6-9fdd-49e1-8842-9aeabbcf0abe",
-      "resultCommit": null,
+      "resultCommit": "e5b494004e0711ff20374cad079786d32b8747ab",
       "report": "docs/implementation/reports/T01.md",
       "resultPatch": null
     },

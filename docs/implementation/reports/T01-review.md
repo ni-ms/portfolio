@@ -32,3 +32,16 @@ Locations refer to the reviewed commit, before coordinator repairs.
 Coordinator was notified as each finding was validated and is preparing repairs. At report time its dirty paths include `src/App.tsx`, `src/components/MobileMenu.tsx`, `src/routing/Router.tsx`, and untracked `tests/e2e/foundation.spec.ts`; these are not part of the reviewed SHA and this verdict does not accept them.
 
 Next: coordinator resolves findings 1–4, commits focused regressions (including fragment keyboard focus and long-page history scroll), runs `npm run test:e2e -- tests/e2e/foundation.spec.ts`, `npm run typecheck`, `npm test`, and `npm run build`, then requests review of the repair commit before marking T01 integrated. No code or state repair belongs to this reviewer without a new assignment.
+
+## Repair re-review — e5b4940
+
+Current verdict: **APPROVE** for `e5b494004e0711ff20374cad079786d32b8747ab`. All four original blockers are resolved. This bounded pass reviewed the repair diff and permanent regressions; it did not reopen the deferred page/game audit.
+
+- Finding 1 resolved: App closes the modal on committed navigation/popstate with a stable close callback. The original 390×844 Back sequence now removes the dialog, releases scroll lock, and leaves focus on the new main.
+- Finding 2 resolved: the router focuses the resolved fragment target, adding a temporary tabindex when necessary. Direct `/#contact` focuses Contact and the next Tab remains in Contact.
+- Finding 3 resolved: per-history-entry positions restore the reading position. Independently repeated the original unfragmented Home → footer Résumé → Back sequence: `scrollY=2956` before and `2956` after. Forward restores Résumé to zero with main focus.
+- Finding 4 resolved: malformed fragment decoding is guarded. `/about#%E0%A4%A` reaches main focus without page errors.
+
+Independent validation: `npx playwright test tests/e2e/foundation.spec.ts` **PASS 20/20** across 1585×992, 390×844, 360×740, and 768×1024 (19.4 seconds). Additional inline Playwright probes repeated all four original sequences and Forward restoration; all passed with no page errors. Coordinator reports passing typecheck, 43 units, and production build; those commands were not repeated during this bounded re-review.
+
+Working tree was clean at review start. Only this report was appended by the reviewer. Exact next action: coordinator records T01 as integrated at the approved repair SHA and releases dependency-ready T02/T04 using CONTRACTS.md revision 1. No unresolved blocker remains within this review scope.

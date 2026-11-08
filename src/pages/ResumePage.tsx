@@ -7,18 +7,21 @@ export const ResumePage: React.FC = () => {
 
   return (
     <div className="resume-page-container">
-      {/* Header with Name, Photo, Headline & Download Actions */}
+      {/* Header with Prominent Page Heading, Name, Photo, Headline & Download Actions */}
       <header className="resume-header">
         <div className="page-meta-eyebrow">
           <span className="eyebrow-accent">PORTFOLIO</span>
-          <span className="eyebrow-sep">/</span>
-          <span>RÉSUMÉ &amp; BACKGROUND</span>
+          <span className="eyebrow-sep" aria-hidden="true">/</span>
+          <span>RÉSUMÉ</span>
         </div>
+
+        <h1 className="page-main-heading">Résumé</h1>
 
         <div className="resume-identity-row">
           <PhotoPlaceholder className="resume-photo" />
           <div className="resume-title-block">
             <h1 className="resume-person-name">{identity.name}</h1>
+            <p className="resume-role-sub">{identity.title}</p>
             <p className="resume-headline-text">{identity.headline}</p>
             <div className="resume-contact-inline">
               <span className="resume-location">{identity.location}</span>

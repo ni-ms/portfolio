@@ -45,7 +45,7 @@ export const HomePage: React.FC<HomePageProps> = ({ gameSlot }) => {
             </div>
           </div>
 
-          {/* Right Column: Interactive 3D Rooftop Simulation (Borderless, soft feathered boundary) */}
+          {/* Right Column: Interactive 3D Rooftop Simulation Mount (Neutral container, no dark panel/shadow box) */}
           <div className="home-hero-right">
             <div className="home-game-slot-container" aria-label="3D Rooftop Simulation">
               {gameSlot ? (
@@ -53,38 +53,38 @@ export const HomePage: React.FC<HomePageProps> = ({ gameSlot }) => {
               ) : (
                 <div className="home-fallback-preview" role="region" aria-label="Course Preview">
                   <div className="fallback-blueprint-graphic">
-                    <svg viewBox="0 0 640 380" fill="none" xmlns="http://www.w3.org/2000/svg" className="fallback-blueprint-svg" aria-hidden="true">
+                    <svg viewBox="0 0 640 320" fill="none" xmlns="http://www.w3.org/2000/svg" className="fallback-blueprint-svg" aria-hidden="true">
                       <defs>
-                        <linearGradient id="blueprintGrad" x1="0" y1="0" x2="640" y2="380" gradientUnits="userSpaceOnUse">
-                          <stop offset="0%" stopColor="#171d1e" />
-                          <stop offset="100%" stopColor="#101414" />
+                        <linearGradient id="blueprintGrad" x1="0" y1="0" x2="640" y2="320" gradientUnits="userSpaceOnUse">
+                          <stop offset="0%" stopColor="var(--color-surface)" />
+                          <stop offset="100%" stopColor="var(--color-bg)" />
                         </linearGradient>
                       </defs>
-                      <rect width="640" height="380" fill="url(#blueprintGrad)" />
+                      <rect width="640" height="320" fill="url(#blueprintGrad)" />
                       {/* Grid Lines */}
                       <g stroke="var(--color-border)" strokeWidth="0.5" strokeDasharray="4 4" opacity="0.6">
-                        <line x1="40" y1="0" x2="40" y2="380" />
-                        <line x1="120" y1="0" x2="120" y2="380" />
-                        <line x1="200" y1="0" x2="200" y2="380" />
-                        <line x1="280" y1="0" x2="280" y2="380" />
-                        <line x1="360" y1="0" x2="360" y2="380" />
-                        <line x1="440" y1="0" x2="440" y2="380" />
-                        <line x1="520" y1="0" x2="520" y2="380" />
-                        <line x1="600" y1="0" x2="600" y2="380" />
-                        <line x1="0" y1="70" x2="640" y2="70" />
-                        <line x1="0" y1="140" x2="640" y2="140" />
-                        <line x1="0" y1="210" x2="640" y2="210" />
-                        <line x1="0" y1="280" x2="640" y2="280" />
+                        <line x1="40" y1="0" x2="40" y2="320" />
+                        <line x1="120" y1="0" x2="120" y2="320" />
+                        <line x1="200" y1="0" x2="200" y2="320" />
+                        <line x1="280" y1="0" x2="280" y2="320" />
+                        <line x1="360" y1="0" x2="360" y2="320" />
+                        <line x1="440" y1="0" x2="440" y2="320" />
+                        <line x1="520" y1="0" x2="520" y2="320" />
+                        <line x1="600" y1="0" x2="600" y2="320" />
+                        <line x1="0" y1="60" x2="640" y2="60" />
+                        <line x1="0" y1="130" x2="640" y2="130" />
+                        <line x1="0" y1="200" x2="640" y2="200" />
+                        <line x1="0" y1="260" x2="640" y2="260" />
                       </g>
-                      {/* Isometric course platforms */}
-                      <polygon points="100,240 220,170 320,230 200,300" fill="#1e2728" stroke="var(--color-border-light)" strokeWidth="1.5" />
-                      <polygon points="220,170 340,100 440,160 320,230" fill="#242f31" stroke="var(--color-accent)" strokeWidth="1.5" />
-                      <polygon points="360,220 480,150 580,210 460,280" fill="#1b2324" stroke="var(--color-border-light)" strokeWidth="1.5" />
+                      {/* Themed isometric platforms */}
+                      <polygon points="100,200 220,140 320,190 200,250" className="fallback-plat fallback-plat-1" stroke="var(--color-border-light)" strokeWidth="1.5" />
+                      <polygon points="220,140 340,80 440,130 320,190" className="fallback-plat fallback-plat-2" stroke="var(--color-accent)" strokeWidth="1.5" />
+                      <polygon points="360,180 480,120 580,170 460,230" className="fallback-plat fallback-plat-3" stroke="var(--color-border-light)" strokeWidth="1.5" />
                       {/* Trajectory */}
-                      <path d="M200,230 Q 320,130 440,160 T 520,210" stroke="var(--color-accent)" strokeWidth="2.5" strokeDasharray="6 4" fill="none" />
-                      <circle cx="200" cy="230" r="5" fill="var(--color-accent)" />
-                      <circle cx="440" cy="160" r="6" fill="var(--color-accent)" />
-                      <circle cx="520" cy="210" r="4" fill="var(--color-accent)" />
+                      <path d="M200,190 Q 320,100 440,130 T 520,170" stroke="var(--color-accent)" strokeWidth="2.5" strokeDasharray="6 4" fill="none" />
+                      <circle cx="200" cy="190" r="5" fill="var(--color-accent)" />
+                      <circle cx="440" cy="130" r="6" fill="var(--color-accent)" />
+                      <circle cx="520" cy="170" r="4" fill="var(--color-accent)" />
                     </svg>
                   </div>
 

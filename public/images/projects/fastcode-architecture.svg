@@ -1,136 +1,158 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 340" fill="none" role="img" aria-label="FastCode CPU Kernel Vector Optimization Architecture">
+<svg viewBox="0 0 600 360" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="fastcodeGradDark" x1="0" y1="0" x2="600" y2="340" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#141919" />
-      <stop offset="100%" stop-color="#101414" />
-    </linearGradient>
-    <linearGradient id="limeBar" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#D6FF64" />
-      <stop offset="100%" stop-color="#BEE84B" />
-    </linearGradient>
-    <linearGradient id="regBlock" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#212a2b" />
-      <stop offset="100%" stop-color="#171e1f" />
+    <style>
+      .chip-sub { fill: #171d1e; stroke: #2a3536; }
+      .chip-die { fill: #101414; stroke: #3d4c4e; }
+      .core-block { fill: #1c2425; stroke: #2f3b3d; }
+      .reg-block { fill: #222c2d; stroke: #3f4e50; }
+      .simd-active { fill: #D6FF64; fill-opacity: 0.9; }
+      .simd-idle { fill: #3a4749; }
+      .bus-wire { stroke: #455456; stroke-dasharray: 4 3; }
+      .accent-wire { stroke: #D6FF64; stroke-width: 2; }
+      .pin { fill: #8a9688; stroke: #5a6658; }
+      .pin-active { fill: #D6FF64; }
+      @media (prefers-color-scheme: light) {
+        .chip-sub { fill: #e2e4dc; stroke: #c4c8bc; }
+        .chip-die { fill: #ebece4; stroke: #b6baa8; }
+        .core-block { fill: #dadfd2; stroke: #c2c7b8; }
+        .reg-block { fill: #cdd2c4; stroke: #b4baa8; }
+        .simd-active { fill: #D6FF64; stroke: #101414; stroke-width: 1; fill-opacity: 1; }
+        .simd-idle { fill: #b8bea8; }
+        .bus-wire { stroke: #9ca38e; }
+        .accent-wire { stroke: #101414; stroke-width: 2; }
+        .pin { fill: #a4ab96; stroke: #8c947e; }
+        .pin-active { fill: #D6FF64; stroke: #101414; stroke-width: 1; }
+      }
+    </style>
+    <linearGradient id="dieGlow" x1="0" y1="0" x2="600" y2="360" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#D6FF64" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#D6FF64" stop-opacity="0.0" />
     </linearGradient>
   </defs>
 
-  <style>
-    .bg-panel { fill: url(#fastcodeGradDark); stroke: #232C2D; }
-    .grid-line { stroke: #232C2D; stroke-width: 1; stroke-dasharray: 4 4; opacity: 0.7; }
-    .card-box { fill: #171E1F; stroke: #2E3A3C; }
-    .sub-box { fill: #1E2728; stroke: #364446; }
-    .header-text { fill: #F2F1EA; font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700; }
-    .label-text { fill: #A5ABAA; font-family: 'JetBrains Mono', monospace; font-size: 10px; }
-    .accent-text { fill: #D6FF64; font-family: 'JetBrains Mono', monospace; font-weight: 700; }
-    .accent-line { stroke: #D6FF64; stroke-width: 2; }
-    .muted-line { stroke: #565F60; stroke-width: 1.5; }
+  {/* Outer Package Substrate */}
+  <rect x="70" y="30" width="460" height="300" rx="16" class="chip-sub" stroke-width="2" />
+  <rect x="70" y="30" width="460" height="300" rx="16" fill="url(#dieGlow)" />
 
-    @media (prefers-color-scheme: light) {
-      .bg-panel { fill: #EBECE5; stroke: #C8CDC4; }
-      .grid-line { stroke: #D2D6CE; }
-      .card-box { fill: #FFFFFF; stroke: #C8CDC4; }
-      .sub-box { fill: #F2F1EA; stroke: #C8CDC4; }
-      .header-text { fill: #101414; }
-      .label-text { fill: #454F50; }
-      .accent-text { fill: #101414; }
-      .accent-line { stroke: #101414; }
-      .muted-line { stroke: #8E9596; }
-    }
-  </style>
+  {/* Outer Package Pins (Top and Bottom) */}
+  <g class="pins">
+    <rect x="110" y="18" width="12" height="12" rx="2" class="pin" />
+    <rect x="140" y="18" width="12" height="12" rx="2" class="pin" />
+    <rect x="170" y="18" width="12" height="12" rx="2" class="pin-active" />
+    <rect x="200" y="18" width="12" height="12" rx="2" class="pin" />
+    <rect x="230" y="18" width="12" height="12" rx="2" class="pin-active" />
+    <rect x="260" y="18" width="12" height="12" rx="2" class="pin" />
+    <rect x="290" y="18" width="12" height="12" rx="2" class="pin-active" />
+    <rect x="320" y="18" width="12" height="12" rx="2" class="pin" />
+    <rect x="350" y="18" width="12" height="12" rx="2" class="pin-active" />
+    <rect x="380" y="18" width="12" height="12" rx="2" class="pin" />
+    <rect x="410" y="18" width="12" height="12" rx="2" class="pin" />
+    <rect x="440" y="18" width="12" height="12" rx="2" class="pin-active" />
+    <rect x="470" y="18" width="12" height="12" rx="2" class="pin" />
 
-  <!-- Background Canvas -->
-  <rect width="600" height="340" rx="8" class="bg-panel" stroke-width="1.5" />
+    <rect x="110" y="330" width="12" height="12" rx="2" class="pin" />
+    <rect x="140" y="330" width="12" height="12" rx="2" class="pin-active" />
+    <rect x="170" y="330" width="12" height="12" rx="2" class="pin" />
+    <rect x="200" y="330" width="12" height="12" rx="2" class="pin" />
+    <rect x="230" y="330" width="12" height="12" rx="2" class="pin-active" />
+    <rect x="260" y="330" width="12" height="12" rx="2" class="pin" />
+    <rect x="290" y="330" width="12" height="12" rx="2" class="pin" />
+    <rect x="320" y="330" width="12" height="12" rx="2" class="pin-active" />
+    <rect x="350" y="330" width="12" height="12" rx="2" class="pin" />
+    <rect x="380" y="330" width="12" height="12" rx="2" class="pin-active" />
+    <rect x="410" y="330" width="12" height="12" rx="2" class="pin" />
+    <rect x="440" y="330" width="12" height="12" rx="2" class="pin" />
+    <rect x="470" y="330" width="12" height="12" rx="2" class="pin-active" />
 
-  <!-- Technical Blueprint Grid Lines -->
-  <g class="grid-line">
-    <line x1="30" y1="60" x2="570" y2="60" />
-    <line x1="30" y1="180" x2="570" y2="180" />
-    <line x1="195" y1="30" x2="195" y2="310" />
-    <line x1="395" y1="30" x2="395" y2="310" />
+    {/* Side Pins */}
+    <rect x="58" y="70" width="12" height="12" rx="2" class="pin" />
+    <rect x="58" y="110" width="12" height="12" rx="2" class="pin-active" />
+    <rect x="58" y="150" width="12" height="12" rx="2" class="pin" />
+    <rect x="58" y="190" width="12" height="12" rx="2" class="pin-active" />
+    <rect x="58" y="230" width="12" height="12" rx="2" class="pin" />
+    <rect x="58" y="270" width="12" height="12" rx="2" class="pin" />
+
+    <rect x="530" y="70" width="12" height="12" rx="2" class="pin-active" />
+    <rect x="530" y="110" width="12" height="12" rx="2" class="pin" />
+    <rect x="530" y="150" width="12" height="12" rx="2" class="pin-active" />
+    <rect x="530" y="190" width="12" height="12" rx="2" class="pin" />
+    <rect x="530" y="230" width="12" height="12" rx="2" class="pin-active" />
+    <rect x="530" y="270" width="12" height="12" rx="2" class="pin" />
   </g>
 
-  <!-- Top Title / Badge -->
-  <g transform="translate(30, 24)">
-    <rect width="180" height="24" rx="4" class="card-box" />
-    <circle cx="14" cy="12" r="4" fill="#D6FF64" />
-    <text x="26" y="16" class="accent-text" font-size="10" letter-spacing="0.08em">CPU KERNEL ARCHITECTURE</text>
-  </g>
-  <text x="570" y="40" class="label-text" text-anchor="end">YOLOv8n FP32 1x1 CONVOLUTION</text>
+  {/* Central Silicon Die */}
+  <rect x="120" y="60" width="360" height="240" rx="8" class="chip-die" stroke-width="2" />
 
-  <!-- Column 1: Input Packing (Left) -->
-  <g transform="translate(30, 75)">
-    <rect width="145" height="185" rx="6" class="card-box" />
-    <text x="14" y="26" class="header-text" font-size="12">INPUT PACKING</text>
-    <text x="14" y="42" class="label-text">Memory Stride Layout</text>
-
-    <rect x="14" y="56" width="117" height="30" rx="3" class="sub-box" />
-    <text x="22" y="75" class="label-text">Input Tensor [N, C, H, W]</text>
-
-    <path d="M72 86 V100" class="accent-line" stroke-dasharray="3 3" />
-
-    <rect x="14" y="102" width="117" height="34" rx="3" class="sub-box" />
-    <text x="22" y="118" class="label-text">Continuous Buffer</text>
-    <text x="22" y="130" class="label-text" font-size="9">Cache-Aware Stride</text>
-
-    <rect x="14" y="144" width="117" height="26" rx="3" fill="#D6FF64" opacity="0.15" stroke="#D6FF64" />
-    <text x="22" y="161" class="accent-text" font-size="9">L1/L2 Spatial Locality</text>
+  {/* Internal Microarchitecture Die Partitioning */}
+  {/* Left: Input Cache / Memory Hierarchy Array */}
+  <rect x="140" y="80" width="90" height="200" rx="6" class="core-block" stroke-width="1.5" />
+  <g class="cache-lines">
+    <rect x="150" y="94" width="70" height="18" rx="2" class="reg-block" />
+    <rect x="150" y="120" width="70" height="18" rx="2" class="reg-block" />
+    <rect x="150" y="146" width="70" height="18" rx="2" class="reg-block" />
+    <rect x="150" y="172" width="70" height="18" rx="2" class="reg-block" />
+    <rect x="150" y="198" width="70" height="18" rx="2" class="reg-block" />
+    <rect x="150" y="224" width="70" height="18" rx="2" class="reg-block" />
+    <rect x="150" y="250" width="70" height="18" rx="2" class="reg-block" />
   </g>
 
-  <!-- Flow 1 -> 2 -->
-  <path d="M175 167 H215" class="accent-line" stroke-dasharray="4 3" />
-  <polygon points="215,167 208,163 208,171" fill="#D6FF64" />
+  {/* Bus Interconnect from Cache to Vector Compute */}
+  <path d="M 230 110 L 260 110" class="accent-wire" />
+  <path d="M 230 150 L 260 150" class="bus-wire" stroke-width="1.5" />
+  <path d="M 230 190 L 260 190" class="accent-wire" />
+  <path d="M 230 230 L 260 230" class="bus-wire" stroke-width="1.5" />
+  <path d="M 230 270 L 260 270" class="accent-wire" />
 
-  <!-- Column 2: Vectorization & Register Blocking (Center) -->
-  <g transform="translate(225, 75)">
-    <rect width="150" height="185" rx="6" class="card-box" />
-    <text x="14" y="26" class="header-text" font-size="12">REGISTER BLOCKING</text>
-    <text x="14" y="42" class="label-text">SIMD Vector Pipelines</text>
+  {/* Center: Vector SIMD Compute Engine (Grid of 4x6 execution units) */}
+  <rect x="260" y="80" width="180" height="200" rx="6" class="core-block" stroke-width="1.5" />
 
-    <!-- Vector registers matrix visualization -->
-    <g transform="translate(14, 56)">
-      <rect width="122" height="22" rx="3" class="sub-box" />
-      <text x="12" y="15" class="label-text">ymm0 – ymm7 (Weights)</text>
-    </g>
+  {/* Vector execution lanes */}
+  <g class="simd-matrix">
+    {/* Row 1 */}
+    <rect x="275" y="96" width="32" height="20" rx="3" class="simd-active" />
+    <rect x="315" y="96" width="32" height="20" rx="3" class="simd-active" />
+    <rect x="355" y="96" width="32" height="20" rx="3" class="simd-idle" />
+    <rect x="395" y="96" width="32" height="20" rx="3" class="simd-active" />
 
-    <g transform="translate(14, 84)">
-      <rect width="122" height="22" rx="3" class="sub-box" />
-      <text x="12" y="15" class="label-text">ymm8 – ymm15 (Inputs)</text>
-    </g>
+    {/* Row 2 */}
+    <rect x="275" y="124" width="32" height="20" rx="3" class="simd-active" />
+    <rect x="315" y="124" width="32" height="20" rx="3" class="simd-active" />
+    <rect x="355" y="124" width="32" height="20" rx="3" class="simd-active" />
+    <rect x="395" y="124" width="32" height="20" rx="3" class="simd-idle" />
 
-    <!-- FMA Operation Unit -->
-    <g transform="translate(14, 114)">
-      <rect width="122" height="48" rx="3" class="sub-box" stroke-width="1.5" />
-      <text x="12" y="20" class="accent-text" font-size="10">AVX2 / FMA KERNEL</text>
-      <text x="12" y="36" class="label-text" font-size="9">Fused Multiply-Add</text>
-    </g>
+    {/* Row 3 */}
+    <rect x="275" y="152" width="32" height="20" rx="3" class="simd-idle" />
+    <rect x="315" y="152" width="32" height="20" rx="3" class="simd-active" />
+    <rect x="355" y="152" width="32" height="20" rx="3" class="simd-active" />
+    <rect x="395" y="152" width="32" height="20" rx="3" class="simd-active" />
+
+    {/* Row 4 */}
+    <rect x="275" y="180" width="32" height="20" rx="3" class="simd-active" />
+    <rect x="315" y="180" width="32" height="20" rx="3" class="simd-active" />
+    <rect x="355" y="180" width="32" height="20" rx="3" class="simd-idle" />
+    <rect x="395" y="180" width="32" height="20" rx="3" class="simd-active" />
+
+    {/* Row 5 */}
+    <rect x="275" y="208" width="32" height="20" rx="3" class="simd-active" />
+    <rect x="315" y="208" width="32" height="20" rx="3" class="simd-idle" />
+    <rect x="355" y="208" width="32" height="20" rx="3" class="simd-active" />
+    <rect x="395" y="208" width="32" height="20" rx="3" class="simd-active" />
+
+    {/* Row 6 */}
+    <rect x="275" y="236" width="32" height="20" rx="3" class="simd-active" />
+    <rect x="315" y="236" width="32" height="20" rx="3" class="simd-active" />
+    <rect x="355" y="236" width="32" height="20" rx="3" class="simd-active" />
+    <rect x="395" y="236" width="32" height="20" rx="3" class="simd-active" />
   </g>
 
-  <!-- Flow 2 -> 3 -->
-  <path d="M375 167 H415" class="accent-line" stroke-dasharray="4 3" />
-  <polygon points="415,167 408,163 408,171" fill="#D6FF64" />
+  {/* Output Bus Lines */}
+  <path d="M 440 130 L 460 130" class="accent-wire" />
+  <path d="M 440 180 L 460 180" class="accent-wire" />
+  <path d="M 440 230 L 460 230" class="accent-wire" />
 
-  <!-- Column 3: Primary Workload Benchmark Outcome (Right) -->
-  <g transform="translate(425, 75)">
-    <rect width="145" height="185" rx="6" class="card-box" />
-    <text x="14" y="26" class="header-text" font-size="12">BENCHMARK</text>
-    <text x="14" y="42" class="label-text">Execution Latency</text>
-
-    <!-- Reference bar -->
-    <text x="14" y="70" class="label-text">OpenCV: 684 µs</text>
-    <rect x="14" y="76" width="117" height="14" rx="2" class="sub-box" />
-
-    <!-- FastCode bar -->
-    <text x="14" y="108" class="accent-text" font-size="10">FastCode: 539 µs</text>
-    <rect x="14" y="114" width="92" height="14" rx="2" fill="url(#limeBar)" />
-
-    <!-- Metric Callout -->
-    <g transform="translate(14, 138)">
-      <rect width="117" height="28" rx="3" class="sub-box" />
-      <text x="8" y="18" class="accent-text" font-size="10">▼ 21% · ~91% PEAK</text>
-    </g>
-  </g>
-
-  <!-- Footer Legend -->
-  <text x="30" y="300" class="label-text">Primary Workload Benchmark · AVX2/FMA Vectorization</text>
-  <text x="570" y="300" class="label-text" text-anchor="end">C++ Kernel Optimization</text>
+  {/* Corner Alignment Markers on Die */}
+  <circle cx="132" cy="72" r="3" fill="#D6FF64" opacity="0.8" />
+  <circle cx="468" cy="72" r="3" class="pin" />
+  <circle cx="132" cy="288" r="3" class="pin" />
+  <circle cx="468" cy="288" r="3" fill="#D6FF64" opacity="0.8" />
 </svg>

@@ -13,7 +13,7 @@ export const ProjectsPage: React.FC = () => {
       <header className="page-intro-header">
         <div className="page-meta-eyebrow">
           <span className="eyebrow-accent">PORTFOLIO</span>
-          <span className="eyebrow-sep">/</span>
+          <span className="eyebrow-sep" aria-hidden="true">/</span>
           <span>SELECTED PROJECTS</span>
         </div>
 

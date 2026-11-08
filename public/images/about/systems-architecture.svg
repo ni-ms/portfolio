@@ -66,8 +66,4 @@
   <!-- Vertical Parapets & Antenna -->
   <line x1="260" y1="80" x2="260" y2="40" class="lime-line" />
   <circle cx="260" cy="40" r="3" class="lime-glow" />
-
-  <!-- Label Badge -->
-  <rect x="24" y="24" width="160" height="22" rx="3" fill="#171E1F" stroke="#2E3A3C" />
-  <text x="34" y="38" fill="#D6FF64" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" letter-spacing="0.08em">SYSTEMS TOPOLOGY</text>
 </svg>

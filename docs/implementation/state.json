@@ -62,8 +62,9 @@
       "reviewer": "fd6a9ad5-1fc8-499c-8080-16142de55261",
       "reviewVerdict": "repair_review",
       "repairCorrelation": "T04-repair2-30f6bdf",
-      "testsStatus": "repair_in_progress",
-      "testsCorrelation": "T04-tests-e9c4ee3"
+      "testsStatus": "candidate_review",
+      "testsCorrelation": "T04-tests-e9c4ee3",
+      "testsCandidateCommit": "6673ffbec13332d62413955b64e7fd49951ab223"
     },
     "T05": {
       "status": "pending",

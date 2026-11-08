@@ -52,3 +52,10 @@
 - Coordinator independently found new tracked tests not durable: helper hardcodes3004/.agent-runs/rereview-t04.html and project-name early returns count9 no-ops as passes; no actual touch-motion check. Author assigned T04-tests-e9c4ee3 with expectReply=true, TEST/FIXTURE/REPORT edits only concurrently with read-only source review.
 - Required: tracked fixture HTML/TSX under fixtures/gameplay*, relative configured-base URL, real component/measured lifecycle/visibility/touch movement+jump/cancel, honest test.skip/executed counts. Ignored temporary worker Playwright config may target3004; committed fixture must run default3000 after integration without ignored files. No production debug API. Correct old12/12 claim.
 - Next: consume production REVIEW and test-only READY separately, ACK each. Accept only after both production behavior and reproducible asserted tests pass, then serial integration+combined checks and fresh T05 worker. Root dirty only this checkpoint.
+
+## T04 tracked-test candidate received
+
+- Current root checkpointcf34386; no gameplay code integrated yet. Test-only6673ffbec13332d62413955b64e7fd49951ab223 received/ACKed. Production src remains frozene9c4ee3 under independent review.
+- Coordinator read full committed fixtures/tests: tracked HTML+TSX actual GameExperience, relative configured-base path, fixture-only physics/frame diagnostics; explicit skips instead of early return; assertions measure keyboard displacement, mobile two-touch displacement+jump/release/cancel, focus and actual offscreen frame suspension. Author reports4executed passes/12explicit skips,38units/typecheck. No final integrated execution claim yet.
+- Earlier unused-import TS6133 diagnostics forwarded to test owner; latest candidate reports them fixed. Reviewer informed test candidate is separate and production hashes unchanged.
+- Exact next action: await explicit production REVIEW; if approved, integrate orderedT04 commitsd62334d/30f6bdf/e9c4ee3/6673ffb, run combined typecheck/unit/build and tracked gameplay+mounted-route browser tests from default3000 without ignored harness. If any fail, repair rather than weaken. Only then markT04done and freshT05.

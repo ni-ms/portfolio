@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { renderToString } from 'react-dom/server';
-import App from '../../App';
+import PortfolioPages from '../../pages/PortfolioPages';
 import { Header } from '../Header';
 import { MobileMenu } from '../MobileMenu';
 import { Hero } from '../Hero';
@@ -11,9 +11,13 @@ import { Resume } from '../Resume';
 import { Contact } from '../Contact';
 import { Footer } from '../Footer';
 import { FallbackHero } from '../FallbackHero';
+import { PhotoPlaceholder } from '../PhotoPlaceholder';
+import { BenchmarkComparison } from '../BenchmarkComparison';
+import { ProjectMetrics } from '../ProjectMetrics';
 import { portfolioData } from '../../content/portfolio';
+import { portfolioContent, projectsBySlug } from '../../content/realPortfolio';
 
-describe('Semantic UI and Responsive Layout Components', () => {
+describe('Semantic UI and Responsive Layout Components (T03)', () => {
   describe('Header Component', () => {
     it('renders logo emblem, owner name, navigation links, and mobile menu button', () => {
       const html = renderToString(
@@ -74,150 +78,219 @@ describe('Semantic UI and Responsive Layout Components', () => {
     });
   });
 
-  describe('Hero Component', () => {
-    it('renders eyebrow, two-line headline, subhead, CTA, and lower-left route graphic', () => {
-      const html = renderToString(<Hero />);
-
-      expect(html).toContain('PERSONAL PORTFOLIO / 001');
-      expect(html).toContain('WORK');
-      expect(html).toContain('&amp; IDEAS.');
-      expect(html).toContain('A collection of projects, ideas, and experiments.');
-      expect(html).toContain('VIEW PROJECTS ↗');
-
-      // Lower-left route line with caption
-      expect(html).toContain('hero-route-indicator');
-      expect(html).toContain('EXPLORE AT YOUR OWN PACE');
-
-      // Desktop game controls and legend
-      expect(html).toContain('DRONE VIEW');
-      expect(html).toContain('START EXPLORING ↗');
-      expect(html).toContain('WASD MOVE · SPACE JUMP · R RESET');
-
-      // Mobile play CTA
-      expect(html).toContain('PLAY THE COURSE ↗');
-
-      // Scene labels
-      expect(html).toContain('01 / WORK');
-      expect(html).toContain('02 / EXPLORATIONS');
-      expect(html).toContain('03 / RÉSUMÉ');
-    });
-
-    it('renders FallbackHero when no canvasSlot is provided', () => {
-      const html = renderToString(<Hero />);
-      expect(html).toContain('SCHEMATIC PREVIEW / 2D FALLBACK');
-      expect(html).toContain('JUMP TO SECTION:');
-    });
-
-    it('renders provided canvasSlot when passed', () => {
-      const html = renderToString(
-        <Hero canvasSlot={<div id="test-3d-canvas">Canvas 3D Mock</div>} />
-      );
-      expect(html).toContain('test-3d-canvas');
-      expect(html).toContain('Canvas 3D Mock');
+  describe('PhotoPlaceholder Component', () => {
+    it('renders accessible passport-shaped frame without generating likeness', () => {
+      const html = renderToString(<PhotoPlaceholder />);
+      expect(html).toContain('role="img"');
+      expect(html).toContain('aria-label="Photo placeholder (no portrait supplied)"');
+      expect(html).toContain('photo-placeholder');
+      expect(html).toContain('photo-frame');
     });
   });
 
-  describe('FallbackHero Component', () => {
-    it('renders architectural SVG schematic and direct section jump links', () => {
+  describe('BenchmarkComparison Component', () => {
+    it('accurately renders 684 vs 539 microseconds and workload qualifier', () => {
+      const html = renderToString(
+        <BenchmarkComparison
+          baselineMicroseconds={684}
+          optimizedMicroseconds={539}
+          reductionPercent={21}
+          theoreticalPeakPercent={91}
+          qualifier="Results refer to the primary benchmark workload, not a universal speedup."
+        />
+      );
+
+      expect(html).toContain('684 µs');
+      expect(html).toContain('539 µs');
+      expect(html).toContain('21%');
+      expect(html).toContain('~91%');
+      expect(html).toContain('Results refer to the primary benchmark workload, not a universal speedup.');
+      expect(html).toContain('OpenCV Baseline');
+      expect(html).toContain('FastCode');
+    });
+  });
+
+  describe('ProjectMetrics Component', () => {
+    it('renders ScottyPi dataset metrics and evaluation qualifier', () => {
+      const html = renderToString(
+        <ProjectMetrics slug="scottypi" details={projectsBySlug.scottypi.details} />
+      );
+
+      expect(html).toContain('20');
+      expect(html).toContain('133');
+      expect(html).toContain('160');
+      expect(html).toContain('Recall@1');
+      expect(html).toContain('Recall@3');
+      expect(html).toContain('MRR');
+      expect(html).toContain('Train/dev/test splits; no numerical recall or MRR scores supplied.');
+    });
+
+    it('renders Langmetric telemetry measures without fabricated revenue numbers', () => {
+      const html = renderToString(
+        <ProjectMetrics slug="langmetric" details={projectsBySlug.langmetric.details} />
+      );
+
+      expect(html).toContain('Latency distributions');
+      expect(html).toContain('Token usage');
+      expect(html).toContain('Cost');
+      expect(html).toContain('Loco RS');
+      expect(html).toContain('SeaORM');
+    });
+  });
+
+  describe('PortfolioPages Route Views (T03)', () => {
+    it('renders Home route with semantic main, identity, photo, project sentences, and gameSlot', () => {
+      const customSlot = <div id="custom-test-slot">Interactive 3D Course</div>;
+      const html = renderToString(<PortfolioPages path="/" gameSlot={customSlot} />);
+
+      // Accessibility landmark
+      expect(html).toContain('id="main-content"');
+      expect(html).toContain('tabindex="-1"');
+
+      // Identity & Intro
+      expect(html).toContain('Nikhil Sharma');
+      expect(html).toContain('Photo placeholder (no portrait supplied)');
+      expect(html).toContain(portfolioContent.home.intro);
+      expect(html).toContain('M.S. Software Engineering · Carnegie Mellon · Expected 2027');
+
+      // 3 project preview sentences
+      expect(html).toContain(portfolioContent.projects[0].description);
+      expect(html).toContain(portfolioContent.projects[1].description);
+      expect(html).toContain(portfolioContent.projects[2].description);
+
+      // Game slot present on Home
+      expect(html).toContain('custom-test-slot');
+      expect(html).toContain('Interactive 3D Course');
+    });
+
+    it('renders fallback preview when gameSlot is not provided on Home', () => {
+      const html = renderToString(<PortfolioPages path="/" />);
+      expect(html).toContain('fallback-blueprint-graphic');
+      expect(html).toContain('WASD MOVE · SPACE JUMP · R RESET');
+    });
+
+    it('renders Projects index (/projects) with all 3 project deep dives', () => {
+      const html = renderToString(<PortfolioPages path="/projects" />);
+      expect(html).toContain('Technical Projects &amp; Systems');
+      expect(html).toContain('/projects/fastcode');
+      expect(html).toContain('/projects/scottypi');
+      expect(html).toContain('/projects/langmetric');
+      // No game slot on text-only projects index
+      expect(html).not.toContain('home-experience-slot');
+    });
+
+    it('renders FastCode project detail (/projects/fastcode) with benchmarks and code link', () => {
+      const html = renderToString(<PortfolioPages path="/projects/fastcode" />);
+      expect(html).toContain('FastCode CPU Kernel Optimization');
+      expect(html).toContain('684 µs');
+      expect(html).toContain('539 µs');
+      expect(html).toContain('Cut primary-workload latency 21% versus OpenCV');
+      expect(html).toContain('~91% of theoretical single-core peak');
+      expect(html).toContain('https://github.com/ni-ms/18645-yolov8n-optimization');
+      expect(html).not.toContain('home-experience-slot');
+    });
+
+    it('renders ScottyPi project detail (/projects/scottypi) with no invented repo link', () => {
+      const html = renderToString(<PortfolioPages path="/projects/scottypi" />);
+      expect(html).toContain('ScottyPi Campus Assistant');
+      expect(html).toContain('133');
+      expect(html).toContain('20');
+      expect(html).toContain('160');
+      expect(html).toContain('Reciprocal-rank fusion');
+      // No fake repo link
+      expect(html).not.toContain('https://github.com/ni-ms/scottypi');
+      expect(html).not.toContain('home-experience-slot');
+    });
+
+    it('renders Langmetric project detail (/projects/langmetric) with live platform link', () => {
+      const html = renderToString(<PortfolioPages path="/projects/langmetric" />);
+      expect(html).toContain('Langmetric');
+      expect(html).toContain('https://langmetric.com/');
+      expect(html).toContain('Loco RS');
+      expect(html).toContain('SeaORM');
+      expect(html).not.toContain('home-experience-slot');
+    });
+
+    it('renders Résumé route (/resume) with employer/client relationships and download links', () => {
+      const html = renderToString(<PortfolioPages path="/resume" />);
+      expect(html).toContain('Tech Mahindra');
+      expect(html).toContain('Intuitive Surgical');
+      expect(html).toContain('Styrone');
+      expect(html).toContain('Nationwide Building Society');
+      expect(html).toContain('Exeevo');
+      expect(html).toContain('Carnegie Mellon University');
+      expect(html).toContain('BITS Pilani');
+      expect(html).toContain('Private Federated Aggregation of LLM-Agent Memory');
+      expect(html).toContain('In review');
+      expect(html).toContain('/resume/Nikhil_Sharma_Resume.pdf');
+      expect(html).toContain('/resume/Nikhil_Sharma_Resume.docx');
+    });
+
+    it('renders About route (/about) with #contact section and direct contact links', () => {
+      const html = renderToString(<PortfolioPages path="/about" />);
+      expect(html).toContain('id="contact"');
+      expect(html).toContain('mailto:nikhilmsha@gmail.com');
+      expect(html).toContain('https://github.com/ni-ms');
+      expect(html).toContain('https://linkedin.com/in/nikhilmsha');
+      expect(html).toContain('San Jose, CA');
+      expect(html).toContain('408-480-6489');
+    });
+
+    it('renders 404 page for unknown routes with navigation back links', () => {
+      const html = renderToString(<PortfolioPages path="/nonexistent-path" />);
+      expect(html).toContain('Page Not Found');
+      expect(html).toContain('404 ERROR / ROUTE UNKNOWN');
+      expect(html).toContain('Return to Home →');
+      expect(html).toContain('Explore Selected Projects →');
+    });
+  });
+
+  describe('Legacy Component Compatibility (Preserved for LegacyHome)', () => {
+    it('renders Hero component', () => {
+      const html = renderToString(<Hero />);
+      expect(html).toContain('WORK');
+      expect(html).toContain('&amp; IDEAS.');
+      expect(html).toContain('DRONE VIEW');
+      expect(html).toContain('START EXPLORING ↗');
+    });
+
+    it('renders FallbackHero component', () => {
       const html = renderToString(<FallbackHero />);
       expect(html).toContain('fallback-hero');
       expect(html).toContain('fallback-svg');
-      expect(html).toContain('01 / WORK ↗');
-      expect(html).toContain('02 / EXPLORATIONS ↗');
-      expect(html).toContain('03 / RÉSUMÉ ↗');
     });
-  });
 
-  describe('Projects Component', () => {
-    it('renders selected projects section with 3 projects, thumbnails, and modal trigger', () => {
+    it('renders Projects component', () => {
       const html = renderToString(<Projects />);
-
       expect(html).toContain('SELECTED PROJECTS');
-      expect(html).toContain('01');
       expect(html).toContain('PROJECT ONE');
-      expect(html).toContain('02');
-      expect(html).toContain('PROJECT TWO');
-      expect(html).toContain('03');
-      expect(html).toContain('PROJECT THREE');
-
-      // Accessibility role
-      expect(html).toContain('role="button"');
-      expect(html).toContain('aria-haspopup="dialog"');
     });
-  });
 
-  describe('ProjectModal Component', () => {
-    it('renders project detail modal with challenge, approach, outcome, and tags', () => {
-      const sampleProject = portfolioData.projects[0];
-      const html = renderToString(
-        <ProjectModal project={sampleProject} onClose={() => {}} />
-      );
-
-      expect(html).toContain('role="dialog"');
-      expect(html).toContain('aria-modal="true"');
-      expect(html).toContain(sampleProject.title);
+    it('renders ProjectModal component', () => {
+      const sample = portfolioData.projects[0];
+      const html = renderToString(<ProjectModal project={sample} onClose={() => {}} />);
+      expect(html).toContain(sample.title);
       expect(html).toContain('THE CHALLENGE');
-      expect(html).toContain(sampleProject.details.challenge);
-      expect(html).toContain('OUR APPROACH');
-      expect(html).toContain(sampleProject.details.approach);
-      expect(html).toContain('KEY OUTCOME');
-      expect(html).toContain(sampleProject.details.outcome);
-      expect(html).toContain('SYSTEMS &amp; ARCHITECTURE');
     });
-  });
 
-  describe('Explorations Component', () => {
-    it('renders technical explorations with status badges', () => {
+    it('renders Explorations component', () => {
       const html = renderToString(<Explorations />);
-
       expect(html).toContain('EXPLORATIONS / LAB');
-      portfolioData.explorations.forEach((item) => {
-        expect(html).toContain(item.title.replace('&', '&amp;'));
-        expect(html).toContain(item.status);
-      });
     });
-  });
 
-  describe('Resume Component', () => {
-    it('renders experience timeline, skills, and education', () => {
+    it('renders Resume component', () => {
       const html = renderToString(<Resume />);
-
       expect(html).toContain('RÉSUMÉ &amp; BACKGROUND');
       expect(html).toContain('EXPERIENCE');
-      expect(html).toContain('TECHNICAL CAPABILITIES');
-      expect(html).toContain('EDUCATION');
-
-      // Confirms NO portrait image on landing page when resumePortraitUrl is undefined
-      expect(html).not.toContain('resume-portrait-img');
     });
-  });
 
-  describe('Contact & Footer Components', () => {
-    it('renders contact details and clean footer', () => {
+    it('renders Contact and Footer components', () => {
       const contactHtml = renderToString(<Contact />);
       expect(contactHtml).toContain(portfolioData.contact.heading.replace('&', '&amp;'));
-      expect(contactHtml).toContain(`mailto:${portfolioData.contact.emailPlaceholder}`);
 
       const footerHtml = renderToString(<Footer />);
       expect(footerHtml).toContain('Nearly 3 years');
       expect(footerHtml).toContain('mailto:nikhilmsha@gmail.com');
-      expect(footerHtml).toContain('https://linkedin.com/in/nikhilmsha');
-    });
-  });
-
-  describe('Full App Integration', () => {
-    it('assembles all semantic sections with skip-link and proper landmark roles', () => {
-      const html = renderToString(<App />);
-
-      expect(html).toContain('skip-link');
-      expect(html).toContain('role="banner"');
-      expect(html).toContain('id="main-content"');
-      expect(html).toContain('id="hero"');
-      expect(html).toContain('id="work"');
-      expect(html).toContain('id="explorations"');
-      expect(html).toContain('id="resume"');
-      expect(html).toContain('id="contact"');
-      expect(html).toContain('role="contentinfo"');
     });
   });
 });

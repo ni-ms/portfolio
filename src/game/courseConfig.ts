@@ -16,6 +16,20 @@ export interface SteppingPlatform {
   hasPillar?: boolean;
 }
 
+export interface RampConfig {
+  id: string;
+  name: string;
+  position: [number, number, number];
+  rotation: [number, number, number];
+  colliderArgs: [number, number, number]; // [halfWidth, halfThickness, halfLength]
+  slope: number;
+  halfWidth: number;
+  minY: number;
+  maxY: number;
+  minZ: number;
+  maxZ: number;
+}
+
 export const CHECKPOINTS: Checkpoint[] = [
   {
     id: 'cp-start',
@@ -63,6 +77,54 @@ export const CHECKPOINTS: Checkpoint[] = [
   },
 ];
 
+export const START_STAIRS_RAMP: RampConfig = {
+  id: 'ramp-start',
+  name: 'start-stairs-ramp',
+  position: [-3.5, 0.9, 4.8],
+  rotation: [0.6435, 0, 0],
+  colliderArgs: [1.1, 0.05, 0.5],
+  slope: 0.75,
+  halfWidth: 1.1,
+  minY: 0.6,
+  maxY: 1.2,
+  minZ: 4.4,
+  maxZ: 5.2,
+};
+
+export const EXPLORATION_STAIRS_RAMP: RampConfig = {
+  id: 'ramp-explorations',
+  name: 'explorations-stairs-ramp',
+  position: [1.0, 2.2, 0.6],
+  rotation: [0.7854, 0, 0],
+  colliderArgs: [1.2, 0.05, 0.5657],
+  slope: 1.0,
+  halfWidth: 1.2,
+  minY: 1.8,
+  maxY: 2.6,
+  minZ: 0.2,
+  maxZ: 1.0,
+};
+
+export const RESUME_STAIRS_RAMP: RampConfig = {
+  id: 'ramp-resume',
+  name: 'resume-stairs-ramp',
+  position: [5.2, 3.6, 3.8],
+  rotation: [-0.555, -0.7854, 0],
+  colliderArgs: [0.7, 0.05, 0.85],
+  slope: 1.0,
+  halfWidth: 0.7,
+  minY: 3.0,
+  maxY: 4.2,
+  minZ: 3.2,
+  maxZ: 4.4,
+};
+
+export const RAMP_DEFINITIONS: RampConfig[] = [
+  START_STAIRS_RAMP,
+  EXPLORATION_STAIRS_RAMP,
+  RESUME_STAIRS_RAMP,
+];
+
 export const COURSE_BOUNDS = {
   // Ground slab base
   groundSlab: {
@@ -92,6 +154,7 @@ export const COURSE_BOUNDS = {
       run: 0.8,
       rise: 0.6,
     },
+    ramp: START_STAIRS_RAMP,
     spawnPosition: [-3.5, 1.7, 3.5] as [number, number, number],
     floorArrowsPosition: [-3.5, 1.205, 3.2] as [number, number, number],
     startMarkingPosition: [-3.5, 1.205, 4.0] as [number, number, number],
@@ -135,6 +198,7 @@ export const COURSE_BOUNDS = {
       run: 0.8,
       rise: 0.8,
     },
+    ramp: EXPLORATION_STAIRS_RAMP,
     beaconPosition: [1.2, 2.6, 0.2] as [number, number, number],
     spawnPosition: [1.2, 3.1, 0.0] as [number, number, number],
     planters: [
@@ -168,6 +232,7 @@ export const COURSE_BOUNDS = {
       run: 1.2,
       rise: 1.2,
     },
+    ramp: RESUME_STAIRS_RAMP,
   },
 
   // Stepping platforms and narrow beams

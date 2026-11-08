@@ -7,9 +7,10 @@ import {
   useRapier,
 } from '@react-three/rapier';
 import * as THREE from 'three';
-import { gameStore, useGameStore } from './gameStore';
+import { gameStore } from './gameStore';
 import { normalizeMovementInput, JumpController } from './controllerUtils';
 import { updateLivePlayerTransform } from './playerTransform';
+import { RAMP_DEFINITIONS } from './courseConfig';
 
 export interface PlayerControllerProps {
   initialPosition?: [number, number, number];
@@ -32,18 +33,14 @@ export function PlayerController({
   const rapier = useRapier();
   const jumpController = useMemo(() => new JumpController(100, 120, 200), []);
 
-  const currentCheckpointId = useGameStore((s) => s.currentCheckpointId);
-  const prevCheckpointIdRef = useRef(currentCheckpointId);
-
-  // Compute spawn position strictly for initial placement on mount
-  const initialSpawn = useMemo(() => {
-    if (initialPosition) return initialPosition;
-    const initialCp =
-      gameStore.getState().checkpoints.find(
-        (c) => c.id === gameStore.getState().currentCheckpointId
-      ) || gameStore.getState().checkpoints[0];
-    return initialCp.spawnPosition;
-  }, [initialPosition]);
+  // Compute spawn position strictly once on mount
+  const initialSpawn = useRef(
+    initialPosition ||
+    gameStore.getState().checkpoints.find(
+      (c) => c.id === gameStore.getState().currentCheckpointId
+    )?.spawnPosition ||
+    gameStore.getState().checkpoints[0].spawnPosition
+  ).current;
 
   // Initial placement strictly on mount (or if initialPosition prop changes).
   // IMPORTANT: Reaching checkpoints during normal traversal must NEVER teleport the player.
@@ -69,38 +66,12 @@ export function PlayerController({
     }
   }, [initialSpawn]);
 
-  // Handle explicit external checkpoint setup (e.g. test harness setState)
-  // Reaching checkpoints naturally through trigger sensors sets lastCheckpointReachedId and must NEVER teleport.
-  useEffect(() => {
-    if (prevCheckpointIdRef.current !== currentCheckpointId) {
-      prevCheckpointIdRef.current = currentCheckpointId;
-
-      const store = gameStore.getState();
-      if (store.lastCheckpointReachedId === currentCheckpointId) {
-        // Natural sensor arrival: transform and velocity are preserved
-        return;
-      }
-
-      // Explicit checkpoint setup: place player at checkpoint spawn
-      if (rigidBodyRef.current) {
-        const targetCp =
-          store.checkpoints.find((c) => c.id === currentCheckpointId) ||
-          store.checkpoints[0];
-        const [sx, sy, sz] = targetCp.spawnPosition;
-        rigidBodyRef.current.setTranslation({ x: sx, y: sy, z: sz }, true);
-        rigidBodyRef.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
-        rigidBodyRef.current.setAngvel({ x: 0, y: 0, z: 0 }, true);
-        updateLivePlayerTransform(sx, sy, sz, 0, 0, 0, currentRotationY.current, true);
-        if (playerRef?.current) {
-          playerRef.current.position.set(sx, sy, sz);
-        }
-      }
-    }
-  }, [currentCheckpointId, playerRef]);
-
   useFrame((state, delta) => {
     const rb = rigidBodyRef.current;
     if (!rb) return;
+
+    // Freeze simulation updates if tab/document is hidden
+    if (typeof document !== 'undefined' && document.hidden) return;
 
     const store = gameStore.getState();
     const isPlayActive = store.mode === 'play-inline' || store.mode === 'play-overlay';
@@ -134,7 +105,7 @@ export function PlayerController({
     const pos = rb.translation();
 
     // 2. Kill plane check (fallback if below course)
-    if (pos.y < -5.0) {
+    if (pos.y < -15.0) {
       store.actions.respawnPlayer();
       return;
     }
@@ -145,6 +116,8 @@ export function PlayerController({
     const maxRayDistance = 0.58; // 0.35 to capsule bottom + 0.23 ground margin for ramps/stairs
 
     let isGrounded = false;
+    let groundUserData: any = null;
+
     try {
       const ray = new rapier.rapier.Ray(rayOrigin, rayDir);
       const queryFilterFlags = rapier.rapier.QueryFilterFlags
@@ -163,6 +136,7 @@ export function PlayerController({
 
       if (hit && hit.timeOfImpact <= maxRayDistance && !hit.collider.isSensor()) {
         isGrounded = true;
+        groundUserData = hit.collider.parent()?.userData;
       }
     } catch {
       // Fallback: check linear velocity Y near 0 if raycast fails
@@ -217,15 +191,28 @@ export function PlayerController({
     const newVx = THREE.MathUtils.damp(currentLinvel.x, targetVx, accel, safeDelta);
     const newVz = THREE.MathUtils.damp(currentLinvel.z, targetVz, accel, safeDelta);
 
-    // Smooth stair climb assist when grounded and running up ramps
+    // Smooth stair climb assist: ONLY when grounded directly on an actual ramp collider and moving up the slope
+    // Walking flat ground underneath ramps must NEVER trigger assist
     if (isGrounded && norm.isMoving && !jumpController.isJumping(now) && !input.jump) {
-      // Exploration stairs (slope = 1.0, climbing when targetVz < 0)
-      if (Math.abs(pos.x - 1.0) < 1.4 && pos.z >= 0.18 && pos.z <= 1.05 && targetVz < -0.1) {
-        newVy = Math.max(newVy, -targetVz * 1.0);
-      }
-      // Start stairs (slope = 0.75, climbing when targetVz < 0)
-      else if (Math.abs(pos.x - (-3.5)) < 1.3 && pos.z >= 4.35 && pos.z <= 5.25 && targetVz < -0.1) {
-        newVy = Math.max(newVy, -targetVz * 0.75);
+      for (const ramp of RAMP_DEFINITIONS) {
+        const isRampContact =
+          groundUserData?.name === ramp.name ||
+          (groundUserData?.type === 'ramp' && Math.abs(pos.x - ramp.position[0]) <= ramp.halfWidth + 0.2);
+
+        if (isRampContact) {
+          // Verify player Y is actually at ramp elevation (never on ground slab underneath!)
+          const withinY = pos.y >= ramp.minY - 0.15 && pos.y <= ramp.maxY + 0.35;
+          const withinX = Math.abs(pos.x - ramp.position[0]) <= ramp.halfWidth + 0.15;
+          const withinZ = pos.z >= ramp.minZ - 0.25 && pos.z <= ramp.maxZ + 0.25;
+
+          if (withinY && withinX && withinZ) {
+            // Forward movement towards -Z ascends Start and Exploration stairs
+            if (targetVz < -0.1) {
+              newVy = Math.max(newVy, -targetVz * ramp.slope);
+            }
+            break;
+          }
+        }
       }
     }
 

@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { Canvas } from '@react-three/fiber';
 import { GameMode } from '../types/game';
@@ -16,6 +16,7 @@ export interface SceneProps {
   showMarkers?: boolean;
   onSelectCheckpoint?: (sectionId: string) => void;
   playerPosition?: [number, number, number];
+  isVisible?: boolean;
   children?: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
@@ -84,26 +85,68 @@ export const Scene: React.FC<SceneProps> = ({
   showMarkers = true,
   onSelectCheckpoint,
   playerPosition,
+  isVisible: isVisibleProp,
   children,
   className = '',
   style,
 }) => {
-  const [isVisible, setIsVisible] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isIntersecting, setIsIntersecting] = useState(true);
+  const [isDocVisible, setIsDocVisible] = useState(
+    typeof document !== 'undefined' ? !document.hidden : true
+  );
 
-  // Suspend canvas frameloop when scrolled offscreen
+  // Document visibility tracking
   useEffect(() => {
-    const handleScroll = () => {
-      const isOffscreen = typeof window !== 'undefined' && window.scrollY > 400;
-      setIsVisible(!isOffscreen);
+    const handleVisChange = () => {
+      setIsDocVisible(typeof document !== 'undefined' ? !document.hidden : true);
     };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-
+    document.addEventListener('visibilitychange', handleVisChange);
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('visibilitychange', handleVisChange);
     };
   }, []);
+
+  // Viewport intersection observer: suspend frameloop when container is scrolled offscreen
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const checkInView = () => {
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      const vw = window.innerWidth || document.documentElement.clientWidth;
+      const inView = rect.bottom > 0 && rect.top < vh && rect.right > 0 && rect.left < vw;
+      setIsIntersecting(inView);
+    };
+
+    checkInView();
+
+    let observer: IntersectionObserver | null = null;
+    if (typeof IntersectionObserver !== 'undefined') {
+      observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            setIsIntersecting(entry.isIntersecting);
+          }
+        },
+        { threshold: 0 }
+      );
+      observer.observe(el);
+    }
+
+    window.addEventListener('scroll', checkInView, { passive: true });
+    window.addEventListener('resize', checkInView, { passive: true });
+
+    return () => {
+      if (observer) observer.disconnect();
+      window.removeEventListener('scroll', checkInView);
+      window.removeEventListener('resize', checkInView);
+    };
+  }, []);
+
+  const isInternalVisible = isDocVisible && (mode === 'play-overlay' || isIntersecting);
+  const isEffectiveVisible = isVisibleProp !== undefined ? isVisibleProp : isInternalVisible;
 
   const quality = useMemo(
     () => getQualityPreset(isMobile, isDeterministicReview),
@@ -114,6 +157,7 @@ export const Scene: React.FC<SceneProps> = ({
 
   return (
     <div
+      ref={containerRef}
       className={`scene-canvas-container ${className}`}
       style={{
         position: 'relative',
@@ -124,7 +168,7 @@ export const Scene: React.FC<SceneProps> = ({
       }}
     >
       <Canvas
-        frameloop={isVisible ? 'always' : 'never'}
+        frameloop={isEffectiveVisible ? 'always' : 'never'}
         shadows={quality.enableShadows}
         dpr={[1, quality.dpr]}
         gl={{
@@ -173,7 +217,7 @@ export const Scene: React.FC<SceneProps> = ({
           visible={showMarkers && mode !== 'play-overlay'}
         />
 
-        {/* Slot for Worker 3's PlayerController / Avatar */}
+        {/* Slot for PlayerController / Avatar */}
         {children}
       </Canvas>
     </div>

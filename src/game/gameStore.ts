@@ -31,7 +31,6 @@ export const DEFAULT_QUALITY: QualityPreset = {
 type Listener = () => void;
 
 let savedScrollY = 0;
-let initiatingElement: HTMLElement | null = null;
 let globalNavigateHandler: ((href: string) => void) | null = null;
 
 export function registerGlobalNavigateHandler(handler: ((href: string) => void) | null) {
@@ -55,14 +54,10 @@ const createInitialState = (): GameStoreState => ({
 
       if (mode === 'play-overlay' && typeof window !== 'undefined') {
         savedScrollY = window.scrollY;
-        initiatingElement = document.activeElement as HTMLElement | null;
         document.body.classList.add('scroll-locked');
       } else if (prevMode === 'play-overlay' && mode !== 'play-overlay' && typeof window !== 'undefined') {
         document.body.classList.remove('scroll-locked');
         window.scrollTo({ top: savedScrollY, behavior: 'instant' });
-        if (initiatingElement && typeof initiatingElement.focus === 'function') {
-          initiatingElement.focus();
-        }
       }
 
       gameStore.setState({ mode });
@@ -104,6 +99,7 @@ const createInitialState = (): GameStoreState => ({
     },
 
     respawnPlayer: () => {
+      if (storeState.isRespawning) return;
       gameStore.setState({
         isRespawning: true,
         input: { ...INITIAL_INPUT },

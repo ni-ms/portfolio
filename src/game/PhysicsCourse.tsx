@@ -58,16 +58,16 @@ export function PhysicsCourse({
         <CuboidCollider args={[bounds.startRooftop.lowerLanding.size[0] / 2, bounds.startRooftop.lowerLanding.size[1] / 2, bounds.startRooftop.lowerLanding.size[2] / 2]} />
       </RigidBody>
 
-      {/* Start Stairs Smooth Ramp (rising from Y=0.6, Z=5.2 to Y=1.2, Z=4.4) */}
+      {/* Start Stairs Smooth Ramp */}
       <RigidBody
         type="fixed"
-        position={[-3.5, 0.9, 4.8]}
-        rotation={[0.6435, 0, 0]}
+        position={bounds.startRooftop.ramp.position}
+        rotation={bounds.startRooftop.ramp.rotation}
         friction={0.0}
         restitution={0}
-        userData={{ type: 'ramp', name: 'start-stairs-ramp' }}
+        userData={{ type: 'ramp', name: bounds.startRooftop.ramp.name }}
       >
-        <CuboidCollider args={[bounds.startRooftop.stairs.width / 2, 0.05, 0.5]} />
+        <CuboidCollider args={bounds.startRooftop.ramp.colliderArgs} />
       </RigidBody>
 
       {/* 2. WORK ROOFTOP (Back-Left, 01 / WORK) */}
@@ -115,16 +115,16 @@ export function PhysicsCourse({
         <CuboidCollider args={[bounds.explorationRooftop.lowerTerrace.size[0] / 2, bounds.explorationRooftop.lowerTerrace.size[1] / 2, bounds.explorationRooftop.lowerTerrace.size[2] / 2]} />
       </RigidBody>
 
-      {/* Exploration Stairs Ramp (rising from Y=1.8, Z=1.0 to Y=2.6, Z=0.2) */}
+      {/* Exploration Stairs Ramp */}
       <RigidBody
         type="fixed"
-        position={[1.0, 2.2, 0.6]}
-        rotation={[0.7854, 0, 0]}
+        position={bounds.explorationRooftop.ramp.position}
+        rotation={bounds.explorationRooftop.ramp.rotation}
         friction={0.0}
         restitution={0}
-        userData={{ type: 'ramp', name: 'explorations-stairs-ramp' }}
+        userData={{ type: 'ramp', name: bounds.explorationRooftop.ramp.name }}
       >
-        <CuboidCollider args={[bounds.explorationRooftop.stairs.width / 2, 0.05, 0.5657]} />
+        <CuboidCollider args={bounds.explorationRooftop.ramp.colliderArgs} />
       </RigidBody>
 
       {/* Planters on Exploration Roof */}
@@ -154,13 +154,13 @@ export function PhysicsCourse({
       {/* Résumé Stairs Ramp */}
       <RigidBody
         type="fixed"
-        position={[bounds.resumeRooftop.stairs.position[0], 3.6, bounds.resumeRooftop.stairs.position[2]]}
-        rotation={[-0.555, -0.7854, 0]}
+        position={bounds.resumeRooftop.ramp.position}
+        rotation={bounds.resumeRooftop.ramp.rotation}
         friction={0.0}
         restitution={0}
-        userData={{ type: 'ramp', name: 'resume-stairs-ramp' }}
+        userData={{ type: 'ramp', name: bounds.resumeRooftop.ramp.name }}
       >
-        <CuboidCollider args={[bounds.resumeRooftop.stairs.width / 2, 0.05, 0.85]} />
+        <CuboidCollider args={bounds.resumeRooftop.ramp.colliderArgs} />
       </RigidBody>
 
       {/* 5. STEPPING PLATFORMS & CONNECTING BEAMS */}
@@ -179,10 +179,10 @@ export function PhysicsCourse({
       {/* 6. CHECKPOINT SENSOR TRIGGERS */}
       {CHECKPOINTS.map((cp) => (
         <RigidBody
-          key={`trigger-${cp.id}`}
+          key={`sensor-${cp.id}`}
           type="fixed"
+          position={cp.position}
           sensor
-          position={[cp.position[0], cp.position[1] + 0.8, cp.position[2]]}
           onIntersectionEnter={() => handleCheckpointEnter(cp.id)}
           userData={{ type: 'sensor', checkpointId: cp.id }}
         >
@@ -190,15 +190,15 @@ export function PhysicsCourse({
         </RigidBody>
       ))}
 
-      {/* 7. FALL DETECTION / RESPAWN KILL PLANE (Below course at y = -4.0) */}
+      {/* 7. FALL KILL PLANE (Below entire diorama at Y = -4.0) */}
       <RigidBody
         type="fixed"
+        position={[0, -4.0, 0]}
         sensor
-        position={[1.0, -4.0, 0.5]}
         onIntersectionEnter={handleKillPlaneEnter}
         userData={{ type: 'kill-plane' }}
       >
-        <CuboidCollider args={[45.0, 1.0, 40.0]} />
+        <CuboidCollider args={[50, 0.5, 50]} />
       </RigidBody>
 
       {children}

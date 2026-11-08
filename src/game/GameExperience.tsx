@@ -25,8 +25,62 @@ export function GameExperience({
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const exitButtonRef = useRef<HTMLButtonElement>(null);
   const enterButtonRef = useRef<HTMLButtonElement>(null);
-  const initiatingElementRef = useRef<HTMLElement | null>(null);
+  const pendingFocusRestoreRef = useRef(false);
+  const cancelFocusRestoreRef = useRef(false);
   const savedScrollYRef = useRef(0);
+
+  // Visibility and intersection tracking for physics suspension and frameloop control
+  const [isIntersecting, setIsIntersecting] = useState(true);
+  const [isDocVisible, setIsDocVisible] = useState(
+    typeof document !== 'undefined' ? !document.hidden : true
+  );
+
+  useEffect(() => {
+    const handleVis = () => {
+      setIsDocVisible(typeof document !== 'undefined' ? !document.hidden : true);
+    };
+    document.addEventListener('visibilitychange', handleVis);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVis);
+    };
+  }, []);
+
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el) return;
+
+    const checkInView = () => {
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      const vw = window.innerWidth || document.documentElement.clientWidth;
+      const inView = rect.bottom > 0 && rect.top < vh && rect.right > 0 && rect.left < vw;
+      setIsIntersecting(inView);
+    };
+
+    checkInView();
+
+    let observer: IntersectionObserver | null = null;
+    if (typeof IntersectionObserver !== 'undefined') {
+      observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            setIsIntersecting(entry.isIntersecting);
+          }
+        },
+        { threshold: 0 }
+      );
+      observer.observe(el);
+    }
+
+    window.addEventListener('scroll', checkInView, { passive: true });
+    window.addEventListener('resize', checkInView, { passive: true });
+
+    return () => {
+      if (observer) observer.disconnect();
+      window.removeEventListener('scroll', checkInView);
+      window.removeEventListener('resize', checkInView);
+    };
+  }, []);
 
   // Responsive and touch device detection (including phone landscape e.g. 844x390)
   useEffect(() => {
@@ -48,9 +102,11 @@ export function GameExperience({
     };
   }, []);
 
-  // Cleanup on unmount: always remove scroll lock and reset mode/input
+  // Cleanup on unmount: cancel focus restoration, remove scroll lock, reset mode/input
   useEffect(() => {
     return () => {
+      cancelFocusRestoreRef.current = true;
+      pendingFocusRestoreRef.current = false;
       document.body.classList.remove('scroll-locked');
       gameStore.getState().actions.clearInput();
       gameStore.getState().actions.setMode('preview');
@@ -75,6 +131,8 @@ export function GameExperience({
     if (mode === 'play-overlay') {
       savedScrollYRef.current = window.scrollY;
       document.body.classList.add('scroll-locked');
+      pendingFocusRestoreRef.current = true;
+      cancelFocusRestoreRef.current = false;
 
       // Accessibility: focus exit button when entering overlay
       const timer = setTimeout(() => {
@@ -87,13 +145,25 @@ export function GameExperience({
       if (savedScrollYRef.current > 0) {
         window.scrollTo(0, savedScrollYRef.current);
       }
-      // Restore focus to initiating button
-      if (initiatingElementRef.current && typeof initiatingElementRef.current.focus === 'function') {
-        const target = initiatingElementRef.current;
-        setTimeout(() => {
-          target.focus();
-        }, 20);
-      }
+    }
+  }, [mode]);
+
+  // Restore focus to connected Play trigger button AFTER preview renders into DOM
+  useEffect(() => {
+    if (mode === 'preview' && pendingFocusRestoreRef.current) {
+      pendingFocusRestoreRef.current = false;
+      if (cancelFocusRestoreRef.current) return;
+
+      const frameId = requestAnimationFrame(() => {
+        if (cancelFocusRestoreRef.current) return;
+        const btn =
+          enterButtonRef.current ||
+          rootRef.current?.querySelector<HTMLElement>('[data-testid="enter-play-btn"]');
+        if (btn && typeof btn.focus === 'function') {
+          btn.focus();
+        }
+      });
+      return () => cancelAnimationFrame(frameId);
     }
   }, [mode]);
 
@@ -142,7 +212,8 @@ export function GameExperience({
   }, [mode]);
 
   const handleEnterPlay = useCallback(() => {
-    initiatingElementRef.current = enterButtonRef.current || (document.activeElement as HTMLElement | null);
+    pendingFocusRestoreRef.current = true;
+    cancelFocusRestoreRef.current = false;
     if (isTouchDevice) {
       gameStore.getState().actions.setMode('play-overlay');
     } else {
@@ -156,6 +227,8 @@ export function GameExperience({
 
   const handleCheckpointNavigation = useCallback(
     (checkpoint: Checkpoint) => {
+      cancelFocusRestoreRef.current = true;
+      pendingFocusRestoreRef.current = false;
       const destination = checkpoint.targetRoute || checkpoint.targetSectionId;
       if (onNavigate) {
         gameStore.getState().actions.setMode('preview');
@@ -175,6 +248,8 @@ export function GameExperience({
 
   const isPlayActive = mode === 'play-inline' || mode === 'play-overlay';
   const isOverlay = mode === 'play-overlay';
+  const isVisible = isDocVisible && (isOverlay || isIntersecting);
+  const isSimulating = isPlayActive && isVisible;
 
   // Checkpoint route action prompt when player reaches an unlocked checkpoint
   const showCheckpointAction =
@@ -234,6 +309,7 @@ export function GameExperience({
           mode={mode}
           isMobile={isTouchDevice}
           isDeterministicReview={isDeterministicReview}
+          isVisible={isVisible}
           showMarkers={mode === 'preview'}
           onSelectCheckpoint={(dest) => {
             if (onNavigate) {
@@ -244,7 +320,7 @@ export function GameExperience({
           }}
           style={{ width: '100%', height: '100%' }}
         >
-          <Physics gravity={[0, -18, 0]} paused={!isPlayActive}>
+          <Physics gravity={[0, -18, 0]} paused={!isSimulating}>
             <PhysicsCourse showVisuals={false} />
             <PlayerController />
           </Physics>

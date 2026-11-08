@@ -1,0 +1,164 @@
+{
+  "identity": {
+    "name": "Nikhil Sharma",
+    "title": "Software & Applied AI Engineer",
+    "location": "San Jose, CA",
+    "email": "nikhilmsha@gmail.com",
+    "portrait": "Small neutral PHOTO placeholder; no real portrait supplied."
+  },
+  "home": {
+    "intro": "I build production backend services and enterprise web applications, with hands-on work in applied AI and CPU optimization.",
+    "education": "M.S. Software Engineering · Carnegie Mellon · Expected 2027",
+    "experienceSignal": "Nearly 3 years of engineering experience"
+  },
+  "experience": [
+    {
+      "role": "Senior Software Engineer",
+      "employer": "Tech Mahindra",
+      "client": "Intuitive Surgical",
+      "dates": "Nov 2025 – Aug 2026",
+      "points": [
+        "Built React pages and Spring Boot/JAX-RS APIs for provider search, hospital profiles, and account settings.",
+        "Improved search across a ~200,000-hospital directory and developed a shared Redis cache for 6+ Liferay pods."
+      ]
+    },
+    {
+      "role": "Actimize Developer",
+      "employer": "Styrone",
+      "client": "Nationwide Building Society",
+      "dates": "Mar 2025 – Oct 2025",
+      "points": [
+        "Built 25+ drill-down queries and analytical views for fraud investigations.",
+        "Developed Java workflows and 20+ reporting plugins for compliance reports."
+      ]
+    },
+    {
+      "role": "Associate Full Stack Developer",
+      "employer": "Exeevo",
+      "dates": "Jan 2024 – Feb 2025",
+      "points": [
+        "Managed 25+ Spring Boot REST endpoints from design through production.",
+        "Built Angular healthcare dashboards and integrated Dynamics 365 APIs."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "FastCode",
+      "subtitle": "CPU kernel optimization",
+      "stack": "C++ · AVX2/FMA",
+      "dates": "Oct – Nov 2026",
+      "description": "Optimized YOLOv8n convolution using vector instructions, register blocking, and cache-aware input packing.",
+      "result": "21% lower primary-workload latency vs OpenCV: 684 to 539 µs.",
+      "url": "https://github.com/ni-ms/18645-yolov8n-optimization",
+      "slug": "fastcode",
+      "details": {
+        "problem": "Reduce latency of YOLOv8n FP32 1x1 convolution on a single CPU core.",
+        "approach": [
+          "AVX2/FMA vectorization",
+          "Register blocking",
+          "Cache-aware input packing"
+        ],
+        "baselineMicroseconds": 684,
+        "optimizedMicroseconds": 539,
+        "reductionPercent": 21,
+        "theoreticalSingleCorePeakPercent": 91,
+        "qualifier": "Results refer to the primary benchmark workload, not a universal speedup."
+      }
+    },
+    {
+      "name": "ScottyPi",
+      "subtitle": "Campus retrieval assistant",
+      "stack": "Python · MiniLM · QLoRA",
+      "dates": "Fall 2026",
+      "description": "Combined keyword and dense retrieval with fine-tuned embeddings over official CMU-SV pages.",
+      "result": "Evaluated on 160 questions using Recall@1, Recall@3, and MRR.",
+      "slug": "scottypi",
+      "details": {
+        "retrieval": [
+          "BM25",
+          "Dense retrieval",
+          "Reciprocal-rank fusion",
+          "Fine-tuned MiniLM embeddings"
+        ],
+        "passages": 133,
+        "officialCmuSvPages": 20,
+        "evaluationQuestions": 160,
+        "metrics": [
+          "Recall@1",
+          "Recall@3",
+          "MRR"
+        ],
+        "evaluation": "Train/dev/test splits; no numerical recall or MRR scores supplied."
+      }
+    },
+    {
+      "name": "Langmetric",
+      "subtitle": "Model trace analytics",
+      "stack": "Rust · Loco RS · SeaORM",
+      "dates": "Jul 2024 – Present",
+      "description": "Built dashboards that turn structured model traces into latency, token usage, and cost insights.",
+      "url": "https://langmetric.com/",
+      "slug": "langmetric",
+      "details": {
+        "service": "Rust service aggregating structured model traces",
+        "implementation": [
+          "Loco RS",
+          "Asynchronous SeaORM queries",
+          "Serde JSON views",
+          "Chart.js visualizations"
+        ],
+        "dashboardMeasures": [
+          "Latency distributions",
+          "Token usage",
+          "Cost"
+        ]
+      }
+    }
+  ],
+  "education": [
+    {
+      "school": "Carnegie Mellon University",
+      "degree": "M.S. Software Engineering",
+      "year": "Expected 2027"
+    },
+    {
+      "school": "BITS Pilani",
+      "degree": "B.E. Computer Science",
+      "year": "2024"
+    }
+  ],
+  "skills": {
+    "Languages": "Java, Python, C/C++, Rust, TypeScript, SQL",
+    "Backend": "Spring Boot, JAX-RS, FastAPI, React, Angular",
+    "AI": "PyTorch, MiniLM, LangChain, LangGraph",
+    "Infrastructure": "Redis, Oracle, SQL Server, Docker, Kubernetes"
+  },
+  "research": {
+    "title": "Privacy-preserving shared memory for LLM agents",
+    "status": "In review",
+    "venue": "Peer-to-Peer Networking and Applications",
+    "fullTitle": "Private Federated Aggregation of LLM-Agent Memory: Usable Shared Memory with a Measurable Leakage-Drop Guarantee under Secure Aggregation and the Skellam Mechanism"
+  },
+  "source": {
+    "resume": "design/source/Resume_Nikhil_Sharma_2026-11.docx",
+    "asOf": "2026-11-08",
+    "linkedinRetrieval": "Unavailable; facts sourced from supplied resume and its hyperlink relationships."
+  },
+  "links": {
+    "email": "mailto:nikhilmsha@gmail.com",
+    "github": "https://github.com/ni-ms",
+    "linkedin": "https://linkedin.com/in/nikhilmsha"
+  },
+  "about": {
+    "paragraphs": [
+      "I build backend services and enterprise web applications. My experience spans healthcare platforms, fraud investigation tools, and production integrations.",
+      "Alongside that work, I explore applied AI and systems performance—from hybrid retrieval and model trace analytics to CPU kernel optimization."
+    ],
+    "focus": [
+      "Backend engineering",
+      "Applied AI & retrieval",
+      "Systems performance"
+    ]
+  }
+}

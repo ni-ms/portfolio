@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "phase": "handoff_prepared",
+  "activeTicket": null,
+  "tasks": {
+    "T01": {
+      "status": "pending",
+      "owner": null,
+      "resultCommit": null,
+      "report": "docs/implementation/reports/T01.md",
+      "resultPatch": null
+    },
+    "T02": {
+      "status": "pending",
+      "owner": null,
+      "resultCommit": null,
+      "report": "docs/implementation/reports/T02.md",
+      "resultPatch": null
+    },
+    "T03": {
+      "status": "pending",
+      "owner": null,
+      "resultCommit": null,
+      "report": "docs/implementation/reports/T03.md",
+      "resultPatch": null
+    },
+    "T04": {
+      "status": "pending",
+      "owner": null,
+      "resultCommit": null,
+      "report": "docs/implementation/reports/T04.md",
+      "resultPatch": null
+    },
+    "T05": {
+      "status": "pending",
+      "owner": null,
+      "resultCommit": null,
+      "report": "docs/implementation/reports/T05.md",
+      "resultPatch": null
+    },
+    "T06": {
+      "status": "pending",
+      "owner": null,
+      "resultCommit": null,
+      "report": "docs/implementation/reports/T06.md",
+      "resultPatch": null
+    },
+    "T07": {
+      "status": "pending",
+      "owner": null,
+      "resultCommit": null,
+      "report": "docs/implementation/reports/T07.md",
+      "resultPatch": null
+    },
+    "T08": {
+      "status": "pending",
+      "owner": null,
+      "resultCommit": null,
+      "report": "docs/implementation/reports/T08.md",
+      "resultPatch": null
+    }
+  }
+}

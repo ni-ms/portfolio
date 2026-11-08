@@ -1,0 +1,191 @@
+{
+  "schemaVersion": 1,
+  "tickets": [
+    {
+      "id": "T01",
+      "title": "Foundation, routes and theme contracts",
+      "dependencies": [],
+      "owner": "coordinator",
+      "ticket": "docs/implementation/tickets/T01.md",
+      "allowedPaths": [
+        "src/App.tsx",
+        "src/main.tsx",
+        "src/routing/**",
+        "src/theme/**",
+        "src/context/**",
+        "src/components/Header.tsx",
+        "src/components/MobileMenu.tsx",
+        "src/components/Footer.tsx",
+        "index.html",
+        "src/styles/tokens.css",
+        "src/styles/components.css",
+        "src/types/game.ts",
+        "package.json",
+        "package-lock.json",
+        "docs/implementation/CONTRACTS.md"
+      ],
+      "references": [
+        "design/mockups/current-theme/home-dark.png",
+        "design/mockups/current-theme/home-light.png"
+      ]
+    },
+    {
+      "id": "T02",
+      "title": "Factual content, confirmed links and résumé download",
+      "dependencies": [
+        "T01"
+      ],
+      "owner": "content",
+      "ticket": "docs/implementation/tickets/T02.md",
+      "allowedPaths": [
+        "src/content/**",
+        "public/resume/**",
+        "design/source/**"
+      ],
+      "references": [
+        "design/mockups/current-theme/resume-dark.png",
+        "design/mockups/current-theme/resume-light.png"
+      ]
+    },
+    {
+      "id": "T03",
+      "title": "Portfolio pages and all project details",
+      "dependencies": [
+        "T01",
+        "T02"
+      ],
+      "owner": "pages",
+      "ticket": "docs/implementation/tickets/T03.md",
+      "allowedPaths": [
+        "src/pages/**",
+        "src/components/**",
+        "src/styles/pages.css",
+        "public/images/projects/**"
+      ],
+      "references": [
+        "design/mockups/current-theme/home-dark.png",
+        "design/mockups/current-theme/home-light.png",
+        "design/mockups/current-theme/projects-dark.png",
+        "design/mockups/current-theme/projects-light.png",
+        "design/mockups/current-theme/fastcode-dark.png",
+        "design/mockups/current-theme/fastcode-light.png",
+        "design/mockups/current-theme/resume-dark.png",
+        "design/mockups/current-theme/resume-light.png",
+        "design/mockups/current-theme/about-dark.png",
+        "design/mockups/current-theme/about-light.png"
+      ]
+    },
+    {
+      "id": "T04",
+      "title": "Playable controller, camera and checkpoint correctness",
+      "dependencies": [
+        "T01"
+      ],
+      "owner": "game",
+      "ticket": "docs/implementation/tickets/T04.md",
+      "allowedPaths": [
+        "src/game/**",
+        "src/types/game.ts",
+        "tests/game-controller.test.ts",
+        "tests/course.test.ts"
+      ],
+      "references": [
+        "design/mockups/current-theme/home-dark.png",
+        "design/mockups/current-theme/home-light.png"
+      ]
+    },
+    {
+      "id": "T05",
+      "title": "Finished futuristic world and rendering quality",
+      "dependencies": [
+        "T04"
+      ],
+      "owner": "world",
+      "ticket": "docs/implementation/tickets/T05.md",
+      "allowedPaths": [
+        "src/game/**",
+        "src/types/game.ts",
+        "design/scene/**",
+        "public/models/**",
+        "public/textures/**",
+        "tests/course.test.ts"
+      ],
+      "references": [
+        "design/mockups/current-theme/home-dark.png",
+        "design/mockups/current-theme/home-light.png"
+      ]
+    },
+    {
+      "id": "T06",
+      "title": "Home/game integration, soft blur and resilient loading",
+      "dependencies": [
+        "T03",
+        "T05"
+      ],
+      "owner": "coordinator",
+      "ticket": "docs/implementation/tickets/T06.md",
+      "allowedPaths": [
+        "src/App.tsx",
+        "src/pages/**",
+        "src/components/Hero.tsx",
+        "src/components/FallbackHero.tsx",
+        "src/game/**",
+        "src/styles/**"
+      ],
+      "references": [
+        "design/mockups/current-theme/home-dark.png",
+        "design/mockups/current-theme/home-light.png"
+      ]
+    },
+    {
+      "id": "T07",
+      "title": "Purposeful GSAP and reduced motion",
+      "dependencies": [
+        "T06"
+      ],
+      "owner": "motion",
+      "ticket": "docs/implementation/tickets/T07.md",
+      "allowedPaths": [
+        "src/motion/**",
+        "src/pages/**",
+        "src/components/**",
+        "src/game/CameraRig.tsx",
+        "src/styles/motion.css"
+      ],
+      "references": [
+        "design/mockups/current-theme/home-dark.png",
+        "design/mockups/current-theme/home-light.png",
+        "design/mockups/current-theme/fastcode-dark.png",
+        "design/mockups/current-theme/fastcode-light.png"
+      ]
+    },
+    {
+      "id": "T08",
+      "title": "Integrated verification and delivery evidence",
+      "dependencies": [
+        "T07"
+      ],
+      "owner": "reviewer",
+      "ticket": "docs/implementation/tickets/T08.md",
+      "allowedPaths": [
+        "tests/**",
+        "src/components/__tests__/**",
+        "playwright.config.ts",
+        "design/verification/**",
+        "docs/implementation/reports/T08.md"
+      ],
+      "references": [
+        "design/mockups/current-theme/home-dark.png",
+        "design/mockups/current-theme/home-light.png",
+        "design/mockups/current-theme/projects-dark.png",
+        "design/mockups/current-theme/projects-light.png",
+        "design/mockups/current-theme/fastcode-dark.png",
+        "design/mockups/current-theme/fastcode-light.png",
+        "design/mockups/current-theme/resume-dark.png",
+        "design/mockups/current-theme/resume-light.png",
+        "design/mockups/current-theme/about-dark.png",
+        "design/mockups/current-theme/about-light.png"
+      ]
+    }
+  ]
+}

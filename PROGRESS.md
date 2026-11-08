@@ -19,3 +19,11 @@
 - T04 owner 29765d14-774f-4a8c-842f-8cb907a20f84 (Antigravity gemini-3.8-flash high), branch codex/portfolio-T04-gameplay, worktree /Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t04-gameplay. Allowed src/game/**, src/types/game.ts, tests/game-controller.test.ts, tests/course.test.ts, report T04.md.
 - Both isolated worktrees include committed approved handoff, factual content and mockups. Coordinator provided ignored node_modules symlinks to installed matching dependencies; workers must request dependency changes.
 - Each ASSIGN uses expectReply=true; queued sends do not establish completion. Next coordinator action on explicit READY_FOR_REVIEW: ACK report, inspect scoped diff/evidence, independent review when material, serial integration and checks; then mark done. Do not schedule T03/T05 based on ACK alone.
+
+## T02 review checkpoint
+
+- Current integration commit cbf3374; no worker branch integrated yet. T02 candidate 744ab4dadccbb58ed7aa99c80e5943e8efd7e997 received and explicitly ACKed; coordinator reviewed changed content against JSON and extracted DOCX.
+- Both actual PDF pages independently rendered via macOS PDFKit to .agent-runs/T02-pdf-{1,2}.png and inspected: clean readable two-page layout, factual employer/client/education/project values. Worker preview PNG was stale; actual final PDF verified.
+- Scoped repairs requested from original owner with expectReply=true: remove unsupported Langmetric high-volume/query-bottleneck wording, clarify in-progress M.S., keep implementation/provenance notes out of public qualifier copy, strengthen binary download checks, retain reproducible export source/recipe, correct report owner/result metadata.
+- T04 ACK explicitly received; implementing in separate gameplay worktree. T05 remains blocked until reviewed/integrated T04 evidence.
+- Current dirty paths are coordinator state/progress only; workers own their isolated paths. Exact next action: consume repaired T02 READY_FOR_REVIEW, inspect repair diff, integrate serially and rerun checks. Await actual T04 report independently; ACK alone is not completion.

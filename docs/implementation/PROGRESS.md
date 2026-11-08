@@ -57,3 +57,12 @@
 - Independent reviewer fd6a9ad5 resumed and explicitly ACKed T04-rereview-30f6bdf. Checking all eight blockers, real uninterrupted traversal, and new hardcoded scroll visibility/stair-assist/test-setup mechanisms. Original author holds edits. Report/code and original/revised ignored drivers remain in gameplay worktree.
 - Active four agents: coordinator, T03 author, T04 author, T04 reviewer. No additional reviewer until a slot is released.
 - Exact next action: process T04 explicit REVIEW or T03 repaired READY_FOR_REVIEW; ACK results, retain reports/evidence, assign bounded repairs or integrate only accepted commits with combined checks. T05 stays blocked. Dirty root paths only this checkpoint/report copy.
+
+## Latest T04 verdict (supersedes prior gameplay acceptance claims)
+
+- Integration checkpoint before this record 122f17c. T04 re-review at30f6bdf REQUEST_CHANGES, explicitly ACKed. Reviewer genuinely completed continuous final-roof route21/21: all earned sensors, same body, no setup/placement, explicit final /resume action. Preserve this success.
+- Remaining3 blockers: scrollY>400 freezes actually visible preview/fullscreen game and fails below-fold/hidden suspension; exit still focuses disconnected trigger/BODY; hardcoded stair assist boosts player from base ground. Independent asserted driver57pass/7fail. Original14/14 report was recording-only overclaim; worker instructed to correct it.
+- Original owner sent T04-repair2-30f6bdf with expectReply=true: actual intersection+document visibility for render/physics, connected-trigger focus after preview (cancel route/unmount), canonical ramp support/slope checks, remove unused test-setup placement mechanism. Extra grant tests/e2e/gameplay*.ts and fixtures/gameplay* to preserve real-component assertions through later worktrees/T08.
+- Reviewer fd6a9ad5 retired/archived after verdict. Updated report copied to root; asserted repro .agent-runs/rereview-t04.* and summary .agent-runs/T04-rereview-30f6bdf/ in gameplay worktree. Existing author3004 server left running.
+- T03 original owner has ACKed four remaining page repair groups and is implementing. No T03/T04 candidate integrated; T05 blocked. Three active agents including coordinator; fresh reviewer slot available when actual repaired result arrives.
+- Exact next action: ACK next repaired READY_FOR_REVIEW, inspect scoped diff/evidence, resume appropriate independent reviewer, integrate only after explicit verdict+coordinator alignment+combined checks. Root dirty paths only checkpoint/report copy.

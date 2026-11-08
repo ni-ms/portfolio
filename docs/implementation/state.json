@@ -40,7 +40,7 @@
       "repairCorrelation": "T03-repair2-f05de7b"
     },
     "T04": {
-      "status": "review",
+      "status": "in_progress",
       "owner": "29765d14-774f-4a8c-842f-8cb907a20f84",
       "resultCommit": null,
       "report": "docs/implementation/reports/T04.md",
@@ -49,9 +49,9 @@
       "worktree": "/Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t04-gameplay",
       "baseCommit": "6211600b3f6030be422684d22d4908df5515b28b",
       "candidateCommit": "30f6bdf88e523258c946251ec20fb2f29f79d795",
-      "reviewer": "fd6a9ad5-1fc8-499c-8080-16142de55261",
-      "reviewVerdict": "repair_review",
-      "repairCorrelation": "T04-repair-d62334d"
+      "reviewer": null,
+      "reviewVerdict": "request_changes",
+      "repairCorrelation": "T04-repair2-30f6bdf"
     },
     "T05": {
       "status": "pending",

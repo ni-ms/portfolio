@@ -107,7 +107,7 @@ export const portfolioData: PortfolioData = {
     name: "YOUR NAME", // [LINKEDIN_IMPORT_FIELD]: Replace with actual full name
     headline: "Creative Technologist & Systems Architect", // [LINKEDIN_IMPORT_FIELD]
     location: "San Francisco, CA / Remote", // [LINKEDIN_IMPORT_FIELD]
-    resumePdfUrl: undefined, // [LINKEDIN_IMPORT_FIELD]: Set only when actual PDF is provided
+    resumePdfUrl: "/resume/Nikhil_Sharma_Resume.pdf", // [LINKEDIN_IMPORT_FIELD]: Set to actual generated PDF
     resumePortraitUrl: undefined // [LINKEDIN_IMPORT_FIELD]: Optional portrait for Resume section only
   },
   hero: {

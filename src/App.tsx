@@ -2,8 +2,8 @@ import { useRef, useState, useEffect, useCallback } from 'react';
 import { Header } from './components/Header';
 import { MobileMenu } from './components/MobileMenu';
 import { Footer } from './components/Footer';
-import LegacyHome from './routing/LegacyHome';
-import { useNavigation, routes } from './routing/Router';
+import PortfolioPages from './pages/PortfolioPages';
+import { useNavigation } from './routing/Router';
 export default function App() {
   const { path } = useNavigation();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -18,7 +18,7 @@ export default function App() {
     <a href="#main-content" className="skip-link">Skip to main content</a>
     <Header isMenuOpen={menuOpen} onToggleMenu={() => setMenuOpen(!menuOpen)} menuButtonRef={menuButtonRef} />
     <MobileMenu isOpen={menuOpen} onClose={closeMenu} triggerButtonRef={menuButtonRef} />
-    {path === '/' ? <LegacyHome /> : <main id="main-content" tabIndex={-1} className="route-shell"><h1>{routes.includes(path) ? path.split('/').pop()!.replace('resume', 'Résumé') : 'Page not found'}</h1><p>{routes.includes(path) ? 'Portfolio content is being integrated.' : 'This address does not exist.'}</p><a href="/">Return home →</a></main>}
+    <PortfolioPages path={path} />
     <Footer />
   </div>;
 }

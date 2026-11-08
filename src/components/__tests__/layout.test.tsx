@@ -1,20 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import { renderToString } from 'react-dom/server';
+import App from '../../App';
 import PortfolioPages from '../../pages/PortfolioPages';
 import { Header } from '../Header';
 import { MobileMenu } from '../MobileMenu';
-import { Hero } from '../Hero';
-import { Projects } from '../Projects';
-import { ProjectModal } from '../ProjectModal';
-import { Explorations } from '../Explorations';
-import { Resume } from '../Resume';
-import { Contact } from '../Contact';
 import { Footer } from '../Footer';
-import { FallbackHero } from '../FallbackHero';
 import { PhotoPlaceholder } from '../PhotoPlaceholder';
 import { BenchmarkComparison } from '../BenchmarkComparison';
 import { ProjectMetrics } from '../ProjectMetrics';
-import { portfolioData } from '../../content/portfolio';
 import { portfolioContent, projectsBySlug } from '../../content/realPortfolio';
 
 describe('Semantic UI and Responsive Layout Components (T03)', () => {
@@ -245,52 +238,23 @@ describe('Semantic UI and Responsive Layout Components (T03)', () => {
     });
   });
 
-  describe('Legacy Component Compatibility (Preserved for LegacyHome)', () => {
-    it('renders Hero component', () => {
-      const html = renderToString(<Hero />);
-      expect(html).toContain('WORK');
-      expect(html).toContain('&amp; IDEAS.');
-      expect(html).toContain('DRONE VIEW');
-      expect(html).toContain('START EXPLORING ↗');
+  describe('Mounted application shell', () => {
+    it('mounts factual Home in a single main landmark with shared navigation', () => {
+      const html = renderToString(<App />);
+      expect((html.match(/<main /g) || []).length).toBe(1);
+      expect(html).toContain('id="main-content"');
+      expect(html).toContain('Skip to main content');
+      expect(html).toContain('Nikhil Sharma');
+      expect(html).toContain('FastCode');
+      expect(html).not.toContain('YOUR NAME');
+      expect(html).not.toContain('PROJECT ONE');
+      expect(html).not.toContain('Portfolio content is being integrated');
     });
-
-    it('renders FallbackHero component', () => {
-      const html = renderToString(<FallbackHero />);
-      expect(html).toContain('fallback-hero');
-      expect(html).toContain('fallback-svg');
-    });
-
-    it('renders Projects component', () => {
-      const html = renderToString(<Projects />);
-      expect(html).toContain('SELECTED PROJECTS');
-      expect(html).toContain('PROJECT ONE');
-    });
-
-    it('renders ProjectModal component', () => {
-      const sample = portfolioData.projects[0];
-      const html = renderToString(<ProjectModal project={sample} onClose={() => {}} />);
-      expect(html).toContain(sample.title);
-      expect(html).toContain('THE CHALLENGE');
-    });
-
-    it('renders Explorations component', () => {
-      const html = renderToString(<Explorations />);
-      expect(html).toContain('EXPLORATIONS / LAB');
-    });
-
-    it('renders Resume component', () => {
-      const html = renderToString(<Resume />);
-      expect(html).toContain('RÉSUMÉ &amp; BACKGROUND');
-      expect(html).toContain('EXPERIENCE');
-    });
-
-    it('renders Contact and Footer components', () => {
-      const contactHtml = renderToString(<Contact />);
-      expect(contactHtml).toContain(portfolioData.contact.heading.replace('&', '&amp;'));
-
-      const footerHtml = renderToString(<Footer />);
-      expect(footerHtml).toContain('Nearly 3 years');
-      expect(footerHtml).toContain('mailto:nikhilmsha@gmail.com');
+    it('renders confirmed footer contact channels', () => {
+      const html = renderToString(<Footer />);
+      expect(html).toContain('mailto:nikhilmsha@gmail.com');
+      expect(html).toContain('https://github.com/ni-ms');
+      expect(html).toContain('https://linkedin.com/in/nikhilmsha');
     });
   });
 });

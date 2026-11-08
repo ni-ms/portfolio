@@ -20,7 +20,7 @@ test('dark default, explicit theme persistence, history and direct routes', asyn
   await page.goForward();
   await expect(page).toHaveURL(/\/projects$/);
   await page.goto('/does-not-exist');
-  await expect(page.getByRole('heading', { name: 'Page not found' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /page not found/i })).toBeVisible();
   await expect(page).toHaveTitle('Page not found — Nikhil Sharma');
 });
 
@@ -61,7 +61,7 @@ test('history navigation closes an open mobile menu and releases scroll', async 
 
 test('fragment focus follows its section and Back restores the reading position', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.goto('/#contact');
+  await page.goto('/about#contact');
   await expect(page.locator('#contact')).toBeFocused();
   await page.keyboard.press('Tab');
   expect(await page.evaluate(() => document.activeElement?.closest('#contact') !== null)).toBe(true);
@@ -71,7 +71,7 @@ test('fragment focus follows its section and Back restores the reading position'
   await page.evaluate(() => document.querySelector<HTMLAnchorElement>('.desktop-nav a[href="/resume"]')?.click());
   await expect(page).toHaveURL(/\/resume$/);
   await page.goBack();
-  await expect(page).toHaveURL(/\/#contact$/);
+  await expect(page).toHaveURL(/\/about#contact$/);
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeCloseTo(before, 0);
   await expect(page.locator('#contact')).toBeFocused();
 });

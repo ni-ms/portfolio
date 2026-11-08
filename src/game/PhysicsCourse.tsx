@@ -58,12 +58,12 @@ export function PhysicsCourse({
         <CuboidCollider args={[bounds.startRooftop.lowerLanding.size[0] / 2, bounds.startRooftop.lowerLanding.size[1] / 2, bounds.startRooftop.lowerLanding.size[2] / 2]} />
       </RigidBody>
 
-      {/* Start Stairs Smooth Ramp (seamless slope from Y=0.6, Z=5.2 to Y=1.2, Z=4.4) */}
+      {/* Start Stairs Smooth Ramp (rising from Y=0.6, Z=5.2 to Y=1.2, Z=4.4) */}
       <RigidBody
         type="fixed"
         position={[-3.5, 0.9, 4.8]}
-        rotation={[-0.6435, 0, 0]}
-        friction={0.8}
+        rotation={[0.6435, 0, 0]}
+        friction={0.0}
         restitution={0}
         userData={{ type: 'ramp', name: 'start-stairs-ramp' }}
       >
@@ -115,12 +115,12 @@ export function PhysicsCourse({
         <CuboidCollider args={[bounds.explorationRooftop.lowerTerrace.size[0] / 2, bounds.explorationRooftop.lowerTerrace.size[1] / 2, bounds.explorationRooftop.lowerTerrace.size[2] / 2]} />
       </RigidBody>
 
-      {/* Exploration Stairs Ramp (seamless slope from Y=1.8, Z=1.0 to Y=2.6, Z=0.2) */}
+      {/* Exploration Stairs Ramp (rising from Y=1.8, Z=1.0 to Y=2.6, Z=0.2) */}
       <RigidBody
         type="fixed"
         position={[1.0, 2.2, 0.6]}
-        rotation={[-0.7854, 0, 0]}
-        friction={0.8}
+        rotation={[0.7854, 0, 0]}
+        friction={0.0}
         restitution={0}
         userData={{ type: 'ramp', name: 'explorations-stairs-ramp' }}
       >
@@ -154,9 +154,9 @@ export function PhysicsCourse({
       {/* Résumé Stairs Ramp */}
       <RigidBody
         type="fixed"
-        position={[4.2, 3.6, 3.8]}
+        position={[bounds.resumeRooftop.stairs.position[0], 3.6, bounds.resumeRooftop.stairs.position[2]]}
         rotation={[-0.555, -0.7854, 0]}
-        friction={0.8}
+        friction={0.0}
         restitution={0}
         userData={{ type: 'ramp', name: 'resume-stairs-ramp' }}
       >
@@ -186,7 +186,7 @@ export function PhysicsCourse({
           onIntersectionEnter={() => handleCheckpointEnter(cp.id)}
           userData={{ type: 'sensor', checkpointId: cp.id }}
         >
-          <CuboidCollider args={[1.2, 1.2, 1.2]} />
+          <CuboidCollider args={[1.4, 1.4, 1.4]} />
         </RigidBody>
       ))}
 

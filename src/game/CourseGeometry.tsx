@@ -442,13 +442,6 @@ const StartRooftopMarkings: React.FC<{ position: [number, number, number] }> = (
 
 /**
  * Complete Course Geometry component.
- * Recreates all architectural landmarks:
- * - Starting rooftop with stairs, painted floor arrows, START marking
- * - Back-left elevated work rooftop with HVAC units, louvers, Checkpoint 01 beacon
- * - Central exploration rooftop with stairs, planters with sparse greenery, Checkpoint 02 beacon
- * - Far-right elevated résumé rooftop with stairs, rectangular overhead steel frame, Checkpoint 03 beacon
- * - Stepping platforms, narrow beams, concrete ramps, slender safety rails, vertical support pillars, and dark ground slab
- * - Bevels and architectural seams on edges to catch the directional light nicely
  */
 export const CourseGeometry: React.FC = () => {
   const { startRooftop, workRooftop, explorationRooftop, resumeRooftop, groundSlab, steppingPlatforms } =
@@ -456,9 +449,7 @@ export const CourseGeometry: React.FC = () => {
 
   return (
     <group name="course-geometry">
-      {/* =========================================================================
-          DARK GROUND SLAB (Seamless blend into page background #101414)
-          ========================================================================= */}
+      {/* DARK GROUND SLAB */}
       <mesh
         position={groundSlab.position}
         receiveShadow
@@ -467,7 +458,7 @@ export const CourseGeometry: React.FC = () => {
         <boxGeometry args={groundSlab.size} />
       </mesh>
 
-      {/* Subtle ground slab seam lines for scale */}
+      {/* Ground slab seam lines */}
       {[-8, -4, 0, 4, 8, 12].map((x) => (
         <mesh key={`grid-x-${x}`} position={[x, 0.005, 0.5]} rotation={[-Math.PI / 2, 0, 0]} material={materials.groundGridLine}>
           <planeGeometry args={[0.03, 24]} />
@@ -479,10 +470,7 @@ export const CourseGeometry: React.FC = () => {
         </mesh>
       ))}
 
-      {/* =========================================================================
-          1. FOREGROUND-LEFT STARTING ROOFTOP
-          ========================================================================= */}
-      {/* Main Slab */}
+      {/* 1. FOREGROUND-LEFT STARTING ROOFTOP */}
       <BeveledPlatform
         position={startRooftop.mainSlab.position}
         size={startRooftop.mainSlab.size}
@@ -490,7 +478,6 @@ export const CourseGeometry: React.FC = () => {
         material={materials.concreteMain}
       />
 
-      {/* Lower Landing Slab */}
       <BeveledPlatform
         position={startRooftop.lowerLanding.position}
         size={startRooftop.lowerLanding.size}
@@ -498,7 +485,6 @@ export const CourseGeometry: React.FC = () => {
         material={materials.concreteLight}
       />
 
-      {/* Stairs connecting Lower Landing to Main Slab */}
       <Stairs
         position={startRooftop.stairs.position}
         width={startRooftop.stairs.width}
@@ -508,12 +494,10 @@ export const CourseGeometry: React.FC = () => {
         rotationY={Math.PI}
       />
 
-      {/* Painted lime floor arrows and START marking */}
       <StartRooftopMarkings position={startRooftop.floorArrowsPosition} />
 
-      {/* Safety Railings along start rooftop outer edges */}
       <Railing
-        start={[-5.6, 1.2, 5.4]}
+        start={[-5.6, 1.2, 4.4]}
         end={[-5.6, 1.2, 1.6]}
       />
       <Railing
@@ -521,14 +505,11 @@ export const CourseGeometry: React.FC = () => {
         end={[-3.5, 1.2, 1.6]}
       />
       <Railing
-        start={[-4.7, 0.6, 6.3]}
-        end={[-2.3, 0.6, 6.3]}
+        start={[-4.7, 0.6, 6.4]}
+        end={[-2.3, 0.6, 6.4]}
       />
 
-      {/* =========================================================================
-          2. BACK-LEFT ELEVATED WORK ROOFTOP (Checkpoint 01)
-          ========================================================================= */}
-      {/* Main elevated slab */}
+      {/* 2. BACK-LEFT ELEVATED WORK ROOFTOP (Checkpoint 01) */}
       <BeveledPlatform
         position={workRooftop.mainSlab.position}
         size={workRooftop.mainSlab.size}
@@ -536,18 +517,15 @@ export const CourseGeometry: React.FC = () => {
         material={materials.concreteDark}
       />
 
-      {/* HVAC Units on maintenance equipment curbs */}
       {workRooftop.hvacUnits.map((hvac, idx) => (
         <HVACUnit key={`hvac-${idx}`} position={hvac.position} size={hvac.size} />
       ))}
 
-      {/* Checkpoint 01 Beacon */}
       <CheckpointBeacon
         position={workRooftop.beaconPosition}
         id={CHECKPOINTS[1].id}
       />
 
-      {/* Safety Railings around work rooftop */}
       <Railing
         start={[-6.3, 3.8, -5.6]}
         end={[-6.3, 3.8, -1.4]}
@@ -561,10 +539,7 @@ export const CourseGeometry: React.FC = () => {
         end={[-1.7, 3.8, -3.8]}
       />
 
-      {/* =========================================================================
-          3. CENTRAL EXPLORATION ROOFTOP (Checkpoint 02)
-          ========================================================================= */}
-      {/* Upper Terrace */}
+      {/* 3. CENTRAL EXPLORATION ROOFTOP (Checkpoint 02) */}
       <BeveledPlatform
         position={explorationRooftop.upperTerrace.position}
         size={explorationRooftop.upperTerrace.size}
@@ -572,7 +547,6 @@ export const CourseGeometry: React.FC = () => {
         material={materials.concreteMain}
       />
 
-      {/* Lower Terrace */}
       <BeveledPlatform
         position={explorationRooftop.lowerTerrace.position}
         size={explorationRooftop.lowerTerrace.size}
@@ -580,7 +554,6 @@ export const CourseGeometry: React.FC = () => {
         material={materials.concreteLight}
       />
 
-      {/* Connecting Staircase */}
       <Stairs
         position={explorationRooftop.stairs.position}
         width={explorationRooftop.stairs.width}
@@ -590,18 +563,15 @@ export const CourseGeometry: React.FC = () => {
         rotationY={Math.PI}
       />
 
-      {/* Planters with sparse hanging greenery */}
       {explorationRooftop.planters.map((planter, idx) => (
         <PlanterBox key={`planter-${idx}`} position={planter.position} size={planter.size} />
       ))}
 
-      {/* Checkpoint 02 Beacon */}
       <CheckpointBeacon
         position={explorationRooftop.beaconPosition}
         id={CHECKPOINTS[2].id}
       />
 
-      {/* Railings on upper and lower terraces */}
       <Railing
         start={[-1.6, 2.6, -2.3]}
         end={[3.6, 2.6, -2.3]}
@@ -611,10 +581,7 @@ export const CourseGeometry: React.FC = () => {
         end={[3.3, 1.8, 2.4]}
       />
 
-      {/* =========================================================================
-          4. FAR-RIGHT ELEVATED RÉSUMÉ ROOFTOP (Checkpoint 03)
-          ========================================================================= */}
-      {/* Main elevated slab */}
+      {/* 4. FAR-RIGHT ELEVATED RÉSUMÉ ROOFTOP (Checkpoint 03) */}
       <BeveledPlatform
         position={resumeRooftop.mainSlab.position}
         size={resumeRooftop.mainSlab.size}
@@ -622,7 +589,6 @@ export const CourseGeometry: React.FC = () => {
         material={materials.concreteDark}
       />
 
-      {/* Rectangular overhead steel frame */}
       <OverheadSteelFrame
         center={resumeRooftop.overheadFrame.center}
         width={resumeRooftop.overheadFrame.width}
@@ -630,7 +596,6 @@ export const CourseGeometry: React.FC = () => {
         depth={resumeRooftop.overheadFrame.depth}
       />
 
-      {/* Access Stairs */}
       <Stairs
         position={resumeRooftop.stairs.position}
         width={resumeRooftop.stairs.width}
@@ -640,25 +605,21 @@ export const CourseGeometry: React.FC = () => {
         rotationY={-Math.PI / 4}
       />
 
-      {/* Checkpoint 03 Beacon */}
       <CheckpointBeacon
         position={resumeRooftop.beaconPosition}
         id={CHECKPOINTS[3].id}
       />
 
-      {/* Safety Railings along edge */}
       <Railing
         start={[8.5, 4.2, -0.7]}
         end={[8.5, 4.2, 3.7]}
       />
       <Railing
-        start={[3.9, 4.2, -0.7]}
+        start={[5.3, 4.2, -0.7]}
         end={[8.5, 4.2, -0.7]}
       />
 
-      {/* =========================================================================
-          5. STEPPING PLATFORMS & NARROW BEAMS (Connective tissue)
-          ========================================================================= */}
+      {/* 5. STEPPING PLATFORMS & NARROW BEAMS */}
       {steppingPlatforms.map((plat) => (
         <group key={plat.id}>
           <BeveledPlatform

@@ -101,14 +101,23 @@ export class JumpController {
   }
 
   /**
-   * Checks if a jump can be performed at current timestamp `now`.
-   */
+   * Checks if a jump can be performed at current timestamp `now`.\n   */
   public canJump(now: number, isGrounded: boolean): boolean {
     const isBuffered = now - this.lastJumpPressTime <= this.jumpBufferMs;
     const hasCoyote = isGrounded || now - this.lastGroundedTime <= this.coyoteTimeMs;
     const cooldownCleared = now - this.lastJumpExecutedTime >= this.jumpCooldownMs;
 
     return isBuffered && hasCoyote && cooldownCleared;
+  }
+
+  /**
+   * Checks if a jump is currently active or held.
+   */
+  public isJumping(now?: number): boolean {
+    if (now !== undefined) {
+      return now - this.lastJumpExecutedTime < this.jumpCooldownMs;
+    }
+    return this.isJumpHeld;
   }
 
   /**

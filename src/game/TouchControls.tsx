@@ -55,7 +55,7 @@ export function TouchControls({ className = '', style }: TouchControlsProps) {
     gameStore.getState().actions.resetToCheckpoint();
   }, []);
 
-  // Global blur, visibilitychange, and window-level pointer cancel listeners
+  // Global blur, visibilitychange, and individual pointer cancel listeners
   useEffect(() => {
     const handleWindowBlur = () => {
       clearAllTouchInputs();
@@ -67,18 +67,34 @@ export function TouchControls({ className = '', style }: TouchControlsProps) {
       }
     };
 
-    const handleWindowPointerCancel = () => {
-      clearAllTouchInputs();
+    const handleWindowPointerCancel = (e: PointerEvent) => {
+      if (e.pointerId && activePointers.current.has(e.pointerId)) {
+        const action = activePointers.current.get(e.pointerId);
+        activePointers.current.delete(e.pointerId);
+        if (action) {
+          gameStore.getState().actions.setInput({ [action]: false });
+        }
+      } else if (!e.pointerId) {
+        clearAllTouchInputs();
+      }
+    };
+
+    const handleWindowTouchCancel = (e: TouchEvent) => {
+      if (!e.touches || e.touches.length === 0) {
+        clearAllTouchInputs();
+      }
     };
 
     window.addEventListener('blur', handleWindowBlur);
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('pointercancel', handleWindowPointerCancel);
+    window.addEventListener('touchcancel', handleWindowTouchCancel);
 
     return () => {
       window.removeEventListener('blur', handleWindowBlur);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('pointercancel', handleWindowPointerCancel);
+      window.removeEventListener('touchcancel', handleWindowTouchCancel);
       clearAllTouchInputs();
     };
   }, [clearAllTouchInputs]);
@@ -203,7 +219,6 @@ export function TouchControls({ className = '', style }: TouchControlsProps) {
               pointerEvents: 'none',
             }}
           >
-            {/* Small angular route emblem */}
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent, #D6FF64)" strokeWidth="2.5">
               <circle cx="12" cy="12" r="3" fill="var(--color-accent, #D6FF64)" />
               <line x1="12" y1="3" x2="12" y2="7" />

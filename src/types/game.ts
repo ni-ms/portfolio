@@ -50,6 +50,7 @@ export interface GameStoreState {
   isRespawning: boolean;
   isDeterministicReview: boolean;
   quality: QualityPreset;
+  lastCheckpointReachedId?: CheckpointId;
   actions: {
     setMode: (mode: GameMode) => void;
     setInput: (updater: Partial<InputState> | ((prev: InputState) => Partial<InputState>)) => void;

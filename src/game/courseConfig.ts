@@ -47,7 +47,7 @@ export const CHECKPOINTS: Checkpoint[] = [
     targetRoute: '/about',
     targetSectionId: 'explorations',
     position: [1.2, 2.6, 0.2],
-    spawnPosition: [1.2, 3.1, 0.8],
+    spawnPosition: [1.2, 3.1, 0.0],
     unlocked: false,
   },
   {
@@ -57,8 +57,8 @@ export const CHECKPOINTS: Checkpoint[] = [
     shortTitle: 'RÉSUMÉ',
     targetRoute: '/resume',
     targetSectionId: 'resume',
-    position: [6.0, 4.2, 1.2],
-    spawnPosition: [5.5, 4.7, 1.8],
+    position: [6.0, 4.2, 1.0],
+    spawnPosition: [6.0, 4.7, 1.4],
     unlocked: false,
   },
 ];
@@ -76,12 +76,12 @@ export const COURSE_BOUNDS = {
     id: 'start-rooftop',
     name: 'Start Rooftop',
     mainSlab: {
-      position: [-3.5, 0.6, 3.5] as [number, number, number],
-      size: [4.2, 1.2, 3.8] as [number, number, number],
+      position: [-3.5, 0.6, 3.0] as [number, number, number],
+      size: [4.2, 1.2, 2.8] as [number, number, number],
       surfaceY: 1.2,
     },
     lowerLanding: {
-      position: [-3.5, 0.3, 5.7] as [number, number, number],
+      position: [-3.5, 0.3, 5.8] as [number, number, number],
       size: [2.4, 0.6, 1.2] as [number, number, number],
       surfaceY: 0.6,
     },
@@ -94,7 +94,7 @@ export const COURSE_BOUNDS = {
     },
     spawnPosition: [-3.5, 1.7, 3.5] as [number, number, number],
     floorArrowsPosition: [-3.5, 1.205, 3.2] as [number, number, number],
-    startMarkingPosition: [-3.5, 1.205, 4.2] as [number, number, number],
+    startMarkingPosition: [-3.5, 1.205, 4.0] as [number, number, number],
   },
 
   // 2. Back-left elevated work rooftop
@@ -119,13 +119,13 @@ export const COURSE_BOUNDS = {
     id: 'explorations-rooftop',
     name: 'Exploration Rooftop (Checkpoint 02)',
     upperTerrace: {
-      position: [1.0, 1.3, -0.6] as [number, number, number],
-      size: [5.2, 2.6, 3.4] as [number, number, number],
+      position: [1.0, 1.3, -1.05] as [number, number, number],
+      size: [5.2, 2.6, 2.5] as [number, number, number],
       surfaceY: 2.6,
     },
     lowerTerrace: {
-      position: [1.0, 0.9, 1.5] as [number, number, number],
-      size: [4.6, 1.8, 1.8] as [number, number, number],
+      position: [1.0, 0.9, 1.7] as [number, number, number],
+      size: [4.6, 1.8, 1.4] as [number, number, number],
       surfaceY: 1.8,
     },
     stairs: {
@@ -136,7 +136,7 @@ export const COURSE_BOUNDS = {
       rise: 0.8,
     },
     beaconPosition: [1.2, 2.6, 0.2] as [number, number, number],
-    spawnPosition: [1.2, 3.1, 0.8] as [number, number, number],
+    spawnPosition: [1.2, 3.1, 0.0] as [number, number, number],
     planters: [
       { position: [-1.2, 2.6, -1.9] as [number, number, number], size: [0.6, 0.45, 1.8] as [number, number, number] },
       { position: [3.2, 2.6, -1.9] as [number, number, number], size: [0.6, 0.45, 1.8] as [number, number, number] },
@@ -148,21 +148,21 @@ export const COURSE_BOUNDS = {
     id: 'resume-rooftop',
     name: 'Résumé Rooftop (Checkpoint 03)',
     mainSlab: {
-      position: [6.2, 2.1, 1.5] as [number, number, number],
-      size: [4.6, 4.2, 4.4] as [number, number, number],
+      position: [6.9, 2.1, 1.5] as [number, number, number],
+      size: [3.2, 4.2, 4.4] as [number, number, number],
       surfaceY: 4.2,
     },
-    beaconPosition: [6.0, 4.2, 1.2] as [number, number, number],
-    spawnPosition: [5.5, 4.7, 1.8] as [number, number, number],
+    beaconPosition: [6.0, 4.2, 1.0] as [number, number, number],
+    spawnPosition: [6.0, 4.7, 1.4] as [number, number, number],
     overheadFrame: {
-      center: [6.2, 5.4, 1.5] as [number, number, number],
-      width: 3.8,
+      center: [6.9, 5.4, 1.5] as [number, number, number],
+      width: 2.8,
       height: 2.4,
       depth: 3.6,
       topY: 6.6,
     },
     stairs: {
-      position: [4.2, 2.1, 3.8] as [number, number, number],
+      position: [5.2, 2.1, 3.8] as [number, number, number],
       steps: 5,
       width: 1.4,
       run: 1.2,
@@ -175,16 +175,16 @@ export const COURSE_BOUNDS = {
     // Start to Work route
     {
       id: 'step-start-work-1',
-      position: [-4.2, 1.8, 1.4] as [number, number, number],
-      size: [1.4, 0.3, 1.4] as [number, number, number],
+      position: [-4.2, 1.8, 1.35] as [number, number, number],
+      size: [1.4, 0.3, 1.5] as [number, number, number],
       surfaceY: 1.95,
       hasPillar: true,
     },
     {
       id: 'step-start-work-2',
-      position: [-4.5, 2.7, -0.6] as [number, number, number],
-      size: [1.4, 0.3, 1.4] as [number, number, number],
-      surfaceY: 2.85,
+      position: [-4.5, 2.65, -0.55] as [number, number, number],
+      size: [1.5, 0.3, 1.7] as [number, number, number],
+      surfaceY: 2.80,
       hasPillar: true,
     },
     // Work to Explorations route
@@ -202,19 +202,19 @@ export const COURSE_BOUNDS = {
       surfaceY: 2.95,
       hasPillar: true,
     },
-    // Explorations to Resume route
+    // Explorations to Resume route (unburied, single-jump heights ~0.55m)
     {
       id: 'step-exp-resume-1',
-      position: [3.8, 2.6, -0.2] as [number, number, number],
+      position: [3.6, 2.95, 0.0] as [number, number, number],
       size: [1.3, 0.3, 1.3] as [number, number, number],
-      surfaceY: 2.75,
+      surfaceY: 3.10,
       hasPillar: true,
     },
     {
       id: 'step-exp-resume-2',
-      position: [4.8, 3.3, 0.6] as [number, number, number],
-      size: [1.3, 0.3, 1.3] as [number, number, number],
-      surfaceY: 3.45,
+      position: [4.65, 3.5, 0.45] as [number, number, number],
+      size: [1.2, 0.3, 1.2] as [number, number, number],
+      surfaceY: 3.65,
       hasPillar: true,
     },
   ] as SteppingPlatform[],

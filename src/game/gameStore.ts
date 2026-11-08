@@ -47,6 +47,7 @@ const createInitialState = (): GameStoreState => ({
   isRespawning: false,
   isDeterministicReview: false,
   quality: { ...DEFAULT_QUALITY },
+  lastCheckpointReachedId: undefined,
   actions: {
     setMode: (mode: GameMode) => {
       const prevMode = storeState.mode;
@@ -91,6 +92,7 @@ const createInitialState = (): GameStoreState => ({
       gameStore.setState({
         currentCheckpointId: id,
         checkpoints: updatedCheckpoints,
+        lastCheckpointReachedId: id,
       });
     },
 
@@ -188,13 +190,10 @@ export const gameStore = {
   },
 };
 
-/**
- * React hook for subscribing to slice of GameStoreState.
- */
 export function useGameStore<T>(selector: (state: GameStoreState) => T): T {
   return useSyncExternalStore(
     gameStore.subscribe,
-    () => selector(storeState),
-    () => selector(storeState)
+    () => selector(gameStore.getState()),
+    () => selector(gameStore.getState())
   );
 }

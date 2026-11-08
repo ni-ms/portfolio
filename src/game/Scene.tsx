@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import * as THREE from 'three';
 import { Canvas } from '@react-three/fiber';
 import { GameMode } from '../types/game';
@@ -88,6 +88,23 @@ export const Scene: React.FC<SceneProps> = ({
   className = '',
   style,
 }) => {
+  const [isVisible, setIsVisible] = useState(true);
+
+  // Suspend canvas frameloop when scrolled offscreen
+  useEffect(() => {
+    const handleScroll = () => {
+      const isOffscreen = typeof window !== 'undefined' && window.scrollY > 400;
+      setIsVisible(!isOffscreen);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   const quality = useMemo(
     () => getQualityPreset(isMobile, isDeterministicReview),
     [isMobile, isDeterministicReview]
@@ -107,6 +124,7 @@ export const Scene: React.FC<SceneProps> = ({
       }}
     >
       <Canvas
+        frameloop={isVisible ? 'always' : 'never'}
         shadows={quality.enableShadows}
         dpr={[1, quality.dpr]}
         gl={{

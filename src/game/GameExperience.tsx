@@ -16,25 +16,45 @@ export function GameExperience({
   style,
   forceDeterministic = false,
 }: GameExperienceProps) {
+  const rootRef = useRef<HTMLDivElement>(null);
   const mode = useGameStore((s) => s.mode);
   const checkpoints = useGameStore((s) => s.checkpoints);
   const currentCheckpointId = useGameStore((s) => s.currentCheckpointId);
   const isDeterministicReview = useGameStore((s) => s.isDeterministicReview) || forceDeterministic;
 
-  const [isMobile, setIsMobile] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
   const exitButtonRef = useRef<HTMLButtonElement>(null);
   const enterButtonRef = useRef<HTMLButtonElement>(null);
   const initiatingElementRef = useRef<HTMLElement | null>(null);
   const savedScrollYRef = useRef(0);
 
-  // Responsive breakpoint check
+  // Responsive and touch device detection (including phone landscape e.g. 844x390)
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
+    const detectTouch = () => {
+      const hasTouch =
+        'ontouchstart' in window ||
+        (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) ||
+        window.matchMedia('(pointer: coarse)').matches ||
+        window.innerWidth <= 768 ||
+        (window.innerHeight <= 500 && window.innerWidth <= 1024);
+      setIsTouchDevice(Boolean(hasTouch));
     };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    detectTouch();
+    window.addEventListener('resize', detectTouch);
+    window.addEventListener('orientationchange', detectTouch);
+    return () => {
+      window.removeEventListener('resize', detectTouch);
+      window.removeEventListener('orientationchange', detectTouch);
+    };
+  }, []);
+
+  // Cleanup on unmount: always remove scroll lock and reset mode/input
+  useEffect(() => {
+    return () => {
+      document.body.classList.remove('scroll-locked');
+      gameStore.getState().actions.clearInput();
+      gameStore.getState().actions.setMode('preview');
+    };
   }, []);
 
   // Register onNavigate callback into gameStore
@@ -54,7 +74,6 @@ export function GameExperience({
   useEffect(() => {
     if (mode === 'play-overlay') {
       savedScrollYRef.current = window.scrollY;
-      initiatingElementRef.current = document.activeElement as HTMLElement | null;
       document.body.classList.add('scroll-locked');
 
       // Accessibility: focus exit button when entering overlay
@@ -64,20 +83,72 @@ export function GameExperience({
       return () => clearTimeout(timer);
     } else {
       document.body.classList.remove('scroll-locked');
+      // Restore scroll position
+      if (savedScrollYRef.current > 0) {
+        window.scrollTo(0, savedScrollYRef.current);
+      }
+      // Restore focus to initiating button
       if (initiatingElementRef.current && typeof initiatingElementRef.current.focus === 'function') {
-        initiatingElementRef.current.focus();
+        const target = initiatingElementRef.current;
+        setTimeout(() => {
+          target.focus();
+        }, 20);
       }
     }
   }, [mode]);
 
+  // Modal focus trap for expanded play overlay
+  useEffect(() => {
+    if (mode !== 'play-overlay') return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        gameStore.getState().actions.setMode('preview');
+        return;
+      }
+
+      if (e.key === 'Tab') {
+        const root = rootRef.current;
+        if (!root) return;
+
+        const focusableSelectors =
+          'button:not([disabled]), [href]:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+        const focusableElements = Array.from(
+          root.querySelectorAll<HTMLElement>(focusableSelectors)
+        ).filter((el) => el.offsetParent !== null);
+
+        if (focusableElements.length === 0) return;
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement || !root.contains(document.activeElement)) {
+            e.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          if (document.activeElement === lastElement || !root.contains(document.activeElement)) {
+            e.preventDefault();
+            firstElement.focus();
+          }
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown, true);
+    return () => window.removeEventListener('keydown', handleKeyDown, true);
+  }, [mode]);
+
   const handleEnterPlay = useCallback(() => {
-    initiatingElementRef.current = document.activeElement as HTMLElement | null;
-    if (isMobile) {
+    initiatingElementRef.current = enterButtonRef.current || (document.activeElement as HTMLElement | null);
+    if (isTouchDevice) {
       gameStore.getState().actions.setMode('play-overlay');
     } else {
       gameStore.getState().actions.setMode('play-inline');
     }
-  }, [isMobile]);
+  }, [isTouchDevice]);
 
   const handleExitPlay = useCallback(() => {
     gameStore.getState().actions.setMode('preview');
@@ -114,6 +185,7 @@ export function GameExperience({
 
   return (
     <div
+      ref={rootRef}
       className={`game-experience-root ${isOverlay ? 'game-experience-overlay-active' : ''} ${className}`}
       style={
         isOverlay
@@ -136,7 +208,7 @@ export function GameExperience({
               position: 'relative',
               width: '100%',
               height: '100%',
-              minHeight: isMobile ? '280px' : '420px',
+              minHeight: isTouchDevice ? '280px' : '420px',
               ...style,
             }
       }
@@ -160,7 +232,7 @@ export function GameExperience({
       >
         <Scene
           mode={mode}
-          isMobile={isMobile}
+          isMobile={isTouchDevice}
           isDeterministicReview={isDeterministicReview}
           showMarkers={mode === 'preview'}
           onSelectCheckpoint={(dest) => {
@@ -172,7 +244,7 @@ export function GameExperience({
           }}
           style={{ width: '100%', height: '100%' }}
         >
-          <Physics gravity={[0, -18, 0]}>
+          <Physics gravity={[0, -18, 0]} paused={!isPlayActive}>
             <PhysicsCourse showVisuals={false} />
             <PlayerController />
           </Physics>
@@ -252,7 +324,7 @@ export function GameExperience({
                 backdropFilter: 'blur(4px)',
               }}
             >
-              {isMobile ? 'TAP TO PLAY' : 'WASD / SPACE TO RUN'}
+              {isTouchDevice ? 'TAP TO PLAY' : 'WASD / SPACE TO RUN'}
             </span>
           </div>
         </div>

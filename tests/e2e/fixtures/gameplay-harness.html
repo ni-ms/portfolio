@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>T04 Gameplay E2E Tracked Harness</title>
+  <link rel="stylesheet" href="/src/styles/tokens.css" />
+  <link rel="stylesheet" href="/src/styles/components.css" />
+  <style>
+    html,body { margin:0; background:#101414; color:#f2f1ea; font:14px system-ui; }
+    #toolbar {display:flex;gap:12px;align-items:center;padding:12px;}
+    #viewport {height: min(82vh, 850px);width:100%;}
+    #after {height:1200px;padding:20px;}
+    button,a {font:inherit;}
+  </style>
+</head>
+<body>
+  <div id="gameplay-root"></div>
+  <script type="module" src="/tests/e2e/fixtures/gameplay-harness.tsx"></script>
+</body>
+</html>

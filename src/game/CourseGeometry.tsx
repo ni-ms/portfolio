@@ -505,6 +505,7 @@ export const CourseGeometry: React.FC = () => {
         run={startRooftop.stairs.run}
         rise={startRooftop.stairs.rise}
         steps={startRooftop.stairs.steps}
+        rotationY={Math.PI}
       />
 
       {/* Painted lime floor arrows and START marking */}
@@ -586,6 +587,7 @@ export const CourseGeometry: React.FC = () => {
         run={explorationRooftop.stairs.run}
         rise={explorationRooftop.stairs.rise}
         steps={explorationRooftop.stairs.steps}
+        rotationY={Math.PI}
       />
 
       {/* Planters with sparse hanging greenery */}

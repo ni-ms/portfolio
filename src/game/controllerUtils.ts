@@ -34,7 +34,7 @@ export function normalizeMovementInput(input: InputState): {
 }
 
 /**
- * Manages responsive jump buffering (~100ms) and coyote time (~120ms).
+ * Manages responsive jump buffering (~100ms), coyote time (~120ms), and edge-triggered press semantics.
  *
  * Jump Buffering:
  * If the player presses Jump slightly BEFORE touching the ground (e.g. 80ms before landing),
@@ -43,6 +43,10 @@ export function normalizeMovementInput(input: InputState): {
  * Coyote Time:
  * If the player walks off a ledge or stair edge, they can still jump for ~120ms after
  * leaving the solid surface, preventing punishing near-edge missed jumps.
+ *
+ * Edge-triggered Press Semantics:
+ * Holding the jump button continuously does NOT refill the buffer every frame; a fresh jump
+ * requires a rising edge (new press) or a release and repress.
  */
 export class JumpController {
   private jumpBufferMs: number;
@@ -52,6 +56,7 @@ export class JumpController {
   private lastJumpPressTime: number = -Infinity;
   private lastGroundedTime: number = -Infinity;
   private lastJumpExecutedTime: number = -Infinity;
+  private isJumpHeld: boolean = false;
 
   constructor(jumpBufferMs = 100, coyoteTimeMs = 120, jumpCooldownMs = 200) {
     this.jumpBufferMs = jumpBufferMs;
@@ -60,10 +65,30 @@ export class JumpController {
   }
 
   /**
-   * Called whenever the jump button/space is actively pressed.
+   * Called on raw jump input state each frame. Detects rising edge so holding
+   * jump does not continually refresh the jump buffer.
+   */
+  public updateJumpInput(isPressed: boolean, now: number): void {
+    if (isPressed && !this.isJumpHeld) {
+      // Rising edge: user just pressed jump
+      this.lastJumpPressTime = now;
+    }
+    this.isJumpHeld = isPressed;
+  }
+
+  /**
+   * Called whenever the jump button/space is actively pressed (rising edge).
    */
   public onJumpPressed(now: number): void {
     this.lastJumpPressTime = now;
+    this.isJumpHeld = true;
+  }
+
+  /**
+   * Called whenever the jump button/space is released.
+   */
+  public onJumpReleased(): void {
+    this.isJumpHeld = false;
   }
 
   /**
@@ -102,6 +127,7 @@ export class JumpController {
     this.lastJumpPressTime = -Infinity;
     this.lastGroundedTime = -Infinity;
     this.lastJumpExecutedTime = -Infinity;
+    this.isJumpHeld = false;
   }
 
   public getDebugState(now: number, isGrounded: boolean) {
@@ -110,6 +136,7 @@ export class JumpController {
       hasCoyote: isGrounded || now - this.lastGroundedTime <= this.coyoteTimeMs,
       timeSinceJumpPress: now - this.lastJumpPressTime,
       timeSinceGrounded: now - this.lastGroundedTime,
+      isJumpHeld: this.isJumpHeld,
       canJump: this.canJump(now, isGrounded),
     };
   }

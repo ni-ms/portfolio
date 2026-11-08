@@ -3,7 +3,7 @@ import { Html } from '@react-three/drei';
 import { COURSE_BOUNDS, CHECKPOINTS } from './courseConfig';
 
 export interface SceneMarkersProps {
-  onSelectCheckpoint?: (sectionId: string) => void;
+  onSelectCheckpoint?: (destination: string) => void;
   visible?: boolean;
 }
 
@@ -12,6 +12,7 @@ interface MarkerItem {
   labelNumber: string;
   labelTitle: string;
   sectionId: string;
+  targetRoute: string;
   position: [number, number, number];
 }
 
@@ -27,6 +28,7 @@ export const SceneMarkers: React.FC<SceneMarkersProps> = ({
       labelNumber: '01',
       labelTitle: 'WORK',
       sectionId: 'work',
+      targetRoute: CHECKPOINTS[1].targetRoute || '/projects',
       position: [
         COURSE_BOUNDS.workRooftop.beaconPosition[0],
         COURSE_BOUNDS.workRooftop.beaconPosition[1] + 1.2,
@@ -38,6 +40,7 @@ export const SceneMarkers: React.FC<SceneMarkersProps> = ({
       labelNumber: '02',
       labelTitle: 'EXPLORATIONS',
       sectionId: 'explorations',
+      targetRoute: CHECKPOINTS[2].targetRoute || '/about',
       position: [
         COURSE_BOUNDS.explorationRooftop.beaconPosition[0],
         COURSE_BOUNDS.explorationRooftop.beaconPosition[1] + 1.2,
@@ -49,6 +52,7 @@ export const SceneMarkers: React.FC<SceneMarkersProps> = ({
       labelNumber: '03',
       labelTitle: 'RÉSUMÉ',
       sectionId: 'resume',
+      targetRoute: CHECKPOINTS[3].targetRoute || '/resume',
       position: [
         COURSE_BOUNDS.resumeRooftop.beaconPosition[0],
         COURSE_BOUNDS.resumeRooftop.beaconPosition[1] + 1.2,
@@ -57,12 +61,13 @@ export const SceneMarkers: React.FC<SceneMarkersProps> = ({
     },
   ];
 
-  const handleClick = (e: React.MouseEvent, sectionId: string) => {
+  const handleClick = (e: React.MouseEvent, marker: MarkerItem) => {
     e.preventDefault();
+    const destination = marker.targetRoute || marker.sectionId;
     if (onSelectCheckpoint) {
-      onSelectCheckpoint(sectionId);
+      onSelectCheckpoint(destination);
     } else {
-      const el = document.getElementById(sectionId);
+      const el = document.getElementById(marker.sectionId);
       if (el) {
         el.scrollIntoView({ behavior: 'smooth' });
       }
@@ -93,8 +98,8 @@ export const SceneMarkers: React.FC<SceneMarkersProps> = ({
           >
             {/* Clickable Monospace Label Badge */}
             <a
-              href={`#${marker.sectionId}`}
-              onClick={(e) => handleClick(e, marker.sectionId)}
+              href={marker.targetRoute || `#${marker.sectionId}`}
+              onClick={(e) => handleClick(e, marker)}
               aria-label={`Jump to ${marker.labelNumber} ${marker.labelTitle} section`}
               style={{
                 display: 'inline-flex',

@@ -4,6 +4,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { GameMode } from '../types/game';
 import { CAMERA_PRESETS } from './courseConfig';
 import { isDeterministicReviewMode } from './quality';
+import { livePlayerTransform } from './playerTransform';
 
 export interface CameraRigProps {
   mode?: GameMode;
@@ -70,6 +71,10 @@ export const CameraRig: React.FC<CameraRigProps> = ({
         px = playerRef.current.position.x;
         py = playerRef.current.position.y;
         pz = playerRef.current.position.z;
+      } else if (livePlayerTransform.position) {
+        px = livePlayerTransform.position.x;
+        py = livePlayerTransform.position.y;
+        pz = livePlayerTransform.position.z;
       }
 
       // Look slightly ahead of player on course

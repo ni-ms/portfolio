@@ -1,9 +1,14 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { gameStore, DEFAULT_CHECKPOINTS } from '../src/game/gameStore';
+import { CHECKPOINTS, COURSE_BOUNDS } from '../src/game/courseConfig';
 import {
   normalizeMovementInput,
   JumpController,
 } from '../src/game/controllerUtils';
+import {
+  livePlayerTransform,
+  updateLivePlayerTransform,
+} from '../src/game/playerTransform';
 import type { InputState } from '../src/types/game';
 
 describe('Game Controller & Physics Unit Tests', () => {
@@ -388,6 +393,134 @@ describe('Game Controller & Physics Unit Tests', () => {
 
       expect(gameStore.getState().mode).toBe('preview');
       expect(gameStore.getState().input.forward).toBe(false);
+    });
+  });
+
+  describe('5. Jump Edge-Triggered Semantics (Holding Jump Does NOT Refill Buffer)', () => {
+    it('holding jump continuously across frames does NOT refill buffer upon landing', () => {
+      const jc = new JumpController(100, 120, 200);
+
+      // Initial press while grounded at t=1000
+      jc.updateGrounded(true, 1000);
+      jc.updateJumpInput(true, 1000);
+
+      expect(jc.canJump(1000, true)).toBe(true);
+      jc.executeJump(1000);
+      expect(jc.canJump(1000, true)).toBe(false);
+
+      // Player in air for 500ms, constantly holding jump
+      for (let t = 1016; t <= 1500; t += 16) {
+        jc.updateGrounded(false, t);
+        jc.updateJumpInput(true, t);
+        expect(jc.canJump(t, false)).toBe(false);
+      }
+
+      // Player touches down at t=1600 while STILL holding jump
+      jc.updateGrounded(true, 1600);
+      jc.updateJumpInput(true, 1600);
+
+      // Because jump was held and not re-pressed, buffer is NOT refilled!
+      expect(jc.canJump(1600, true)).toBe(false);
+
+      // Releasing jump
+      jc.updateJumpInput(false, 1620);
+      expect(jc.canJump(1620, true)).toBe(false);
+
+      // Re-pressing jump triggers fresh jump!
+      jc.updateJumpInput(true, 1650);
+      expect(jc.canJump(1650, true)).toBe(true);
+    });
+
+    it('mid-air fresh press buffers jump and executes immediately upon landing', () => {
+      const jc = new JumpController(100, 120, 200);
+
+      // Airborne at t=2000
+      jc.updateGrounded(false, 2000);
+      jc.updateJumpInput(false, 2000);
+
+      // 60ms before touchdown, user presses jump
+      jc.updateJumpInput(true, 2040);
+      expect(jc.canJump(2040, false)).toBe(false);
+
+      // Landing at t=2100 (60ms <= 100ms buffer)
+      jc.updateGrounded(true, 2100);
+      expect(jc.canJump(2100, true)).toBe(true);
+
+      jc.executeJump(2100);
+      expect(jc.canJump(2100, true)).toBe(false);
+    });
+  });
+
+  describe('6. Checkpoint and Spawn Consistency Across Store and Course', () => {
+    it('gameStore checkpoints must match courseConfig CHECKPOINTS coordinates exactly', () => {
+      const storeCps = gameStore.getState().checkpoints;
+      expect(storeCps).toHaveLength(CHECKPOINTS.length);
+
+      storeCps.forEach((scp) => {
+        const ccp = CHECKPOINTS.find((c) => c.id === scp.id);
+        expect(ccp).toBeDefined();
+        expect(scp.position).toEqual(ccp!.position);
+        expect(scp.spawnPosition).toEqual(ccp!.spawnPosition);
+        expect(scp.targetRoute).toEqual(ccp!.targetRoute);
+        expect(scp.targetSectionId).toEqual(ccp!.targetSectionId);
+      });
+    });
+
+    it('every checkpoint spawn position is above platform surface elevation', () => {
+      CHECKPOINTS.forEach((cp) => {
+        expect(cp.spawnPosition[1]).toBeGreaterThan(cp.position[1]);
+        expect(cp.spawnPosition[1] - cp.position[1]).toBeGreaterThanOrEqual(0.4);
+      });
+    });
+
+    it('all checkpoints map to valid portfolio routes per CONTRACTS revision 1', () => {
+      const expectedRoutes: Record<string, string> = {
+        'cp-start': '/',
+        'cp-work': '/projects',
+        'cp-explorations': '/about',
+        'cp-resume': '/resume',
+      };
+
+      CHECKPOINTS.forEach((cp) => {
+        expect(cp.targetRoute).toBe(expectedRoutes[cp.id]);
+      });
+    });
+
+    it('spawn positions reside within horizontal bounding boxes of their rooftops', () => {
+      const { startRooftop, workRooftop, explorationRooftop, resumeRooftop } = COURSE_BOUNDS;
+
+      // Start Rooftop spawn
+      const startCp = CHECKPOINTS[0];
+      expect(startCp.spawnPosition[0]).toBeGreaterThanOrEqual(startRooftop.mainSlab.position[0] - startRooftop.mainSlab.size[0] / 2);
+      expect(startCp.spawnPosition[0]).toBeLessThanOrEqual(startRooftop.mainSlab.position[0] + startRooftop.mainSlab.size[0] / 2);
+
+      // Work Rooftop spawn
+      const workCp = CHECKPOINTS[1];
+      expect(workCp.spawnPosition[0]).toBeGreaterThanOrEqual(workRooftop.mainSlab.position[0] - workRooftop.mainSlab.size[0] / 2);
+      expect(workCp.spawnPosition[0]).toBeLessThanOrEqual(workRooftop.mainSlab.position[0] + workRooftop.mainSlab.size[0] / 2);
+
+      // Exploration Rooftop spawn
+      const expCp = CHECKPOINTS[2];
+      expect(expCp.spawnPosition[0]).toBeGreaterThanOrEqual(explorationRooftop.upperTerrace.position[0] - explorationRooftop.upperTerrace.size[0] / 2);
+      expect(expCp.spawnPosition[0]).toBeLessThanOrEqual(explorationRooftop.upperTerrace.position[0] + explorationRooftop.upperTerrace.size[0] / 2);
+
+      // Resume Rooftop spawn
+      const resCp = CHECKPOINTS[3];
+      expect(resCp.spawnPosition[0]).toBeGreaterThanOrEqual(resumeRooftop.mainSlab.position[0] - resumeRooftop.mainSlab.size[0] / 2);
+      expect(resCp.spawnPosition[0]).toBeLessThanOrEqual(resumeRooftop.mainSlab.position[0] + resumeRooftop.mainSlab.size[0] / 2);
+    });
+  });
+
+  describe('7. Live Player Transform Integration', () => {
+    it('livePlayerTransform is updated without React state rerenders', () => {
+      updateLivePlayerTransform(2.5, 4.0, -1.2, 3.0, 0.0, -2.0, 1.57, true);
+
+      expect(livePlayerTransform.position.x).toBeCloseTo(2.5);
+      expect(livePlayerTransform.position.y).toBeCloseTo(4.0);
+      expect(livePlayerTransform.position.z).toBeCloseTo(-1.2);
+      expect(livePlayerTransform.linvel.x).toBeCloseTo(3.0);
+      expect(livePlayerTransform.rotationY).toBeCloseTo(1.57);
+      expect(livePlayerTransform.isGrounded).toBe(true);
     });
   });
 });

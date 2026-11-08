@@ -198,3 +198,16 @@ export const materials = {
     metalness: 0.0,
   }),
 };
+
+/**
+ * Updates theme-dependent scene materials without recreating Three.js objects or interrupting physics.
+ */
+export function applyGameTheme(theme: 'dark' | 'light'): void {
+  if (theme === 'light') {
+    materials.groundSlab.color.set('#DCE0DD');
+    materials.groundGridLine.color.set('#C8CCC8');
+  } else {
+    materials.groundSlab.color.set('#121717');
+    materials.groundGridLine.color.set('#1A2222');
+  }
+}

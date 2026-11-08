@@ -1,4 +1,4 @@
-import { useRef, useMemo, useEffect } from 'react';
+import React, { useRef, useMemo, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import {
   RigidBody,
@@ -9,24 +9,27 @@ import {
 import * as THREE from 'three';
 import { gameStore, useGameStore } from './gameStore';
 import { normalizeMovementInput, JumpController } from './controllerUtils';
+import { updateLivePlayerTransform } from './playerTransform';
 
 export interface PlayerControllerProps {
   initialPosition?: [number, number, number];
   moveSpeed?: number;
   jumpVelocity?: number;
+  playerRef?: React.RefObject<THREE.Object3D | null>;
 }
 
 export function PlayerController({
   initialPosition,
   moveSpeed = 5.2,
   jumpVelocity = 6.4,
+  playerRef,
 }: PlayerControllerProps) {
   const rigidBodyRef = useRef<RapierRigidBody>(null);
   const visualGroupRef = useRef<THREE.Group>(null);
   const currentRotationY = useRef(0);
 
   const rapier = useRapier();
-  const jumpController = useMemo(() => new JumpController(100, 120), []);
+  const jumpController = useMemo(() => new JumpController(100, 120, 200), []);
 
   const checkpoints = useGameStore((s) => s.checkpoints);
   const currentCheckpointId = useGameStore((s) => s.currentCheckpointId);
@@ -47,6 +50,16 @@ export function PlayerController({
       );
       rigidBodyRef.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
       rigidBodyRef.current.setAngvel({ x: 0, y: 0, z: 0 }, true);
+      updateLivePlayerTransform(
+        activeSpawn[0],
+        activeSpawn[1],
+        activeSpawn[2],
+        0,
+        0,
+        0,
+        0,
+        true
+      );
     }
   }, [activeSpawn]);
 
@@ -70,6 +83,10 @@ export function PlayerController({
       rb.setAngvel({ x: 0, y: 0, z: 0 }, true);
 
       jumpController.reset();
+      updateLivePlayerTransform(sx, sy, sz, 0, 0, 0, currentRotationY.current, true);
+      if (playerRef?.current) {
+        playerRef.current.position.set(sx, sy, sz);
+      }
       gameStore.setState({ isRespawning: false, isGrounded: true });
       return;
     }
@@ -86,7 +103,7 @@ export function PlayerController({
     // Ray origin from center of capsule down towards feet
     const rayOrigin = { x: pos.x, y: pos.y + 0.35, z: pos.z };
     const rayDir = { x: 0, y: -1, z: 0 };
-    const maxRayDistance = 0.55; // 0.35 to capsule bottom + 0.2 margin
+    const maxRayDistance = 0.58; // 0.35 to capsule bottom + 0.23 ground margin for ramps/stairs
 
     let isGrounded = false;
     try {
@@ -116,11 +133,9 @@ export function PlayerController({
       gameStore.setState({ isGrounded });
     }
 
-    // 4. Input processing
+    // 4. Edge-triggered input processing
     const input = store.input;
-    if (input.jump) {
-      jumpController.onJumpPressed(now);
-    }
+    jumpController.updateJumpInput(Boolean(input.jump), now);
 
     // 5. Jump execution
     const currentLinvel = rb.linvel();
@@ -164,7 +179,6 @@ export function PlayerController({
     // 7. Visual character orientation
     if (visualGroupRef.current && norm.isMoving && moveDir.lengthSq() > 0.01) {
       const targetAngle = Math.atan2(moveDir.x, moveDir.z);
-      // Smooth angular interpolation
       currentRotationY.current = THREE.MathUtils.damp(
         currentRotationY.current,
         targetAngle,
@@ -172,6 +186,22 @@ export function PlayerController({
         safeDelta
       );
       visualGroupRef.current.rotation.y = currentRotationY.current;
+    }
+
+    // 8. Update live player transform for CameraRig and diagnostics
+    updateLivePlayerTransform(
+      pos.x,
+      pos.y,
+      pos.z,
+      newVx,
+      newVy,
+      newVz,
+      currentRotationY.current,
+      isGrounded
+    );
+
+    if (playerRef?.current) {
+      playerRef.current.position.set(pos.x, pos.y, pos.z);
     }
   });
 

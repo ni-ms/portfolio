@@ -1,3 +1,5 @@
+import type React from 'react';
+
 export type GameMode = 'preview' | 'play-inline' | 'play-overlay';
 
 export type CheckpointId = 'cp-start' | 'cp-work' | 'cp-explorations' | 'cp-resume';
@@ -7,7 +9,8 @@ export interface Checkpoint {
   index: number;
   label: string; // e.g. "01 / WORK"
   shortTitle: string; // e.g. "WORK"
-  targetSectionId: string; // e.g. "work"
+  targetRoute: string; // e.g. "/projects"
+  targetSectionId: string; // e.g. "work" (retained for backward compatibility)
   position: [number, number, number]; // [x, y, z]
   spawnPosition: [number, number, number];
   unlocked: boolean;
@@ -33,6 +36,9 @@ export interface QualityPreset {
   enableShadows: boolean;
   enablePostprocessing: boolean;
   foliageDensity: 'sparse' | 'full';
+  shadowBias?: number;
+  shadowNormalBias?: number;
+  isDeterministicReview?: boolean;
 }
 
 export interface GameStoreState {
@@ -54,5 +60,14 @@ export interface GameStoreState {
     recenterDroneView: () => void;
     setDeterministicReview: (enabled: boolean) => void;
     navigateToSection: (sectionId: string) => void;
+    navigateToRoute: (route: string) => void;
   };
+}
+
+export interface GameExperienceProps {
+  theme?: 'dark' | 'light';
+  onNavigate?: (href: string) => void;
+  className?: string;
+  style?: React.CSSProperties;
+  forceDeterministic?: boolean;
 }

@@ -58,16 +58,16 @@ export function PhysicsCourse({
         <CuboidCollider args={[bounds.startRooftop.lowerLanding.size[0] / 2, bounds.startRooftop.lowerLanding.size[1] / 2, bounds.startRooftop.lowerLanding.size[2] / 2]} />
       </RigidBody>
 
-      {/* Start Stairs Smooth Ramp */}
+      {/* Start Stairs Smooth Ramp (seamless slope from Y=0.6, Z=5.2 to Y=1.2, Z=4.4) */}
       <RigidBody
         type="fixed"
-        position={bounds.startRooftop.stairs.position}
-        rotation={[0.42, 0, 0]}
+        position={[-3.5, 0.9, 4.8]}
+        rotation={[-0.6435, 0, 0]}
         friction={0.8}
         restitution={0}
         userData={{ type: 'ramp', name: 'start-stairs-ramp' }}
       >
-        <CuboidCollider args={[bounds.startRooftop.stairs.width / 2, 0.15, bounds.startRooftop.stairs.run / 1.5]} />
+        <CuboidCollider args={[bounds.startRooftop.stairs.width / 2, 0.05, 0.5]} />
       </RigidBody>
 
       {/* 2. WORK ROOFTOP (Back-Left, 01 / WORK) */}
@@ -115,16 +115,16 @@ export function PhysicsCourse({
         <CuboidCollider args={[bounds.explorationRooftop.lowerTerrace.size[0] / 2, bounds.explorationRooftop.lowerTerrace.size[1] / 2, bounds.explorationRooftop.lowerTerrace.size[2] / 2]} />
       </RigidBody>
 
-      {/* Exploration Stairs Ramp */}
+      {/* Exploration Stairs Ramp (seamless slope from Y=1.8, Z=1.0 to Y=2.6, Z=0.2) */}
       <RigidBody
         type="fixed"
-        position={bounds.explorationRooftop.stairs.position}
-        rotation={[-0.45, 0, 0]}
+        position={[1.0, 2.2, 0.6]}
+        rotation={[-0.7854, 0, 0]}
         friction={0.8}
         restitution={0}
         userData={{ type: 'ramp', name: 'explorations-stairs-ramp' }}
       >
-        <CuboidCollider args={[bounds.explorationRooftop.stairs.width / 2, 0.2, bounds.explorationRooftop.stairs.run / 1.5]} />
+        <CuboidCollider args={[bounds.explorationRooftop.stairs.width / 2, 0.05, 0.5657]} />
       </RigidBody>
 
       {/* Planters on Exploration Roof */}
@@ -154,13 +154,13 @@ export function PhysicsCourse({
       {/* Résumé Stairs Ramp */}
       <RigidBody
         type="fixed"
-        position={bounds.resumeRooftop.stairs.position}
-        rotation={[-0.42, 0, 0]}
+        position={[4.2, 3.6, 3.8]}
+        rotation={[-0.555, -0.7854, 0]}
         friction={0.8}
         restitution={0}
         userData={{ type: 'ramp', name: 'resume-stairs-ramp' }}
       >
-        <CuboidCollider args={[bounds.resumeRooftop.stairs.width / 2, 0.2, bounds.resumeRooftop.stairs.run / 1.5]} />
+        <CuboidCollider args={[bounds.resumeRooftop.stairs.width / 2, 0.05, 0.85]} />
       </RigidBody>
 
       {/* 5. STEPPING PLATFORMS & CONNECTING BEAMS */}

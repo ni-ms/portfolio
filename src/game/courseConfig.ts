@@ -22,6 +22,7 @@ export const CHECKPOINTS: Checkpoint[] = [
     index: 0,
     label: '00 / START',
     shortTitle: 'START',
+    targetRoute: '/',
     targetSectionId: 'hero',
     position: [-3.5, 1.2, 3.5],
     spawnPosition: [-3.5, 1.7, 3.5],
@@ -32,6 +33,7 @@ export const CHECKPOINTS: Checkpoint[] = [
     index: 1,
     label: '01 / WORK',
     shortTitle: 'WORK',
+    targetRoute: '/projects',
     targetSectionId: 'work',
     position: [-3.2, 3.8, -3.0],
     spawnPosition: [-3.2, 4.3, -2.5],
@@ -42,6 +44,7 @@ export const CHECKPOINTS: Checkpoint[] = [
     index: 2,
     label: '02 / EXPLORATIONS',
     shortTitle: 'EXPLORATIONS',
+    targetRoute: '/about',
     targetSectionId: 'explorations',
     position: [1.2, 2.6, 0.2],
     spawnPosition: [1.2, 3.1, 0.8],
@@ -52,6 +55,7 @@ export const CHECKPOINTS: Checkpoint[] = [
     index: 3,
     label: '03 / RÉSUMÉ',
     shortTitle: 'RÉSUMÉ',
+    targetRoute: '/resume',
     targetSectionId: 'resume',
     position: [6.0, 4.2, 1.2],
     spawnPosition: [5.5, 4.7, 1.8],
@@ -217,19 +221,16 @@ export const COURSE_BOUNDS = {
 };
 
 export const CAMERA_PRESETS: Record<'desktopOverview' | 'mobilePreview' | 'mobilePlay', CameraPreset> = {
-  // Desktop overview diorama (framed so rooftops sit in right 55-60% of viewport without obscuring left copy)
   desktopOverview: {
     position: [-3.0, 19.5, 20.0],
     target: [-2.5, 2.2, 0.0],
     zoom: 1.0,
   },
-  // Mobile preview (reframed to fit portrait 240-280px container with start platform in front)
   mobilePreview: {
     position: [0.5, 17.0, 17.5],
     target: [0.5, 2.0, 0.0],
     zoom: 0.85,
   },
-  // Mobile play mode (closer overhead follow camera keeping player and next landing visible)
   mobilePlay: {
     position: [-3.5, 11.5, 13.5],
     target: [-3.5, 1.7, 3.5],

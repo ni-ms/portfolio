@@ -1,14 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 import { gameStore, useGameStore } from './gameStore';
 import { TouchControls } from './TouchControls';
-import { KeyboardControls } from './KeyboardControls';
 
 export interface GameOverlayProps {
   children?: React.ReactNode;
   onExit?: () => void;
+  onNavigate?: (destination: string) => void;
 }
 
-export function GameOverlay({ children, onExit }: GameOverlayProps) {
+export function GameOverlay({ children, onExit, onNavigate }: GameOverlayProps) {
   const mode = useGameStore((s) => s.mode);
   const checkpoints = useGameStore((s) => s.checkpoints);
   const currentCheckpointId = useGameStore((s) => s.currentCheckpointId);
@@ -29,8 +29,14 @@ export function GameOverlay({ children, onExit }: GameOverlayProps) {
     }
   };
 
-  const handleNavigate = (sectionId: string) => {
-    gameStore.getState().actions.navigateToSection(sectionId);
+  const handleNavigate = (destination: string) => {
+    if (onNavigate) {
+      onNavigate(destination);
+    } else if (destination.startsWith('/')) {
+      gameStore.getState().actions.navigateToRoute(destination);
+    } else {
+      gameStore.getState().actions.navigateToSection(destination);
+    }
   };
 
   // Lock and restore body scroll on mount/unmount when active
@@ -59,7 +65,11 @@ export function GameOverlay({ children, onExit }: GameOverlayProps) {
   const showPrompt =
     currentCheckpoint &&
     currentCheckpoint.id !== 'cp-start' &&
-    currentCheckpoint.targetSectionId;
+    (currentCheckpoint.targetRoute || currentCheckpoint.targetSectionId);
+
+  const targetDest = currentCheckpoint
+    ? currentCheckpoint.targetRoute || currentCheckpoint.targetSectionId
+    : '';
 
   return (
     <div
@@ -217,7 +227,7 @@ export function GameOverlay({ children, onExit }: GameOverlayProps) {
       </header>
 
       {/* NON-BLOCKING CHECKPOINT PROMPT */}
-      {showPrompt && (
+      {showPrompt && currentCheckpoint && (
         <div
           role="region"
           aria-label="Checkpoint reached"
@@ -252,7 +262,7 @@ export function GameOverlay({ children, onExit }: GameOverlayProps) {
           <button
             type="button"
             data-testid="checkpoint-action-btn"
-            onClick={() => handleNavigate(currentCheckpoint.targetSectionId)}
+            onClick={() => handleNavigate(targetDest)}
             style={{
               fontFamily: 'var(--font-display, sans-serif)',
               fontSize: '12px',
@@ -284,9 +294,6 @@ export function GameOverlay({ children, onExit }: GameOverlayProps) {
       >
         <TouchControls />
       </footer>
-
-      {/* Keyboard listener active during overlay */}
-      <KeyboardControls forceActive={true} />
     </div>
   );
 }

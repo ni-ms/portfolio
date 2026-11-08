@@ -7,49 +7,10 @@ import type {
   QualityPreset,
   GameStoreState,
 } from '../types/game';
+import { CHECKPOINTS } from './courseConfig';
 
-export const DEFAULT_CHECKPOINTS: Checkpoint[] = [
-  {
-    id: 'cp-start',
-    index: 0,
-    label: '00 / START',
-    shortTitle: 'START',
-    targetSectionId: 'hero',
-    position: [-3.5, 1.2, 3.5],
-    spawnPosition: [-3.5, 1.6, 3.5],
-    unlocked: true,
-  },
-  {
-    id: 'cp-work',
-    index: 1,
-    label: '01 / WORK',
-    shortTitle: 'WORK',
-    targetSectionId: 'work',
-    position: [-5.0, 3.2, -4.0],
-    spawnPosition: [-5.0, 3.6, -4.0],
-    unlocked: false,
-  },
-  {
-    id: 'cp-explorations',
-    index: 2,
-    label: '02 / EXPLORATIONS',
-    shortTitle: 'EXPLORATIONS',
-    targetSectionId: 'explorations',
-    position: [2.0, 4.6, -5.0],
-    spawnPosition: [2.0, 5.0, -5.0],
-    unlocked: false,
-  },
-  {
-    id: 'cp-resume',
-    index: 3,
-    label: '03 / RÉSUMÉ',
-    shortTitle: 'RÉSUMÉ',
-    targetSectionId: 'resume',
-    position: [7.0, 6.0, -1.0],
-    spawnPosition: [7.0, 6.4, -1.0],
-    unlocked: false,
-  },
-];
+// Single source of truth: import directly from courseConfig
+export const DEFAULT_CHECKPOINTS: Checkpoint[] = CHECKPOINTS;
 
 export const INITIAL_INPUT: InputState = {
   forward: false,
@@ -71,6 +32,11 @@ type Listener = () => void;
 
 let savedScrollY = 0;
 let initiatingElement: HTMLElement | null = null;
+let globalNavigateHandler: ((href: string) => void) | null = null;
+
+export function registerGlobalNavigateHandler(handler: ((href: string) => void) | null) {
+  globalNavigateHandler = handler;
+}
 
 const createInitialState = (): GameStoreState => ({
   mode: 'preview',
@@ -165,6 +131,24 @@ const createInitialState = (): GameStoreState => ({
             target.scrollIntoView({ behavior: 'smooth' });
           }
         }, 50);
+      }
+    },
+
+    navigateToRoute: (route: string) => {
+      // Exit overlay / play mode and restore scroll
+      gameStore.getState().actions.setMode('preview');
+      gameStore.getState().actions.clearInput();
+
+      if (typeof document !== 'undefined') {
+        document.body.classList.remove('scroll-locked');
+      }
+
+      if (globalNavigateHandler) {
+        globalNavigateHandler(route);
+      } else if (typeof window !== 'undefined') {
+        // Fallback History API navigation
+        window.history.pushState(null, '', route);
+        window.dispatchEvent(new PopStateEvent('popstate'));
       }
     },
   },

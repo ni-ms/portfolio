@@ -11,3 +11,11 @@
 - Baseline npm test wrongly collected Playwright; fixed runner separation, retained existing checks. Old Home/game awaits dependent tickets, so no visual/gameplay completion claim yet.
 - Source checkout /Users/nikms/Documents/projects/portfolio and unrelated editor/settings changes remain untouched.
 - Exact next action: commit this T01 acceptance checkpoint, create two codex/ worktrees from new HEAD, dispatch bounded T02 and T04 workers using published contracts, record ownership, and await explicit reports.
+
+## Active wave
+
+- Shared base 6211600b3f6030be422684d22d4908df5515b28b. Integration code clean; only coordinator state/progress checkpoint changed before dispatch.
+- T02 owner ba28c059-20fd-49ea-bcf1-c064cea2e04e (Antigravity gemini-3.8-flash high), branch codex/portfolio-T02-content, worktree /Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t02-content. Allowed src/content/**, public/resume/**, design/source/**, report T02.md.
+- T04 owner 29765d14-774f-4a8c-842f-8cb907a20f84 (Antigravity gemini-3.8-flash high), branch codex/portfolio-T04-gameplay, worktree /Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t04-gameplay. Allowed src/game/**, src/types/game.ts, tests/game-controller.test.ts, tests/course.test.ts, report T04.md.
+- Both isolated worktrees include committed approved handoff, factual content and mockups. Coordinator provided ignored node_modules symlinks to installed matching dependencies; workers must request dependency changes.
+- Each ASSIGN uses expectReply=true; queued sends do not establish completion. Next coordinator action on explicit READY_FOR_REVIEW: ACK report, inspect scoped diff/evidence, independent review when material, serial integration and checks; then mark done. Do not schedule T03/T05 based on ACK alone.

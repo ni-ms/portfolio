@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "phase": "executing",
-  "activeTicket": "T02",
+  "activeTicket": "T02,T04",
   "tasks": {
     "T01": {
       "status": "done",
@@ -11,11 +11,14 @@
       "resultPatch": null
     },
     "T02": {
-      "status": "pending",
-      "owner": null,
+      "status": "in_progress",
+      "owner": "ba28c059-20fd-49ea-bcf1-c064cea2e04e",
       "resultCommit": null,
       "report": "docs/implementation/reports/T02.md",
-      "resultPatch": null
+      "resultPatch": null,
+      "branch": "codex/portfolio-T02-content",
+      "worktree": "/Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t02-content",
+      "baseCommit": "6211600b3f6030be422684d22d4908df5515b28b"
     },
     "T03": {
       "status": "pending",
@@ -25,11 +28,14 @@
       "resultPatch": null
     },
     "T04": {
-      "status": "pending",
-      "owner": null,
+      "status": "in_progress",
+      "owner": "29765d14-774f-4a8c-842f-8cb907a20f84",
       "resultCommit": null,
       "report": "docs/implementation/reports/T04.md",
-      "resultPatch": null
+      "resultPatch": null,
+      "branch": "codex/portfolio-T04-gameplay",
+      "worktree": "/Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t04-gameplay",
+      "baseCommit": "6211600b3f6030be422684d22d4908df5515b28b"
     },
     "T05": {
       "status": "pending",

@@ -35,3 +35,12 @@
 - Applied traycer-execute/loop-protocol, traycer-review, PDF read-only inspection. No fabricated tools/endpoints.
 - Exact next action: consume explicit T03 REVIEW or T04 repaired READY_FOR_REVIEW; ACK actual results, inspect evidence, use independent re-review. If accepted, serially cherry-pick scoped commits, connect root pages as appropriate, run combined relevant checks, then mark done/release dependent ticket. Never treat ACK/queued send as completion.
 - At this checkpoint root dirty only state/progress; commit now. Worker git/report and exact commit, not chat transcript, govern resumption.
+
+## T03 accepted and integrated (current authoritative page status)
+
+- Independent reviewer43c541ce APPROVED9bcce4d; final report copied. Code + report source commits7d4c7a2/ea5e430/f05de7b/9bcce4d/58d8085 integrated serially. Root mounting/cleanup accepted at9297a343217b172bc90dbdb9c8ea82f132d500a0. T03 DONE; original owner released and asked to retire.
+- Actual App now renders all approved routes and404, factual content/downloads, both themes. Removed LegacyHome, placeholder content and obsolete section/modal/thumbnail components after import audit. Migrated7compatibility tests into2actual App/Footer checks;58unit tests pass, no deleted relevant behavioral assertion.
+- Combined checks: typecheck/build PASS;58units PASS;28foundation+route browser tests PASS across4viewports, including7routes×2themes loops, navigation/focus/history/storage/real PDF. Logs.agent-runs/T03-integrated-*.log. Actual settled root Home dark/light1585x992 captures saved/inspected verification/T03/root-home-desktop-*.png.
+- Home currently renders an intentional themed static slot fallback; no functioning-game completion claim. T06 will mount accepted GameExperience after T04/T05. Existing legacy full-suite visual E2E remains for T08 migration.
+- T04 three scoped repairs still in progress; reviewer archived. No other implementation ticket ready. Active ownership: coordinator+T04 author, T03 retiring; preserve max2coding/fouragents.
+- Exact next action: on T04-repair2-30f6bdf READY_FOR_REVIEW, ACK and inspect fixed commit/asserted evidence, resume independent gameplay reviewer, integrate only after approval/combined checks; then fresh T05 world worker. Root dirty at this checkpoint only state/progress, commit now.

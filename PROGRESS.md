@@ -44,3 +44,12 @@
 - Worker mounts PortfolioPages({path,gameSlot}) in ignored port-3003 harness using real router/theme/Header/Footer. Coordinator later connects App and removes LegacyHome. Both themes/each page/narrow screenshots required.
 - T04 remains owner 29765d14 on its separate worktree/port 3004. No dependent world work until gameplay review. T02 worker released and asked to self-archive.
 - Exact next action: receive/ACK explicit T03 or T04 report, inspect diff/screenshots/interaction evidence, assign independent review for cross-cutting changes, integrate serially. Do not infer completion from ACK.
+
+## T04 review checkpoint
+
+- Current integration commit 1610d5a; T03 ACK explicitly received and implementing only its owned paths. T04 candidate d62334d20b0436b46f34a31958a354238fbaf664 received/ACKed; not integrated or accepted.
+- Independent reviewer fd6a9ad5-1fc8-499c-8080-16142de55261 (Codex gpt-6.1-sol max) ACKed bounded read-only gameplay review in T04 worktree; owns only T04-review.md plus ignored evidence. Original owner holds repairs. Four agents total including coordinator/T03/T04/reviewer; no further agents until one releases.
+- Coordinator inspected actual desktop-play/mobile-overlay captures: player visible; scene still provisional pending T05. Worker script .agent-runs/verify-t04.mjs has weak evidence: literal-true touch assertion, jump threshold at roof height, programmatic checkpoint reach, canvas count only. Do not treat its 20/20 as traversal/mobile acceptance.
+- Reviewer is independently testing real traversal/all checkpoints, camera/live transform, jump/reset/fall, overlay focus/scroll cleanup, touch cancellation and lifecycle. Suspected checkpoint-activation teleport, missing focus trap and unmount cleanup are hypotheses awaiting validated findings.
+- Worker report says production build not run (coordinator integration responsibility); preserve that distinction. Typecheck/focused 38 units reported pass.
+- Exact next action: consume explicit REVIEW verdict (not ACK), route confirmed repairs to original owner with evidence, require stronger regression/browser proof, then re-review and integrate T04 serially before T05. T03 continues independently. Dirty root paths only this state/progress checkpoint.

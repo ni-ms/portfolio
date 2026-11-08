@@ -36,14 +36,16 @@
       "baseCommit": "78c225d86413ec564b2014387d183f87902d5add"
     },
     "T04": {
-      "status": "in_progress",
+      "status": "review",
       "owner": "29765d14-774f-4a8c-842f-8cb907a20f84",
       "resultCommit": null,
       "report": "docs/implementation/reports/T04.md",
       "resultPatch": null,
       "branch": "codex/portfolio-T04-gameplay",
       "worktree": "/Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t04-gameplay",
-      "baseCommit": "6211600b3f6030be422684d22d4908df5515b28b"
+      "baseCommit": "6211600b3f6030be422684d22d4908df5515b28b",
+      "candidateCommit": "d62334d20b0436b46f34a31958a354238fbaf664",
+      "reviewer": "fd6a9ad5-1fc8-499c-8080-16142de55261"
     },
     "T05": {
       "status": "pending",

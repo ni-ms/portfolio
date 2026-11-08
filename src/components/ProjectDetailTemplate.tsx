@@ -1,5 +1,6 @@
 import React from 'react';
 import { PortfolioProject, portfolioContent } from '../content/realPortfolio';
+import { PhotoPlaceholder } from './PhotoPlaceholder';
 import { BenchmarkComparison } from './BenchmarkComparison';
 import { ProjectMetrics } from './ProjectMetrics';
 
@@ -39,64 +40,76 @@ export const ProjectDetailTemplate: React.FC<ProjectDetailTemplateProps> = ({ pr
         </a>
       </nav>
 
-      {/* Hero Header */}
-      <header className="detail-header">
-        <div className="detail-meta-eyebrow">
-          <span className="detail-project-number">{project.number}</span>
-          <span className="detail-meta-divider">/</span>
-          <span className="detail-project-category">{project.category}</span>
-          <span className="detail-meta-divider">·</span>
-          <span className="detail-project-dates">{project.dates}</span>
+      {/* Split Hero Header: Left Copy + Right Illustration */}
+      <header className="detail-split-hero">
+        <div className="detail-hero-left">
+          <div className="detail-identity-badge">
+            <PhotoPlaceholder className="detail-photo" />
+            <div className="detail-identity-meta">
+              <span className="detail-author-name">{portfolioContent.identity.name}</span>
+              <span className="detail-author-title">{portfolioContent.identity.title}</span>
+            </div>
+          </div>
+
+          <div className="detail-meta-eyebrow">
+            <span className="detail-project-number">{project.number}</span>
+            <span className="detail-meta-divider">/</span>
+            <span className="detail-project-category">{project.category}</span>
+            <span className="detail-meta-divider">·</span>
+            <span className="detail-project-dates">{project.dates}</span>
+          </div>
+
+          <h1 id="project-title" className="detail-title">
+            {project.title}
+          </h1>
+
+          <p className="detail-subtitle">{project.subtitle}</p>
+
+          <p className="detail-lead-summary">{project.details.fullSummary || project.description}</p>
+
+          <div className="detail-tags-row" aria-label="Technologies used">
+            {project.tags.map((tag) => (
+              <span key={tag} className="detail-tag-pill">
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          {project.url && (
+            <div className="detail-action-links">
+              <a
+                href={project.url}
+                target="_blank"
+                rel="noreferrer"
+                className="detail-cta-button"
+              >
+                {project.urlLabel || 'Visit Project ↗'}
+              </a>
+            </div>
+          )}
         </div>
 
-        <h1 id="project-title" className="detail-title">
-          {project.title}
-        </h1>
-
-        <p className="detail-subtitle">{project.subtitle}</p>
-
-        {/* Stack Tags */}
-        <div className="detail-tags-row" aria-label="Technologies used">
-          {project.tags.map((tag) => (
-            <span key={tag} className="detail-tag-pill">
-              {tag}
-            </span>
-          ))}
-        </div>
-
-        {/* External Links (Only when present; ScottyPi is strictly absent) */}
-        {project.url && (
-          <div className="detail-action-links">
-            <a
-              href={project.url}
-              target="_blank"
-              rel="noreferrer"
-              className="detail-cta-button"
-            >
-              {project.urlLabel || 'Visit Project ↗'}
-            </a>
+        {/* Right Column: Technical Architecture Illustration */}
+        {illustration && (
+          <div className="detail-hero-right">
+            <figure className="detail-illustration-figure">
+              <img
+                src={illustration.src}
+                alt={illustration.alt}
+                className="detail-illustration-img"
+                loading="eager"
+              />
+              <figcaption className="detail-illustration-caption">
+                Figure {project.number}.1 — Architectural schematic and pipeline overview for {project.name}.
+              </figcaption>
+            </figure>
           </div>
         )}
       </header>
 
-      {/* Technical Architecture Illustration */}
-      {illustration && (
-        <figure className="detail-illustration-figure">
-          <img
-            src={illustration.src}
-            alt={illustration.alt}
-            className="detail-illustration-img"
-            loading="eager"
-          />
-          <figcaption className="detail-illustration-caption">
-            Figure {project.number}.1 — Architectural schematic and pipeline overview for {project.name}.
-          </figcaption>
-        </figure>
-      )}
-
-      {/* Structured Content Grid */}
+      {/* Structured Content Grid: Challenge & Approach beside Outcomes */}
       <div className="detail-grid-layout">
-        {/* Left Column: Problem & Approach */}
+        {/* Left Column: Challenge & Systems Approach */}
         <section className="detail-narrative-col" aria-label="Technical Details">
           <div className="detail-block">
             <h2 className="detail-section-heading">The Challenge</h2>
@@ -114,13 +127,6 @@ export const ProjectDetailTemplate: React.FC<ProjectDetailTemplateProps> = ({ pr
               ))}
             </ul>
           </div>
-
-          {project.details.fullSummary && (
-            <div className="detail-block">
-              <h2 className="detail-section-heading">Implementation Summary</h2>
-              <p className="detail-prose-text">{project.details.fullSummary}</p>
-            </div>
-          )}
         </section>
 
         {/* Right Column: HTML Benchmarks / Real Metrics */}

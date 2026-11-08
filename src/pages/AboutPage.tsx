@@ -7,7 +7,7 @@ export const AboutPage: React.FC = () => {
 
   return (
     <div className="about-page-container">
-      {/* Header */}
+      {/* 1. Prominent About Heading & Identity Row */}
       <header className="about-intro-header">
         <div className="page-meta-eyebrow">
           <span className="eyebrow-accent">PORTFOLIO</span>
@@ -29,19 +29,17 @@ export const AboutPage: React.FC = () => {
         </div>
       </header>
 
-      {/* Narrative & Focus */}
-      <section className="about-narrative-section" aria-labelledby="narrative-heading">
-        <div className="section-divider-header">
-          <div className="divider-line" />
-          <div className="section-label-badge">
-            <span className="section-badge-dot" />
-            <h2 id="narrative-heading" className="section-badge-title">
-              PROFESSIONAL BACKGROUND
-            </h2>
+      {/* 2. Split Introduction / Narrative beside Architectural Visual */}
+      <section className="about-split-hero" aria-label="Professional background and topology">
+        <div className="about-hero-narrative">
+          <div className="section-divider-header">
+            <div className="divider-line" />
+            <div className="section-label-badge">
+              <span className="section-badge-dot" />
+              <h2 className="section-badge-title">BACKGROUND</h2>
+            </div>
           </div>
-        </div>
 
-        <div className="about-narrative-grid">
           <div className="narrative-prose-col">
             {about.paragraphs.map((p, idx) => (
               <p key={idx} className="about-paragraph">
@@ -50,97 +48,128 @@ export const AboutPage: React.FC = () => {
             ))}
           </div>
 
-          <div className="focus-areas-col">
-            <div className="focus-card">
-              <h3 className="focus-card-title">Core Areas of Focus</h3>
-              <ul className="focus-list">
-                {about.focus.map((item, idx) => (
-                  <li key={idx} className="focus-list-item">
-                    <span className="focus-marker" aria-hidden="true">■</span>
-                    <span className="focus-name">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Education Brief */}
-      <section className="about-education-section" aria-labelledby="about-edu-heading">
-        <div className="section-divider-header">
-          <div className="divider-line" />
-          <div className="section-label-badge">
-            <span className="section-badge-dot" />
-            <h2 id="about-edu-heading" className="section-badge-title">
-              ACADEMIC BACKGROUND
-            </h2>
+          <div className="about-actions-row">
+            <a href="/resume" className="cta-btn cta-btn-primary">
+              VIEW FULL RÉSUMÉ ↗
+            </a>
+            <a href="#contact" className="cta-btn cta-btn-secondary">
+              CONTACT INFORMATION ↓
+            </a>
           </div>
         </div>
 
-        <div className="about-education-cards">
-          {education.map((edu, idx) => (
-            <div key={idx} className="about-edu-card">
-              <span className="edu-year-badge">{edu.year}</span>
-              <h3 className="edu-degree-title">{edu.degree}</h3>
-              <p className="edu-school-name">{edu.school}</p>
-              {edu.coursework && (
-                <p className="edu-coursework-note">
-                  <strong>Coursework:</strong> {edu.coursework}
-                </p>
-              )}
-            </div>
-          ))}
+        <div className="about-hero-visual">
+          <figure className="about-illustration-figure">
+            <img
+              src="/images/about/systems-architecture.svg"
+              alt="Systems architecture topology diagram"
+              className="about-illustration-img"
+              loading="eager"
+            />
+            <figcaption className="about-illustration-caption">
+              Architectural systems topology across backend services, retrieval pipelines, and CPU optimization.
+            </figcaption>
+          </figure>
         </div>
       </section>
 
-      {/* Contact Section (with id="contact" for direct hash linking and focus) */}
+      {/* 3. Core Areas of Focus & Academic Background */}
+      <div className="about-two-col-grid">
+        {/* Core Areas of Focus */}
+        <section className="about-focus-col" aria-labelledby="focus-heading">
+          <div className="section-divider-header">
+            <div className="divider-line" />
+            <div className="section-label-badge">
+              <span className="section-badge-dot" />
+              <h2 id="focus-heading" className="section-badge-title">
+                CORE FOCUS
+              </h2>
+            </div>
+          </div>
+
+          <div className="focus-card">
+            <ul className="focus-list">
+              {about.focus.map((item, idx) => (
+                <li key={idx} className="focus-list-item">
+                  <span className="focus-marker" aria-hidden="true">■</span>
+                  <span className="focus-name">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* Academic Background */}
+        <section className="about-academic-col" aria-labelledby="about-edu-heading">
+          <div className="section-divider-header">
+            <div className="divider-line" />
+            <div className="section-label-badge">
+              <span className="section-badge-dot" />
+              <h2 id="about-edu-heading" className="section-badge-title">
+                EDUCATION
+              </h2>
+            </div>
+          </div>
+
+          <div className="about-education-cards">
+            {education.map((edu, idx) => (
+              <div key={idx} className="about-edu-card">
+                <div className="edu-top-row">
+                  <h3 className="edu-degree-title">{edu.degree}</h3>
+                  <span className="edu-year-badge">{edu.year}</span>
+                </div>
+                <p className="edu-school-name">{edu.school}</p>
+                {edu.coursework && (
+                  <p className="edu-coursework-note">
+                    <strong>Coursework:</strong> {edu.coursework}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      {/* 4. Compact Contact Section (Target for #contact) */}
       <section id="contact" className="about-contact-section" aria-labelledby="contact-heading" tabIndex={-1}>
         <div className="section-divider-header">
           <div className="divider-line" />
           <div className="section-label-badge">
             <span className="section-badge-dot" />
             <h2 id="contact-heading" className="section-badge-title">
-              GET IN TOUCH
+              CONTACT
             </h2>
           </div>
         </div>
 
-        <div className="contact-box">
+        <div className="contact-box-compact">
           <p className="contact-lead-text">
-            I am always open to discussing backend systems architecture, applied AI engineering, research collaborations, or software opportunities.
+            Direct channels for technical discussions, software engineering opportunities, and project inquiries.
           </p>
 
-          <div className="contact-details-grid">
-            {/* Email */}
-            <a href={links.email} className="contact-method-card">
-              <span className="contact-method-label">Direct Email</span>
-              <span className="contact-method-value">{identity.email}</span>
-              <span className="contact-method-arrow">Send Message ↗</span>
+          <div className="contact-links-row">
+            <a href={links.email} className="contact-channel-pill">
+              <span className="channel-label">Email:</span>
+              <span className="channel-val">{identity.email}</span>
             </a>
-
-            {/* LinkedIn */}
-            <a href={links.linkedin} target="_blank" rel="noreferrer" className="contact-method-card">
-              <span className="contact-method-label">LinkedIn</span>
-              <span className="contact-method-value">linkedin.com/in/nikhilmsha</span>
-              <span className="contact-method-arrow">Connect ↗</span>
+            {identity.phone && (
+              <a href={`tel:${identity.phone}`} className="contact-channel-pill">
+                <span className="channel-label">Phone:</span>
+                <span className="channel-val">{identity.phone}</span>
+              </a>
+            )}
+            <a href={links.linkedin} target="_blank" rel="noreferrer" className="contact-channel-pill">
+              <span className="channel-label">LinkedIn:</span>
+              <span className="channel-val">linkedin.com/in/nikhilmsha ↗</span>
             </a>
-
-            {/* GitHub */}
-            <a href={links.github} target="_blank" rel="noreferrer" className="contact-method-card">
-              <span className="contact-method-label">GitHub</span>
-              <span className="contact-method-value">github.com/ni-ms</span>
-              <span className="contact-method-arrow">Repositories ↗</span>
+            <a href={links.github} target="_blank" rel="noreferrer" className="contact-channel-pill">
+              <span className="channel-label">GitHub:</span>
+              <span className="channel-val">github.com/ni-ms ↗</span>
             </a>
-
-            {/* Phone & Location */}
-            <div className="contact-method-card is-info-card">
-              <span className="contact-method-label">Location &amp; Phone</span>
-              <span className="contact-method-value">{identity.location}</span>
-              {identity.phone && (
-                <span className="contact-sub-value">{identity.phone}</span>
-              )}
-            </div>
+            <span className="contact-channel-pill is-static">
+              <span className="channel-label">Location:</span>
+              <span className="channel-val">{identity.location}</span>
+            </span>
           </div>
         </div>
       </section>

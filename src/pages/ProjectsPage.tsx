@@ -4,6 +4,8 @@ import { ProjectCard } from '../components/ProjectCard';
 
 export const ProjectsPage: React.FC = () => {
   const { projects } = portfolioContent;
+  const featuredProject = projects[0]; // FastCode
+  const supportingProjects = projects.slice(1); // ScottyPi & Langmetric
 
   return (
     <div className="projects-page-container">
@@ -22,14 +24,19 @@ export const ProjectsPage: React.FC = () => {
         </p>
       </header>
 
-      {/* Projects List */}
-      <section className="projects-collection-section" aria-label="Projects list">
-        <div className="projects-grid">
-          {projects.map((project, index) => (
+      {/* Featured Project Row (FastCode) */}
+      <section className="projects-featured-section" aria-label="Featured project">
+        <ProjectCard project={featuredProject} variant="featured" />
+      </section>
+
+      {/* Supporting Projects Grid (ScottyPi & Langmetric) */}
+      <section className="projects-supporting-section" aria-label="Supporting projects">
+        <div className="projects-supporting-grid">
+          {supportingProjects.map((project) => (
             <ProjectCard
               key={project.slug}
               project={project}
-              featured={index === 0}
+              variant="full"
             />
           ))}
         </div>

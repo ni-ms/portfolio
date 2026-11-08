@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 320" fill="none" role="img" aria-label="Systems Architecture and Engineering Isometric Composition">
+  <defs>
+    <linearGradient id="aboutGradDark" x1="0" y1="0" x2="520" y2="320" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#141919" />
+      <stop offset="100%" stop-color="#101414" />
+    </linearGradient>
+    <linearGradient id="towerGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#222b2d" />
+      <stop offset="100%" stop-color="#151b1c" />
+    </linearGradient>
+    <linearGradient id="roofGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2a3638" />
+      <stop offset="100%" stop-color="#1b2325" />
+    </linearGradient>
+  </defs>
+
+  <style>
+    .about-bg { fill: url(#aboutGradDark); stroke: #232C2D; }
+    .grid-line { stroke: #232C2D; stroke-width: 1; stroke-dasharray: 4 4; opacity: 0.6; }
+    .lime-line { stroke: #D6FF64; stroke-width: 2; }
+    .lime-glow { fill: #D6FF64; }
+
+    @media (prefers-color-scheme: light) {
+      .about-bg { fill: #EBECE5; stroke: #C8CDC4; }
+      .grid-line { stroke: #D2D6CE; }
+      .lime-line { stroke: #101414; }
+      .lime-glow { fill: #101414; }
+    }
+  </style>
+
+  <!-- Background -->
+  <rect width="520" height="320" rx="6" class="about-bg" stroke-width="1.5" />
+
+  <!-- Grid lines -->
+  <g class="grid-line">
+    <line x1="20" y1="40" x2="500" y2="40" />
+    <line x1="20" y1="160" x2="500" y2="160" />
+    <line x1="20" y1="280" x2="500" y2="280" />
+    <line x1="130" y1="20" x2="130" y2="300" />
+    <line x1="260" y1="20" x2="260" y2="300" />
+    <line x1="390" y1="20" x2="390" y2="300" />
+  </g>
+
+  <!-- Isometric Architectural Rooftops and Systems Structure -->
+  <!-- Tower 1 Base & Roof -->
+  <polygon points="60,200 160,140 260,200 160,260" fill="url(#roofGrad)" stroke="var(--color-border-light)" stroke-width="1.5" />
+  <polygon points="60,200 160,260 160,300 60,240" fill="#121819" stroke="var(--color-border)" />
+  <polygon points="160,260 260,200 260,240 160,300" fill="#182022" stroke="var(--color-border)" />
+
+  <!-- Elevated Central Platform -->
+  <polygon points="160,140 260,80 360,140 260,200" fill="url(#roofGrad)" stroke="#D6FF64" stroke-width="1.5" />
+  <polygon points="160,140 260,200 260,225 160,165" fill="#171f20" stroke="var(--color-border)" />
+  <polygon points="260,200 360,140 360,165 260,225" fill="#1c2527" stroke="var(--color-border)" />
+
+  <!-- Tower 2 (Right) -->
+  <polygon points="280,180 380,120 480,180 380,240" fill="url(#roofGrad)" stroke="var(--color-border-light)" stroke-width="1.5" />
+  <polygon points="280,180 380,240 380,290 280,230" fill="#121819" stroke="var(--color-border)" />
+  <polygon points="380,240 480,180 480,230 380,290" fill="#182022" stroke="var(--color-border)" />
+
+  <!-- Connecting Sky Bridge / Data Pipeline -->
+  <path d="M160,200 L260,140 L380,180" class="lime-line" stroke-dasharray="6 3" />
+  <circle cx="160" cy="200" r="4" class="lime-glow" />
+  <circle cx="260" cy="140" r="5" class="lime-glow" />
+  <circle cx="380" cy="180" r="4" class="lime-glow" />
+
+  <!-- Vertical Parapets & Antenna -->
+  <line x1="260" y1="80" x2="260" y2="40" class="lime-line" />
+  <circle cx="260" cy="40" r="3" class="lime-glow" />
+
+  <!-- Label Badge -->
+  <rect x="24" y="24" width="160" height="22" rx="3" fill="#171E1F" stroke="#2E3A3C" />
+  <text x="34" y="38" fill="#D6FF64" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" letter-spacing="0.08em">SYSTEMS TOPOLOGY</text>
+</svg>

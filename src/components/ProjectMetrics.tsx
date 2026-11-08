@@ -9,7 +9,7 @@ interface ProjectMetricsProps {
 
 /**
  * Real HTML/CSS structured metrics cards for ScottyPi and Langmetric.
- * Avoids fabricated metrics and displays factual evaluation and telemetry measures.
+ * Avoids internal verification/provenance copy and displays factual evaluation and telemetry measures.
  */
 export const ProjectMetrics: React.FC<ProjectMetricsProps> = ({
   slug,
@@ -100,7 +100,7 @@ export const ProjectMetrics: React.FC<ProjectMetricsProps> = ({
       <p className="benchmark-qualifier">
         <span className="qualifier-mark" aria-hidden="true">ℹ</span>
         <span className="qualifier-text">
-          Sourced from production model traces. Real-time metrics show latency distributions, token usage, and cost analytics without fictional customer counts.
+          Aggregates structured model traces into operational dashboards for latency distributions, token usage, and cost metrics.
         </span>
       </p>
     </div>

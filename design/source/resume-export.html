@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Nikhil Sharma — Résumé</title>
+<style>
+  @page {
+    size: letter;
+    margin: 0.5in 0.55in 0.5in 0.55in;
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #111827;
+    background: #ffffff;
+    font-size: 9.5pt;
+    line-height: 1.35;
+  }
+  a {
+    color: #0969da;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  header {
+    border-bottom: 2px solid #111827;
+    padding-bottom: 6px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  h1 {
+    font-size: 20pt;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #0a0a0a;
+    line-height: 1;
+  }
+  .contact-info {
+    text-align: right;
+    font-size: 8.5pt;
+    color: #374151;
+    line-height: 1.4;
+  }
+  .contact-info span {
+    margin: 0 4px;
+    color: #9ca3af;
+  }
+  section {
+    margin-bottom: 12px;
+  }
+  h2 {
+    font-size: 10pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #111827;
+    border-bottom: 1px solid #d1d5db;
+    padding-bottom: 2px;
+    margin-bottom: 7px;
+  }
+  .summary-text {
+    font-size: 9pt;
+    color: #374151;
+    line-height: 1.4;
+  }
+  .item {
+    margin-bottom: 8px;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .item:last-child {
+    margin-bottom: 0;
+  }
+  .item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 9.5pt;
+  }
+  .item-title {
+    font-weight: 700;
+    color: #111827;
+  }
+  .item-subtitle {
+    font-weight: 600;
+    color: #4b5563;
+  }
+  .item-dates {
+    font-size: 8.5pt;
+    color: #6b7280;
+    white-space: nowrap;
+  }
+  .item-tech {
+    font-size: 8.5pt;
+    font-weight: 500;
+    color: #4b5563;
+    margin-top: 1px;
+    margin-bottom: 2px;
+  }
+  ul {
+    list-style: disc;
+    margin-left: 16px;
+    margin-top: 2px;
+  }
+  li {
+    font-size: 8.75pt;
+    color: #374151;
+    line-height: 1.35;
+    margin-bottom: 2px;
+  }
+  .skills-grid {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    row-gap: 4px;
+    column-gap: 8px;
+    font-size: 8.5pt;
+    line-height: 1.35;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .skill-cat {
+    font-weight: 600;
+    color: #1f2937;
+  }
+  .skill-items {
+    color: #374151;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Nikhil Sharma</h1>
+    <div style="font-size: 10.5pt; font-weight: 600; color: #374151; margin-top: 2px;">Software &amp; Applied AI Engineer</div>
+  </div>
+  <div class="contact-info">
+    <div>San Jose, CA <span>·</span> 408-480-6489</div>
+    <div>
+      <a href="mailto:nikhilmsha@gmail.com">nikhilmsha@gmail.com</a> <span>·</span>
+      <a href="https://linkedin.com/in/nikhilmsha" target="_blank">linkedin.com/in/nikhilmsha</a> <span>·</span>
+      <a href="https://github.com/ni-ms" target="_blank">github.com/ni-ms</a>
+    </div>
+  </div>
+</header>
+
+<section>
+  <h2>Professional Summary</h2>
+  <p class="summary-text">
+    Software and Applied AI Engineer (M.S. in Software Engineering, Carnegie Mellon) with nearly 3 years of experience building production backend services and enterprise web applications. Worked on optimizing high-scale systems at Intuitive Surgical and Nationwide, with hands-on experience in ML systems engineering and hardware kernel optimization.
+  </p>
+</section>
+
+<section>
+  <h2>Education</h2>
+  <div class="item">
+    <div class="item-header">
+      <span class="item-title">Carnegie Mellon University</span>
+      <span class="item-dates">Mountain View, CA <span>·</span> Expected 2027</span>
+    </div>
+    <div class="item-subtitle">M.S. in Software Engineering</div>
+    <div style="font-size: 8.5pt; color: #4b5563; margin-top: 1px;"><strong>Relevant Coursework:</strong> MPI-based parallel programming, time-series analysis, hybrid RAG, MiniLM fine-tuning</div>
+  </div>
+  <div class="item" style="margin-top: 4px;">
+    <div class="item-header">
+      <span class="item-title">BITS Pilani</span>
+      <span class="item-dates">2024</span>
+    </div>
+    <div class="item-subtitle">B.E. in Computer Science</div>
+  </div>
+</section>
+
+<section>
+  <h2>Experience</h2>
+  <div class="item">
+    <div class="item-header">
+      <span><span class="item-title">Senior Software Engineer</span> <span class="item-subtitle">— Tech Mahindra (Client: Intuitive Surgical)</span></span>
+      <span class="item-dates">Nov 2025 – Aug 2026</span>
+    </div>
+    <ul>
+      <li>Optimized search in My Intuitive's ~200,000-hospital directory using SQL indexing, React memoization, and pagination in a shared selector, reducing API requests and speeding up hospital selection for physicians.</li>
+      <li>Built React pages and Spring Boot/JAX-RS REST APIs for Intuitive's provider search, hospital profiles, and account settings.</li>
+      <li>Enabled hospital-status changes to flow between Salesforce and Liferay through a bidirectional Java API integration.</li>
+      <li>Refactored Auth0 login for My Intuitive and Intuitive Learning, fixing redirect loops and handling invalid usernames; updated bearer token handling in JavaScript Actions and deployed changes to production.</li>
+      <li>Implemented conditional API calls by evaluating flags from Auth0 metadata retrieved through the Java Management SDK.</li>
+      <li>Developed a shared Redis cache so 6+ Liferay pods could retrieve profile settings by session ID.</li>
+    </ul>
+  </div>
+
+  <div class="item">
+    <div class="item-header">
+      <span><span class="item-title">Actimize Developer</span> <span class="item-subtitle">— Styrone (Client: Nationwide Building Society)</span></span>
+      <span class="item-dates">Mar 2025 – Oct 2025</span>
+    </div>
+    <ul>
+      <li>Architected 25+ parameterized drill-down queries (DDQs) and DART analytical views, optimizing underlying Oracle SQL execution plans to accelerate historical transaction retrieval during fraud investigations.</li>
+      <li>Engineered custom Java event-driven state handlers and XML lifecycle plugins (rcm.conditionalStatusChange, rcm.postStepChange) to automate fraud-alert state transitions, validation workflows, and follow-up actions.</li>
+      <li>Developed 20+ production Java reporting plugins from scratch, querying high-volume transaction data and transforming XML via XSLT/XSL-FO into standardized compliance PDF reports for financial investigators.</li>
+      <li>Extended alert data pipelines via custom XML enrichment (getEnrichmentXML) and dynamic template bindings, customizing investigator UI dashboards with JavaScript, jqGrid, and Velocity.</li>
+      <li>Integrated external SOAP web services into real-time fraud monitoring flows (Actimize IFM/AIS), building custom data-integration and response interceptors to validate inputs and transform payloads.</li>
+    </ul>
+  </div>
+
+  <div class="item">
+    <div class="item-header">
+      <span><span class="item-title">Associate Full Stack Developer</span> <span class="item-subtitle">— Exeevo</span></span>
+      <span class="item-dates">Jan 2024 – Feb 2025</span>
+    </div>
+    <ul>
+      <li>Managed 25+ Spring Boot REST endpoints end to end for healthcare applications, from API design and business-rule implementation through production release.</li>
+      <li>Developed Microsoft Dynamics 365 APIs into Angular dashboards to display CRM records for a healthcare proof of concept.</li>
+      <li>Integrated Dynamics 365 entity relationship modeling, managed and unmanaged solution layering, and CRM access controls using security roles, field security, and access team templates.</li>
+      <li>Built GO app dashboards and document views for medical representatives to access pharmaceutical information, using Angular, RxJS, NgRx state persistence, and Cordova mobile support.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2>Projects</h2>
+  <div class="item">
+    <div class="item-header">
+      <span><span class="item-title">FastCode — CPU Kernel Optimization</span> <span class="item-tech">· C++, AVX2/FMA</span></span>
+      <span class="item-dates">Oct 2026 – Nov 2026</span>
+    </div>
+    <div style="font-size: 8.25pt; color: #0969da; margin-bottom: 2px;"><a href="https://github.com/ni-ms/18645-yolov8n-optimization" target="_blank">github.com/ni-ms/18645-yolov8n-optimization</a></div>
+    <ul>
+      <li>Optimized YOLOv8n FP32 1x1 convolution using AVX2/FMA vector instructions, register blocking, and cache-aware input packing.</li>
+      <li>Cut primary-workload latency 21% versus OpenCV (684 to 539 µs); reached ~91% of theoretical single-core peak.</li>
+    </ul>
+  </div>
+
+  <div class="item">
+    <div class="item-header">
+      <span><span class="item-title">ScottyPi — Campus Retrieval Assistant</span> <span class="item-tech">· Python, MiniLM, QLoRA</span></span>
+      <span class="item-dates">Fall 2026</span>
+    </div>
+    <ul>
+      <li>Built a campus retrieval assistant combining BM25 keyword search, dense retrieval, reciprocal-rank fusion, and fine-tuned MiniLM embeddings over 133 passages from 20 official CMU-SV pages.</li>
+      <li>Evaluated using a 160-question dataset with train/dev/test splits and Recall@1, Recall@3, and MRR metrics.</li>
+    </ul>
+  </div>
+
+  <div class="item">
+    <div class="item-header">
+      <span><span class="item-title">Langmetric — Model Trace Analytics</span> <span class="item-tech">· Rust, Loco RS, SeaORM</span></span>
+      <span class="item-dates">Jul 2024 – Present</span>
+    </div>
+    <div style="font-size: 8.25pt; color: #0969da; margin-bottom: 2px;"><a href="https://langmetric.com/" target="_blank">langmetric.com</a></div>
+    <ul>
+      <li>Built a Rust service that aggregates structured model traces into real-time operational dashboards for latency distributions, token usage, and cost.</li>
+      <li>Implemented asynchronous SeaORM queries, Serde JSON views, and Chart.js metric visualizations.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2>Research</h2>
+  <div class="item">
+    <div class="item-header">
+      <span class="item-title">Private Federated Aggregation of LLM-Agent Memory</span>
+      <span class="item-dates">In review</span>
+    </div>
+    <div style="font-size: 8.5pt; font-style: italic; color: #4b5563;">Peer-to-Peer Networking and Applications (Springer Nature)</div>
+    <ul>
+      <li>Designed a privacy-preserving federated memory framework for multi-agent LLM systems using Secure Aggregation and discrete Skellam differential privacy, providing formal leakage-drop guarantees while preserving shared task utility.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2>Technical Capabilities</h2>
+  <div class="skills-grid">
+    <div class="skill-cat">Languages:</div>
+    <div class="skill-items">Java, Python, C/C++, Rust, TypeScript, JavaScript, SQL, PL/SQL</div>
+
+    <div class="skill-cat">Backend &amp; Web:</div>
+    <div class="skill-items">Spring Boot, JAX-RS, FastAPI, React, Angular, RxJS, NgRx, WebAssembly (Wasm), WebSockets</div>
+
+    <div class="skill-cat">Applied AI &amp; Agents:</div>
+    <div class="skill-items">Model Context Protocol (MCP), LangChain, LangGraph, PyTorch, Sentence Transformers, MiniLM</div>
+
+    <div class="skill-cat">Model Serving &amp; Eval:</div>
+    <div class="skill-items">vLLM, Ollama, llama.cpp, LangSmith, Arize Phoenix, OpenInference</div>
+
+    <div class="skill-cat">Databases &amp; Infra:</div>
+    <div class="skill-items">SQL Server, Oracle Database, Redis, SQLAlchemy, Docker, Kubernetes</div>
+
+    <div class="skill-cat">Search &amp; Streaming:</div>
+    <div class="skill-items">Pinecone, Milvus, Qdrant, pgvector, Apache Kafka, Apache Arrow, DuckDB</div>
+
+    <div class="skill-cat">Systems &amp; Networking:</div>
+    <div class="skill-items">MPI, POSIX threads, Linux IPC, AVX2/FMA, gRPC, Protocol Buffers (Protobuf)</div>
+
+    <div class="skill-cat">Enterprise Integrations:</div>
+    <div class="skill-items">Auth0 Actions and Management API, Salesforce APIs, Dynamics 365 APIs, Liferay DXP, NICE Actimize (ActOne, AIS, IFM), XSLT/XSL-FO</div>
+  </div>
+</section>
+
+</body>
+</html>

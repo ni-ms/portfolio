@@ -148,7 +148,7 @@ export const portfolioContent: PortfolioContent = {
   identity: {
     name: "Nikhil Sharma",
     title: "Software & Applied AI Engineer",
-    headline: "Software and Applied AI Engineer (M.S. in Software Engineering, Carnegie Mellon)",
+    headline: "Software and Applied AI Engineer (M.S. in Software Engineering in progress, Carnegie Mellon, Expected 2027)",
     location: "San Jose, CA",
     email: "nikhilmsha@gmail.com",
     phone: "408-480-6489",
@@ -258,7 +258,8 @@ export const portfolioContent: PortfolioContent = {
       urlLabel: "Live Platform ↗",
       details: {
         service: "Rust service aggregating structured model traces",
-        problem: "Aggregate high-volume structured model traces into actionable operational telemetry without query bottlenecks.",
+        // Factual trace & dashboard objective sourced from DOCX/JSON; avoids unsupported claims
+        problem: "Aggregate structured model traces into operational dashboards displaying latency distributions, token usage, and cost metrics.",
         approach: [
           "Loco RS web framework",
           "Asynchronous SeaORM queries",
@@ -276,7 +277,8 @@ export const portfolioContent: PortfolioContent = {
           "Token usage",
           "Cost"
         ],
-        qualifier: "Focused on architectural telemetry; no fictional traction or revenue claims.",
+        // Anti-fabrication provenance note: do not expose fictional traction/revenue metrics.
+        qualifier: undefined,
         fullSummary: "Built a Rust service that aggregates structured model traces into dashboards for latency distributions, token usage, and cost. Implemented asynchronous SeaORM queries, Serde JSON views, and Chart.js visualizations."
       }
     }
@@ -337,7 +339,7 @@ export const portfolioContent: PortfolioContent = {
     },
     {
       school: "BITS Pilani",
-      degree: "B.E. in Computer Science",
+      degree: "B.E. Computer Science",
       year: "2024"
     }
   ],

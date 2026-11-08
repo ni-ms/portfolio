@@ -44,3 +44,11 @@
 - Home currently renders an intentional themed static slot fallback; no functioning-game completion claim. T06 will mount accepted GameExperience after T04/T05. Existing legacy full-suite visual E2E remains for T08 migration.
 - T04 three scoped repairs still in progress; reviewer archived. No other implementation ticket ready. Active ownership: coordinator+T04 author, T03 retiring; preserve max2coding/fouragents.
 - Exact next action: on T04-repair2-30f6bdf READY_FOR_REVIEW, ACK and inspect fixed commit/asserted evidence, resume independent gameplay reviewer, integrate only after approval/combined checks; then fresh T05 world worker. Root dirty at this checkpoint only state/progress, commit now.
+
+## Latest T04 candidate / test-only repair split
+
+- Current integrated checkpoint7c42f18 (T03 done at9297a34). T04 e9c4ee38a7955721756b2069dc5ad593eb0293b9 received/ACKed, not accepted/integrated. Author reports actual intersection+document visibility, connected-trigger focus, canonical ramp support checks, removed test-placement effect, asserted64/64 and38units/typecheck.
+- Reviewerfd6a9ad5 resumed and explicitly ACKed T04-rereview2-e9c4ee3: production src FROZEN at e9c4ee3, bounded review of3remaining blockers plus preserved regressions. No visual/T05 scope.
+- Coordinator independently found new tracked tests not durable: helper hardcodes3004/.agent-runs/rereview-t04.html and project-name early returns count9 no-ops as passes; no actual touch-motion check. Author assigned T04-tests-e9c4ee3 with expectReply=true, TEST/FIXTURE/REPORT edits only concurrently with read-only source review.
+- Required: tracked fixture HTML/TSX under fixtures/gameplay*, relative configured-base URL, real component/measured lifecycle/visibility/touch movement+jump/cancel, honest test.skip/executed counts. Ignored temporary worker Playwright config may target3004; committed fixture must run default3000 after integration without ignored files. No production debug API. Correct old12/12 claim.
+- Next: consume production REVIEW and test-only READY separately, ACK each. Accept only after both production behavior and reproducible asserted tests pass, then serial integration+combined checks and fresh T05 worker. Root dirty only this checkpoint.

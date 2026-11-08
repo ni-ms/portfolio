@@ -50,7 +50,7 @@
       ]
     },
     "T04": {
-      "status": "in_progress",
+      "status": "review",
       "owner": "29765d14-774f-4a8c-842f-8cb907a20f84",
       "resultCommit": null,
       "report": "docs/implementation/reports/T04.md",
@@ -58,10 +58,12 @@
       "branch": "codex/portfolio-T04-gameplay",
       "worktree": "/Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t04-gameplay",
       "baseCommit": "6211600b3f6030be422684d22d4908df5515b28b",
-      "candidateCommit": "30f6bdf88e523258c946251ec20fb2f29f79d795",
-      "reviewer": null,
-      "reviewVerdict": "request_changes",
-      "repairCorrelation": "T04-repair2-30f6bdf"
+      "candidateCommit": "e9c4ee38a7955721756b2069dc5ad593eb0293b9",
+      "reviewer": "fd6a9ad5-1fc8-499c-8080-16142de55261",
+      "reviewVerdict": "repair_review",
+      "repairCorrelation": "T04-repair2-30f6bdf",
+      "testsStatus": "repair_in_progress",
+      "testsCorrelation": "T04-tests-e9c4ee3"
     },
     "T05": {
       "status": "pending",

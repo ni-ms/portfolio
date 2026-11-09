@@ -72,7 +72,7 @@
       "validation": "Integrated tracked gameplay suite: 4 executed pass, 12 explicit viewport skips; .agent-runs/T04-integrated/gameplay.log. Prior typecheck/unit/build/foundation pass preserved."
     },
     "T05": {
-      "status": "in_progress",
+      "status": "review",
       "owner": "56f5d4ec-5146-4ee8-9958-2795cfbd1938",
       "resultCommit": null,
       "report": "docs/implementation/reports/T05.md",
@@ -80,10 +80,10 @@
       "branch": "codex/portfolio-T05-world",
       "worktree": "/Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t05-world-3ba6a4330a67",
       "baseCommit": "050cdf8",
-      "candidateCommit": "19835a1748648f8970737c987268c2c050f361fd",
+      "candidateCommit": "f7d2f99ec4a91bd3b1290257fe1d5fff4a18b13f",
       "reviewer": "d93a4e01-0d5b-4af2-abc6-6644cd13e4de",
-      "reviewCorrelation": "T05-rereview2-1be70b1",
-      "reviewVerdict": "request_changes",
+      "reviewCorrelation": "T05-rereview3-f7d2f99",
+      "reviewVerdict": "pending",
       "repairCorrelation": "T05-light-preview-19835a1"
     },
     "T06": {

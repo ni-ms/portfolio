@@ -286,6 +286,86 @@ test.describe('T06 HomeGame Integration, Atmosphere & Lifecycle Durable Suite', 
     expect(tabState.activeRight).toBeLessThanOrEqual(390);
   });
 
+  test('Enlarged Font & Clamped Badges — All-Sided Bounds, Pairwise Non-Overlap & Independent Hit Targets', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'Mobile Target (390x844)', 'Mobile target only');
+
+    await openHomeGameHarness(page);
+    await page.waitForFunction(() => document.querySelectorAll(".scene-markers-portal a").length === 3, null, { timeout: 15000 });
+
+    // 1. Simulate large font preferences (22px text, matching minimumFontSize=22)
+    await page.evaluate(() => {
+      const style = document.createElement('style');
+      style.id = 'test-large-font-style';
+      style.textContent = `
+        .scene-markers-portal a {
+          font-size: 22px !important;
+          padding: 6px 12px !important;
+        }
+      `;
+      document.head.appendChild(style);
+    });
+    await page.waitForTimeout(150);
+
+    const checkState = await page.evaluate(() => {
+      const cb = document.querySelector('canvas')!.getBoundingClientRect();
+      const labels = [...document.querySelectorAll('.scene-markers-portal a')].map((a) => {
+        const text = a.querySelector('span:last-child');
+        const range = document.createRange();
+        if (text) range.selectNodeContents(text);
+        const br = a.getBoundingClientRect();
+        const tr = range.getBoundingClientRect();
+        return {
+          label: a.getAttribute('aria-label') || '',
+          rect: { left: br.left, right: br.right, top: br.top, bottom: br.bottom, width: br.width, height: br.height },
+          textRect: { left: tr.left, right: tr.right, top: tr.top, bottom: tr.bottom, width: tr.width, height: tr.height },
+          centerHit: document.elementFromPoint(br.x + br.width / 2, br.y + br.height / 2)?.closest('a')?.getAttribute('aria-label'),
+          textCenterHit: document.elementFromPoint(tr.x + tr.width / 2, tr.y + tr.height / 2)?.closest('a')?.getAttribute('aria-label'),
+        };
+      });
+
+      return {
+        cb: { left: cb.left, right: cb.right, top: cb.top, bottom: cb.bottom },
+        labels,
+      };
+    });
+
+    expect(checkState.labels.length).toBe(3);
+
+    // 2. Assert all four sides of each badge are strictly inside the canvas
+    for (const l of checkState.labels) {
+      expect(l.rect.left).toBeGreaterThanOrEqual(checkState.cb.left - 1);
+      expect(l.rect.right).toBeLessThanOrEqual(checkState.cb.right + 1);
+      expect(l.rect.top).toBeGreaterThanOrEqual(checkState.cb.top - 1);
+      expect(l.rect.bottom).toBeLessThanOrEqual(checkState.cb.bottom + 1);
+
+      // Text bounds also strictly inside canvas
+      expect(l.textRect.left).toBeGreaterThanOrEqual(checkState.cb.left - 1);
+      expect(l.textRect.right).toBeLessThanOrEqual(checkState.cb.right + 1);
+
+      // Hit targets match self
+      expect(l.centerHit).toBe(l.label);
+      expect(l.textCenterHit).toBe(l.label);
+    }
+
+    // 3. Assert pairwise disjointness (no overlap between any badges)
+    for (let i = 0; i < checkState.labels.length; i++) {
+      for (let j = i + 1; j < checkState.labels.length; j++) {
+        const a = checkState.labels[i].rect;
+        const b = checkState.labels[j].rect;
+        const overlaps = !(a.right <= b.left || b.right <= a.left || a.bottom <= b.top || b.bottom <= a.top);
+        expect(overlaps).toBe(false);
+      }
+    }
+
+    // 4. Assert pointer navigation on Work text navigates to /projects
+    const workBadge = checkState.labels[0];
+    await page.mouse.click(
+      workBadge.textRect.left + workBadge.textRect.width / 2,
+      workBadge.textRect.top + workBadge.textRect.height / 2
+    );
+    await expect(page.locator('#harness-controls')).toContainText('Active Route: /projects');
+  });
+
   test('WebGL Context Loss during Expanded Play — Safely Unmounts, Clears Input & Unlocks Scroll', async ({ page }, testInfo) => {
     test.skip(testInfo.project.name !== 'Desktop Target (1585x992)', 'Desktop target only');
 

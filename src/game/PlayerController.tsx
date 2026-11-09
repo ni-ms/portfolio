@@ -206,9 +206,13 @@ export function PlayerController({
           const withinZ = pos.z >= ramp.minZ - 0.25 && pos.z <= ramp.maxZ + 0.25;
 
           if (withinY && withinX && withinZ) {
-            // Forward movement towards -Z ascends Start and Exploration stairs
-            if (targetVz < -0.1) {
-              newVy = Math.max(newVy, -targetVz * ramp.slope);
+            // Apply assist only when the player is moving uphill on this specific ramp.
+            // Dot product of (targetVx, targetVz) against the ramp's canonical uphill
+            // direction determines whether movement is uphill — works for any Y-rotation.
+            const uphillDot =
+              targetVx * ramp.uphillDirXZ[0] + targetVz * ramp.uphillDirXZ[1];
+            if (uphillDot > 0.1) {
+              newVy = Math.max(newVy, uphillDot * ramp.slope);
             }
             break;
           }

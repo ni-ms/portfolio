@@ -28,6 +28,19 @@ export interface RampConfig {
   maxY: number;
   minZ: number;
   maxZ: number;
+  /**
+   * Normalised (x, z) world-space direction that goes *uphill* on this ramp.
+   * The assist fires when the dot product of the player's horizontal move vector
+   * against this direction is positive (player is heading uphill).
+   *
+   * Derived from the ramp's Y-rotation: a rotation of 0 means uphill is -Z;
+   * a rotation of -0.7854 (-45°) rotates that by +45°, giving +X/-Z direction.
+   *
+   * Formula: uphillDirXZ = rotate([0, -1], yRotation)
+   *   x = -sin(yRotation)  (since base uphill is -Z in local space → world +X when yRot<0)
+   *   z = -cos(yRotation)
+   */
+  uphillDirXZ: [number, number];
 }
 
 export const CHECKPOINTS: Checkpoint[] = [
@@ -89,6 +102,8 @@ export const START_STAIRS_RAMP: RampConfig = {
   maxY: 1.2,
   minZ: 4.4,
   maxZ: 5.2,
+  // Y-rotation = 0 → uphill is -Z: x=-sin(0)=0, z=-cos(0)=-1
+  uphillDirXZ: [0, -1],
 };
 
 export const EXPLORATION_STAIRS_RAMP: RampConfig = {
@@ -103,6 +118,8 @@ export const EXPLORATION_STAIRS_RAMP: RampConfig = {
   maxY: 2.6,
   minZ: 0.2,
   maxZ: 1.0,
+  // Y-rotation = 0 → uphill is -Z: x=-sin(0)=0, z=-cos(0)=-1
+  uphillDirXZ: [0, -1],
 };
 
 export const RESUME_STAIRS_RAMP: RampConfig = {
@@ -117,6 +134,9 @@ export const RESUME_STAIRS_RAMP: RampConfig = {
   maxY: 4.2,
   minZ: 3.2,
   maxZ: 4.4,
+  // Y-rotation = -0.7854 (-45°) → x=-sin(-0.7854)≈+0.7071, z=-cos(-0.7854)≈-0.7071
+  // Uphill on the Résumé ramp is the +X/-Z diagonal (northeast), NOT purely -Z.
+  uphillDirXZ: [0.7071, -0.7071],
 };
 
 export const RAMP_DEFINITIONS: RampConfig[] = [

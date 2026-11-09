@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { CHECKPOINTS, COURSE_BOUNDS, CAMERA_PRESETS } from '../src/game/courseConfig';
+import { CHECKPOINTS, COURSE_BOUNDS, CAMERA_PRESETS, RAMP_DEFINITIONS, START_STAIRS_RAMP, EXPLORATION_STAIRS_RAMP, RESUME_STAIRS_RAMP } from '../src/game/courseConfig';
 import { materials, applyGameTheme } from '../src/game/materials';
 import { getQualityPreset, DESKTOP_QUALITY, MOBILE_QUALITY, DETERMINISTIC_REVIEW_QUALITY } from '../src/game/quality';
 
@@ -149,5 +149,73 @@ describe('Quality Presets', () => {
 
     const review = getQualityPreset(false, true);
     expect(review.isDeterministicReview).toBe(true);
+  });
+});
+
+describe('Ramp Configurations & Uphill Direction', () => {
+  it('RAMP_DEFINITIONS exports all three ramps', () => {
+    expect(RAMP_DEFINITIONS).toHaveLength(3);
+    expect(RAMP_DEFINITIONS[0].id).toBe('ramp-start');
+    expect(RAMP_DEFINITIONS[1].id).toBe('ramp-explorations');
+    expect(RAMP_DEFINITIONS[2].id).toBe('ramp-resume');
+  });
+
+  it('each ramp has a normalised uphillDirXZ with magnitude 1', () => {
+    for (const ramp of RAMP_DEFINITIONS) {
+      const [x, z] = ramp.uphillDirXZ;
+      const magnitude = Math.sqrt(x * x + z * z);
+      expect(magnitude).toBeCloseTo(1.0, 2);
+    }
+  });
+
+  it('Start and Exploration ramps have uphill direction purely in -Z (Y-rotation = 0)', () => {
+    // rotation[1] = 0 → uphill is straight -Z
+    expect(START_STAIRS_RAMP.uphillDirXZ[0]).toBeCloseTo(0, 3);
+    expect(START_STAIRS_RAMP.uphillDirXZ[1]).toBeCloseTo(-1, 3);
+
+    expect(EXPLORATION_STAIRS_RAMP.uphillDirXZ[0]).toBeCloseTo(0, 3);
+    expect(EXPLORATION_STAIRS_RAMP.uphillDirXZ[1]).toBeCloseTo(-1, 3);
+  });
+
+  it('Résumé ramp uphillDirXZ points in +X/-Z diagonal, NOT purely -Z', () => {
+    const [x, z] = RESUME_STAIRS_RAMP.uphillDirXZ;
+    // Y-rotation = -0.7854 (-45°) → x = -sin(-0.7854) ≈ +0.7071, z = -cos(-0.7854) ≈ -0.7071
+    expect(x).toBeGreaterThan(0.5); // significant +X component
+    expect(z).toBeLessThan(-0.5);   // significant -Z component
+    expect(x).toBeCloseTo(0.7071, 2);
+    expect(z).toBeCloseTo(-0.7071, 2);
+  });
+
+  it('assist fires when moving uphill on Résumé ramp (dot product > 0)', () => {
+    const [dx, dz] = RESUME_STAIRS_RAMP.uphillDirXZ;
+    // Simulate a +X/-Z diagonal move (the true uphill direction)
+    const uphillVx = 3.0;
+    const uphillVz = -3.0;
+    const dotUphill = uphillVx * dx + uphillVz * dz;
+    expect(dotUphill).toBeGreaterThan(0.1); // assist fires
+
+    // Pure -Z movement also has a positive uphill component on the Résumé ramp
+    // (the ramp is rotated -45°, so -Z has a partial uphill component).
+    const forwardVx = 0;
+    const forwardVz = -3.0;
+    const dotForward = forwardVx * dx + forwardVz * dz;
+    expect(dotForward).toBeGreaterThan(0.1); // also fires — correct for diagonal ramp
+  });
+
+  it('assist does NOT fire when moving downhill on Résumé ramp (dot product ≤ 0)', () => {
+    const [dx, dz] = RESUME_STAIRS_RAMP.uphillDirXZ;
+    // Downhill is the opposite direction: -X/+Z
+    const downhillVx = -3.0;
+    const downhillVz = 3.0;
+    const dot = downhillVx * dx + downhillVz * dz;
+    expect(dot).toBeLessThan(0.1); // assist must NOT fire
+  });
+
+  it('all ramps have elevation bounds (minY < maxY) and Z bounds (minZ < maxZ)', () => {
+    for (const ramp of RAMP_DEFINITIONS) {
+      expect(ramp.minY).toBeLessThan(ramp.maxY);
+      expect(ramp.minZ).toBeLessThan(ramp.maxZ);
+      expect(ramp.slope).toBeGreaterThan(0);
+    }
   });
 });

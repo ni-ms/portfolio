@@ -67,3 +67,80 @@ The author's “14/14 PASS” and full-traversal/focus-restoration claims overst
 Separate evidence/author snapshots: `.agent-runs/T04-rereview-30f6bdf/`; asserted driver/harness: `.agent-runs/rereview-t04.{mjs,tsx,html}`. Reproduce failures on port 3004 with `node .agent-runs/rereview-t04.mjs visibility`, `lifecycle`, or `assist`; passing cases include `traversal`, `ground`, `state`, `mobile`, `spawns`, `timing`, and the four stair-direction checks in `stairs`. Setup and synthetic visibility fixtures are labeled. The author's existing port-3004 server was reused and left running; this review owns no server.
 
 **Exact next action:** coordinator returns these three repairs plus report/assertion corrections to original owner `29765d14`; request a fixed SHA and independent re-review before integration/T05. Only this review report is a non-ignored dirty path. No implementation/state changes or nested agents.
+
+
+## Bounded re-review of e9c4ee3 — production request changes
+
+Reviewed frozen production source `e9c4ee38a7955721756b2069dc5ad593eb0293b9`; concurrent test-only commit `6673ffb` does not change that source. Before/after SHA-256 manifests match for every src file. No production, test, package or state edits by reviewer.
+
+**Production verdict: one P2 controller defect remains.** The previous visibility and focus blockers are accepted; the base-under-ramp failure is fixed. Canonical assistance still applies the wrong direction on the Résumé ramp.
+
+### Remaining P2 — Downhill movement on Résumé receives an uphill launch
+
+`src/game/PlayerController.tsx:197–212` iterates every canonical ramp but applies positive vertical velocity whenever `targetVz < −0.1`. That direction ascends Start/Exploration; it descends the differently oriented Résumé ramp. The actual Résumé support ray returns normal approximately `[0, 0.850, −0.527]`, so negative-Z movement should descend, not add upward velocity.
+
+In a valid isolated Résumé ramp fixture, Forward with no Jump raises feet **3.689→4.145** and changes vertical velocity to **+2.507**. A second probe selects/resets to the valid Résumé roof, then actually walks onto the ramp: Forward again reverses a downward velocity into +2.507 and raises the player. The walk uses no position setup or Jump after the explicitly labeled checkpoint-reset fixture. This is a controller/contact-direction defect, not a visual-finish judgment.
+
+Evidence: `.agent-runs/T04-rereview2-e9c4ee3/resume_ramp_direction.json`, `resume_ramp_access.json`, and inspected `resume-ramp-actual-access.png`.
+
+**Repair acceptance:** derive uphill direction/vertical assistance from canonical ramp orientation or the actual support normal and horizontal movement. Downhill movement must not receive positive climb assistance. Retain both stair-direction passes, the flat-base no-boost test, and the earned full-course traversal. Add a regression for the rotated Résumé ramp; rerun `resume_ramp_direction`, `resume_ramp_access`, `stairs`, and `traversal` before re-review.
+
+### Accepted production behavior and verification
+
+- **Original 64 semantic assertions now pass independently.** Continuous Start→Work→Explorations→Résumé traversal remains **21/21**, reaching the actual final roof with earned checkpoints, zero setup calls, one body, no mid-route PlayerController placement/respawn calls, and explicit navigation only.
+- The formerly blank expanded mobile scene at page scroll 500 now renders and responds to movement. Partially visible preview renders; below-fold preview suspends. Document-hidden suspension preserves position/velocity once paused; document-visible and layout-only intersection changes resume the same simulation. These document signals are synthetic fixtures, not an OS background-performance measurement. The current overlay capture was inspected: `visible-overlay-active.png`.
+- Connected Play focus restores; Tab trapping, scroll restoration, unmount cleanup and route focus cancellation pass. The destination-focus assertion runs after unmount commits, matching router focus timing, and verifies restoration cannot steal focus afterward.
+- Actual ramp support fixes the old phantom boost from the flat base. Both Start and Exploration stairs work up/down without Jump. Measured two-touch move/jump/release/cancellation, landscape/rotation, live camera, same canvas/body through themes/modes, one movement owner, grounding/jump-edge/coyote/buffer, all four selected checkpoint resets and forced falls pass. Five additional ordinary R-key reset trials also pass.
+- Additional focus/visibility/reset checks pass; the two new direction checks fail and describe the single defect above. Current totals across 15 asserted cases: **77 pass / 2 fail**, no page errors. Assertions were inspected, not inferred from case completion or recordings.
+- Full `npm run typecheck` passes after the concurrent test-only repair; source-only TypeScript and **38/38 targeted units** pass. Build/full integrated E2E not run here.
+
+Fixture timing corrections are retained transparently: immediate hidden-state capture initially included one in-flight physics step; final assertions first require actual paused/never state, then require stable transform/velocity and successful resume. Selected-checkpoint fixtures await the rendered selection before R; the airborne drop is placed before a physics step. Initial probes remain saved alongside the final results; no production assertion was weakened or production code altered for them.
+
+### Tracked test defect is separate
+
+At e9c4ee3, tracked fixture URL hardcoded port 3004 and an ignored .agent-runs HTML file, project-name early returns falsely counted unexecuted work as passes, and mobile did not measure motion. Those tests were not durable evidence. Coordinator reports test-only `6673ffb` replaces them with tracked fixtures, relative paths, explicit skips and measured input assertions; its integrated E2E rerun remains coordinator-owned. This review does not claim independent approval of that separate fixture changeset or 12 executed passes.
+
+### Evidence and exact next action
+
+Separate asserted driver/harness: `.agent-runs/rereview2-t04.{mjs,tsx,html}`; results, preserved initial probes and source manifests: `.agent-runs/T04-rereview2-e9c4ee3/summary.json` and sibling files. Existing worker-owned port-3004 server was reused and left running. Production source still matches e9c4ee3; HEAD's only intervening commit is the test repair. Reviewer report is the only non-ignored dirty file.
+
+**Next:** original owner fixes the one uphill-direction defect; coordinator retains the successful visibility/focus/base/traversal results and completes separate durable-fixture validation. Request a fixed production SHA and bounded re-review before integration/T05. No nested agents or state edits.
+
+
+## Single-finding re-review of 0cfb079 — request changes
+
+Reviewed `0cfb079e0d524f89ac36d856ced0906617087f77` over test baseline `6673ffb`, correlation `T04-rampfix-0cfb079`. Scope was only ramp-assist direction and its Start/Exploration/base regressions. Prior accepted visibility, focus and continuous-route results remain accepted and were not rerun. Production source, tests and state were not edited; all src SHA-256 hashes match before/after.
+
+**P2 remains: the new Résumé vector disagrees with the actual collider.** `src/game/courseConfig.ts:125–139` sets `uphillDirXZ=[0.7071,-0.7071]` from Y rotation alone. Applying the complete configured XYZ rotation to local top normal `[0,1,0]` gives `[0,0.84990044,-0.52694330]`; the live Rapier support ray independently returns the same normal. Consequently actual uphill is **+Z**, downhill is **−Z**, and X crosses the slope. The negative X tilt and Euler rotation order matter. `PlayerController.tsx:212–215` therefore still assists downhill and now also launches across the slope.
+
+Confirmed in the actual component:
+
+- From an explicitly selected/reset Résumé roof, walk to `[5.0,3.95]` without Jump or position setup after that fixture. Actual support is `resume-stairs-ramp`; Forward raises feet **3.742→3.967** while moving −Z. `resume_ramp_access.json` fails `actual-downhill-walk-no-upward-launch`; inspected capture: `resume-ramp-actual-access.png`.
+- Additional isolated fixtures record the real controller's `setLinvel` calls without changing their arguments. While the same ramp supports the player, Forward changes requested Y from **−0.138 to +3.67692**; Right across the slope does the same. Backward along actual +Z uphill receives no controller assist (requested Y initially stays −0.138). Contact physics still raises the player while walking +Z; this review does not claim that segment is impassable. See `resume_vectors.json`.
+- Start/Exploration up/down and their base regression pass **5/5**. Résumé flat-base support is `ground-slab`, with no boost under Forward+Right (**2/2**). The support/elevation guards remain effective.
+
+`npm run typecheck` and targeted Vitest **45/45 pass**. The seven added unit tests assert the supplied direction and dot products, including that −Z should assist; they never compare against the transformed collider normal, so they encode the same error (`tests/course.test.ts:180–211`). Replace that expectation with an independent full-transform/support-normal regression. No build or integrated E2E rerun was in this scope.
+
+Evidence: `.agent-runs/rampfix-t04.mjs` imports the preserved actual-component harness `rereview2-t04.{html,tsx}`; results/source manifests in `.agent-runs/T04-rampfix-0cfb079/summary.json` and siblings. Five cases record **15 pass / 5 fail**, with the five failures all exposing this one direction mismatch; no page errors. The old desktop wall-clock isolated probe passes after sliding out of the assist bounds before the input frame, so it is explicitly **not** acceptance evidence. The actual roof walk and controller-frame probes establish the failure independently. Existing worker-owned port 3004 was reused and left running; this review owns no server.
+
+**Verdict: REQUEST_CHANGES for the same single P2.** Derive assistance from the complete canonical collider orientation or actual support normal: for an upward normal `n` and horizontal movement `v`, signed rise follows `−(n.x*v.x+n.z*v.z)/n.y`. Require no positive assist downhill or across the surface, and positive assistance uphill. Do not assume the checkpoint-facing diagonal is uphill on this collider. Rerun `node .agent-runs/rampfix-t04.mjs resume_ramp_access`, `resume_vectors`, `stairs`, and `resume_base` after the original owner repairs it, then request bounded re-review before integration/T05.
+
+
+## Single-finding re-review of eed0ed3 — production approve
+
+**APPROVE the bounded production ramp-direction fix** in `eed0ed38bb8fa4f710b1926f389e65f3e683ec43` (actual parent `0cfb079`, over test baseline `6673ffb`), correlation `T04-rampfix-eed0ed3`. No remaining production blocker in this assigned scope. Prior accepted visibility/focus/full-route results were preserved and not rerun. Source, tracked tests and state remain untouched; all src hashes match before/after.
+
+`PlayerController.tsx` now obtains the actual non-sensor support normal with `castRayAndGetNormal` and derives signed rise from it. The original support/elevation/input guards remain, with a positive-normal-Y denominator guard. Live controller-frame captures confirm:
+
+- Forward/downhill −Z, Right/across +X, and Forward+Right/+X−Z receive no positive assistance. For Forward, requested Y stays **−0.138** instead of becoming +3.677; the diagonal likewise preserves its existing downward velocity.
+- Actual +Z uphill receives requested Y **+3.224** from a preceding −0.297, matching the live normal's rise at speed 5.2. The player moves from the isolated ramp fixture at feet y≈3.79 to y≈4.39 with no Jump.
+- The actual roof→ramp walk uses no position setup or Jump after the explicitly labeled checkpoint-reset fixture. Forward now descends **3.781→3.513**, with downward final velocity −2.692. Its formerly failing assertion passes; current capture `resume-ramp-actual-access.png` was inspected.
+- Both Start/Exploration stair directions and their base regression pass **5/5**. Résumé's actual `ground-slab` support underneath the ramp receives no boost under Forward+Right (**2/2**).
+
+**Nonblocking P3 cleanup remains in obsolete configuration/test claims.** `courseConfig.ts:31–43,137–139` still describes `[+.7071,−.7071]` as Résumé uphill, and `tests/course.test.ts:180–211` still says −Z assistance is correct. That vector is unused by production after this repair. Its independent collider-consistency assertion deliberately remains failing; these unit tests cannot substantiate the new algorithm. Remove/correct the unused field and replace the obsolete expectations with meaningful normal-based coverage. Also correct the assignment's arithmetic: for this normal, +X/−Z gives negative rise, as observed; actual uphill is +Z.
+
+Evidence: ignored `.agent-runs/ramp-normal-t04.mjs`, importing the preserved actual-component `rereview2-t04.{html,tsx}`; `.agent-runs/T04-rampnormal-eed0ed3/summary.json` and sibling results/manifests. **17/17 runtime assertions pass** across four cases. Including the separately retained configuration checks, totals are **19 pass / 1 fail**, with that sole failure the unused Résumé vector mismatch. No page errors. Full typecheck and **45/45 targeted units pass**; the unchanged obsolete vector tests are qualified above. Build/integrated E2E/full-route re-execution were outside this bounded scope.
+
+Reproduce: `node .agent-runs/ramp-normal-t04.mjs resume_vectors`, `resume_ramp_access`, `stairs`, or `resume_base`. The first intentionally exits nonzero for the stale unused vector even while every runtime assertion passes. Existing worker-owned port 3004 remains running; reviewer owns no server. Only the review report is a non-ignored dirty path.
+
+**Next:** coordinator may integrate the accepted production fix, complete its separate durable-fixture validation and release T05 under the normal ticket protocol. Assign the obsolete config/test cleanup to the owner; no further production repair is required for this finding. No nested agents, code/state edits or integration by reviewer.

@@ -60,14 +60,26 @@
       "baseCommit": "6211600b3f6030be422684d22d4908df5515b28b",
       "reviewVerdict": "approved",
       "integrationCommit": "c6b9656",
-      "sourceCommits": ["d62334d", "30f6bdf", "e9c4ee3", "6673ffb", "0cfb079", "eed0ed3", "36bd84e"]
+      "sourceCommits": [
+        "d62334d",
+        "30f6bdf",
+        "e9c4ee3",
+        "6673ffb",
+        "0cfb079",
+        "eed0ed3",
+        "36bd84e"
+      ],
+      "validation": "Integrated tracked gameplay suite: 4 executed pass, 12 explicit viewport skips; .agent-runs/T04-integrated/gameplay.log. Prior typecheck/unit/build/foundation pass preserved."
     },
     "T05": {
-      "status": "active",
-      "owner": null,
+      "status": "in_progress",
+      "owner": "56f5d4ec-5146-4ee8-9958-2795cfbd1938",
       "resultCommit": null,
       "report": "docs/implementation/reports/T05.md",
-      "resultPatch": null
+      "resultPatch": null,
+      "branch": "codex/portfolio-T05-world",
+      "worktree": "/Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t05-world-3ba6a4330a67",
+      "baseCommit": "050cdf8"
     },
     "T06": {
       "status": "pending",

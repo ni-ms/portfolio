@@ -18,9 +18,9 @@ function createConcreteNoiseTexture(): THREE.CanvasTexture | null {
     const data = imgData.data;
 
     for (let i = 0; i < data.length; i += 4) {
-      const n1 = Math.random() * 28;
-      const n2 = Math.sin((i / 4) * 0.05) * 8;
-      const val = Math.floor(124 + n1 + n2);
+      const n1 = Math.random() * 26;
+      const n2 = Math.sin((i / 4) * 0.05) * 6;
+      const val = Math.floor(126 + n1 + n2);
       data[i] = val;
       data[i + 1] = val;
       data[i + 2] = val;
@@ -59,9 +59,9 @@ function createConcreteBumpTexture(): THREE.CanvasTexture | null {
       const px = (i / 4) % 256;
       const py = Math.floor((i / 4) / 256);
       // Multi-scale aggregate and pore noise
-      const n1 = (Math.sin(px * 0.35) * Math.cos(py * 0.35)) * 40;
-      const n2 = (Math.sin(px * 0.8) + Math.cos(py * 0.8)) * 20;
-      const n3 = (Math.random() - 0.5) * 45;
+      const n1 = (Math.sin(px * 0.35) * Math.cos(py * 0.35)) * 35;
+      const n2 = (Math.sin(px * 0.8) + Math.cos(py * 0.8)) * 18;
+      const n3 = (Math.random() - 0.5) * 40;
       const val = Math.max(0, Math.min(255, Math.floor(128 + n1 + n2 + n3)));
       data[i] = val;
       data[i + 1] = val;
@@ -93,7 +93,7 @@ function createConcreteDiffuseTexture(): THREE.CanvasTexture | null {
     const ctx = canvas.getContext('2d');
     if (!ctx) return null;
 
-    ctx.fillStyle = '#C8CBC7';
+    ctx.fillStyle = '#C8CAC7';
     ctx.fillRect(0, 0, 256, 256);
 
     const imgData = ctx.getImageData(0, 0, 256, 256);
@@ -102,8 +102,8 @@ function createConcreteDiffuseTexture(): THREE.CanvasTexture | null {
     for (let i = 0; i < data.length; i += 4) {
       const px = (i / 4) % 256;
       const py = Math.floor((i / 4) / 256);
-      const grain = (Math.random() - 0.5) * 14;
-      const broadWave = Math.sin(px * 0.05) * Math.cos(py * 0.05) * 6;
+      const grain = (Math.random() - 0.5) * 16;
+      const broadWave = Math.sin(px * 0.04) * Math.cos(py * 0.04) * 8;
       data[i] = Math.max(0, Math.min(255, data[i] + grain + broadWave));
       data[i + 1] = Math.max(0, Math.min(255, data[i + 1] + grain + broadWave));
       data[i + 2] = Math.max(0, Math.min(255, data[i + 2] + grain + broadWave));
@@ -121,7 +121,8 @@ function createConcreteDiffuseTexture(): THREE.CanvasTexture | null {
 }
 
 /**
- * Creates a distinct architectural paver tile texture with visible mortar joints and stone speckling.
+ * Creates a distinct architectural paver tile texture with visible mortar joints,
+ * beveled paver edges, subtle stone speckling, and varied tile tones.
  */
 function createPaverTileTexture(): THREE.CanvasTexture | null {
   if (typeof document === 'undefined') return null;
@@ -134,35 +135,95 @@ function createPaverTileTexture(): THREE.CanvasTexture | null {
     if (!ctx) return null;
 
     // Paver block field
-    ctx.fillStyle = '#C2C5C1';
+    ctx.fillStyle = '#C0C4BF';
     ctx.fillRect(0, 0, 256, 256);
 
     // Subtle stone aggregate noise
     const imgData = ctx.getImageData(0, 0, 256, 256);
     const data = imgData.data;
     for (let i = 0; i < data.length; i += 4) {
-      const grain = (Math.random() - 0.5) * 18;
+      const grain = (Math.random() - 0.5) * 16;
       data[i] = Math.max(0, Math.min(255, data[i] + grain));
       data[i + 1] = Math.max(0, Math.min(255, data[i + 1] + grain));
       data[i + 2] = Math.max(0, Math.min(255, data[i + 2] + grain));
     }
     ctx.putImageData(imgData, 0, 0);
 
+    // Modular 4x4 paver tile grid with varied tones and dark recessed joints
+    const tiles = 4;
+    const tileSize = 256 / tiles;
+    for (let r = 0; r < tiles; r++) {
+      for (let c = 0; c < tiles; c++) {
+        // Subtle tonal shift per tile
+        const toneShift = ((r * 3 + c * 5) % 7 - 3) * 3;
+        ctx.fillStyle = toneShift < 0 ? 'rgba(0, 0, 0, 0.04)' : (toneShift > 0 ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0,0,0,0)');
+        ctx.fillRect(c * tileSize + 2, r * tileSize + 2, tileSize - 4, tileSize - 4);
+      }
+    }
+
     // Dark architectural expansion joint grid
-    ctx.strokeStyle = '#5E6663';
-    ctx.lineWidth = 4;
-    ctx.strokeRect(2, 2, 252, 252);
-    ctx.beginPath();
-    ctx.moveTo(128, 2);
-    ctx.lineTo(128, 254);
-    ctx.moveTo(2, 128);
-    ctx.lineTo(254, 128);
-    ctx.stroke();
+    ctx.strokeStyle = '#484F4C';
+    ctx.lineWidth = 3;
+    for (let i = 0; i <= tiles; i++) {
+      const p = Math.min(254, Math.max(1, i * tileSize));
+      ctx.beginPath();
+      ctx.moveTo(p, 0);
+      ctx.lineTo(p, 256);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(0, p);
+      ctx.lineTo(256, p);
+      ctx.stroke();
+    }
 
     const texture = new THREE.CanvasTexture(canvas);
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
     texture.repeat.set(3, 3);
+    return texture;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Creates a subtle brushed metal roughness map for realistic metallic sheen on HVAC and railings.
+ */
+function createBrushedMetalTexture(): THREE.CanvasTexture | null {
+  if (typeof document === 'undefined') return null;
+
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = 128;
+    canvas.height = 128;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+
+    ctx.fillStyle = '#808080';
+    ctx.fillRect(0, 0, 128, 128);
+
+    const imgData = ctx.getImageData(0, 0, 128, 128);
+    const data = imgData.data;
+
+    // Linear horizontal micro-streaks
+    for (let y = 0; y < 128; y++) {
+      const streakVal = (Math.random() - 0.5) * 45;
+      for (let x = 0; x < 128; x++) {
+        const idx = (y * 128 + x) * 4;
+        const microNoise = (Math.random() - 0.5) * 15;
+        const val = Math.max(0, Math.min(255, Math.floor(128 + streakVal + microNoise)));
+        data[idx] = val;
+        data[idx + 1] = val;
+        data[idx + 2] = val;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(2, 4);
     return texture;
   } catch {
     return null;
@@ -185,22 +246,35 @@ function createSkylineWindowTexture(): THREE.CanvasTexture | null {
     ctx.fillStyle = '#080A0A';
     ctx.fillRect(0, 0, 128, 256);
 
-    // Draw vertical window grid bands
-    ctx.fillStyle = '#1E2829';
+    // Draw vertical window grid bands with varied floor bands
     const cols = 6;
-    const rows = 24;
+    const rows = 28;
     const colW = 128 / cols;
     const rowH = 256 / rows;
 
     for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const lit = (r * 7 + c * 13) % 9 === 0;
-        if (lit) {
-          ctx.fillStyle = (r + c) % 2 === 0 ? 'rgba(214, 255, 100, 0.45)' : 'rgba(180, 220, 240, 0.35)';
-        } else {
-          ctx.fillStyle = 'rgba(24, 32, 34, 0.8)';
+      // Mechanical service floor every 9 floors
+      if (r % 9 === 0) {
+        ctx.fillStyle = '#060808';
+        ctx.fillRect(0, r * rowH, 128, rowH);
+        ctx.fillStyle = '#182022';
+        for (let l = 0; l < 4; l++) {
+          ctx.fillRect(4, r * rowH + l * (rowH / 4) + 1, 120, 1);
         }
-        ctx.fillRect(c * colW + 4, r * rowH + 3, colW - 8, rowH - 6);
+        continue;
+      }
+
+      for (let c = 0; c < cols; c++) {
+        const lit = (r * 7 + c * 13) % 7 === 0;
+        const accent = (r * 11 + c * 3) % 23 === 0;
+        if (accent) {
+          ctx.fillStyle = 'rgba(214, 255, 100, 0.65)'; // Acid lime office interior
+        } else if (lit) {
+          ctx.fillStyle = (r + c) % 2 === 0 ? 'rgba(220, 240, 255, 0.45)' : 'rgba(255, 235, 190, 0.40)';
+        } else {
+          ctx.fillStyle = 'rgba(18, 24, 26, 0.85)';
+        }
+        ctx.fillRect(c * colW + 3, r * rowH + 2, colW - 6, rowH - 4);
       }
     }
 
@@ -218,6 +292,7 @@ const concreteNoise = createConcreteNoiseTexture();
 const concreteBump = createConcreteBumpTexture();
 const concreteDiffuse = createConcreteDiffuseTexture();
 const paverTileMap = createPaverTileTexture();
+const brushedMetalMap = createBrushedMetalTexture();
 const skylineWindowMap = createSkylineWindowTexture();
 
 // 1. Concrete Materials
@@ -268,12 +343,17 @@ const concreteTrimMat = new THREE.MeshStandardMaterial({
   roughness: 0.78,
   metalness: 0.06,
 });
+if (concreteNoise) concreteTrimMat.roughnessMap = concreteNoise;
 
 const concreteParapetMat = new THREE.MeshStandardMaterial({
   color: '#848986',
   roughness: 0.86,
   metalness: 0.04,
 });
+if (concreteBump) {
+  concreteParapetMat.bumpMap = concreteBump;
+  concreteParapetMat.bumpScale = 0.018;
+}
 
 const concretePaverMat = new THREE.MeshStandardMaterial({
   color: '#B8BCB7',
@@ -286,7 +366,7 @@ if (paverTileMap) {
 }
 if (concreteBump) {
   concretePaverMat.bumpMap = concreteBump;
-  concretePaverMat.bumpScale = 0.018;
+  concretePaverMat.bumpScale = 0.022;
 }
 
 // 2. Glass & Balustrades
@@ -306,18 +386,21 @@ const metalRailsMat = new THREE.MeshStandardMaterial({
   roughness: 0.32,
   metalness: 0.86,
 });
+if (brushedMetalMap) metalRailsMat.roughnessMap = brushedMetalMap;
 
 const metalFrameMat = new THREE.MeshStandardMaterial({
   color: '#4E5F64',
   roughness: 0.36,
   metalness: 0.82,
 });
+if (brushedMetalMap) metalFrameMat.roughnessMap = brushedMetalMap;
 
 const hvacHousingMat = new THREE.MeshStandardMaterial({
   color: '#68787C',
   roughness: 0.38,
   metalness: 0.65,
 });
+if (brushedMetalMap) hvacHousingMat.roughnessMap = brushedMetalMap;
 
 const hvacLouversMat = new THREE.MeshStandardMaterial({
   color: '#3A484C',
@@ -347,6 +430,13 @@ const metalMastMat = new THREE.MeshStandardMaterial({
   color: '#4A5B60',
   roughness: 0.32,
   metalness: 0.88,
+});
+
+// Hardware & Bolt detail material
+const metalBoltMat = new THREE.MeshStandardMaterial({
+  color: '#7A8C92',
+  roughness: 0.25,
+  metalness: 0.90,
 });
 
 // Architectural Facade Details (Panel seams, service louvers)
@@ -470,6 +560,13 @@ const foliageAccentMat = new THREE.MeshStandardMaterial({
   metalness: 0.0,
 });
 
+// Dark botanical stem material
+const foliageStemMat = new THREE.MeshStandardMaterial({
+  color: '#1E281C',
+  roughness: 0.90,
+  metalness: 0.0,
+});
+
 // 7. Distant Futuristic Skyline
 const skylineTowerMat = new THREE.MeshStandardMaterial({
   color: '#141A1B',
@@ -518,6 +615,7 @@ export const materials = {
   metalConduit: metalConduitMat,
   metalHatch: metalHatchMat,
   metalMast: metalMastMat,
+  metalBolt: metalBoltMat,
 
   // Facade Details
   facadeLouver: facadeLouverMat,
@@ -544,6 +642,7 @@ export const materials = {
   foliageMain: foliageMainMat,
   foliageLight: foliageLightMat,
   foliageAccent: foliageAccentMat,
+  foliageStem: foliageStemMat,
 
   // Distant Futuristic Skyline
   skylineTower: skylineTowerMat,
@@ -580,6 +679,7 @@ export function applyGameTheme(theme: 'dark' | 'light'): void {
     materials.metalConduit.color.set('#76878B');
     materials.metalHatch.color.set('#6B7C80');
     materials.metalMast.color.set('#647478');
+    materials.metalBolt.color.set('#9AA8AC');
 
     // Facade details
     materials.facadeLouver.color.set('#607074');
@@ -597,6 +697,7 @@ export function applyGameTheme(theme: 'dark' | 'light'): void {
     materials.foliageMain.color.set('#3D5438');
     materials.foliageLight.color.set('#526F4C');
     materials.foliageAccent.color.set('#6C8A65');
+    materials.foliageStem.color.set('#2E3E2A');
 
     // Distant skyline
     materials.skylineTower.color.set('#D0D5D2');
@@ -626,6 +727,7 @@ export function applyGameTheme(theme: 'dark' | 'light'): void {
     materials.metalConduit.color.set('#5E7075');
     materials.metalHatch.color.set('#546468');
     materials.metalMast.color.set('#4A5B60');
+    materials.metalBolt.color.set('#7A8C92');
 
     // Facade details
     materials.facadeLouver.color.set('#364448');
@@ -643,6 +745,7 @@ export function applyGameTheme(theme: 'dark' | 'light'): void {
     materials.foliageMain.color.set('#2B3B28');
     materials.foliageLight.color.set('#3E543A');
     materials.foliageAccent.color.set('#526E4D');
+    materials.foliageStem.color.set('#1E281C');
 
     // Distant skyline
     materials.skylineTower.color.set('#141A1B');

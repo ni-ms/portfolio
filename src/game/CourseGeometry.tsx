@@ -13,12 +13,14 @@ export interface CourseGeometryProps {
 /**
  * Procedural beveled architectural platform.
  * Features:
- * - True 3D monolithic beveled concrete structural core with 45° specular highlights
- * - Surface paver deck with expansion joint texturing
- * - Perimeter beveled coping stone with physical 45° chamfered edge facets
- * - Recessed underside reveal creating crisp contact shadow separation
- * - Vertical structural support pylons extending to the ground
- * - Facade panel reveal seams and recessed ventilation louvers breaking blank slab walls
+ * - True 3D monolithic concrete structural core with 45° specular highlights
+ * - 45° vertical corner chamfer pilasters eliminating sharp 90° CGI corners
+ * - Recessed bottom plinth / water-table band grounding the platform
+ * - Surface paver deck with multi-tone modular stone pavers and expansion joint texturing
+ * - Perimeter beveled coping stone with physical 45° chamfered edge facets and drip edge overhang
+ * - Underside reveal strip creating crisp contact shadow separation
+ * - Vertical structural support pylons extending toward the ground
+ * - Modular precast facade panel relief seams, form-tie bolt hardware, and recessed ventilation louvers
  */
 interface PlatformProps {
   position: [number, number, number];
@@ -49,16 +51,44 @@ const BeveledPlatform: React.FC<PlatformProps> = ({
   const trimOverhang = 0.04;
   const chamfer = 0.035;
 
-
   // Support pillars beneath corners
   const pillarRadius = 0.16;
   const pillarHeight = position[1] - halfH;
 
   return (
     <group position={position}>
-      {/* 1. Main concrete slab */}
+      {/* 1. Main concrete slab core */}
       <mesh castShadow receiveShadow material={material}>
         <boxGeometry args={[w, h, d]} />
+      </mesh>
+
+      {/* Vertical 45° corner chamfer pilasters catching crisp edge highlights */}
+      <group>
+        {[
+          [-w / 2, -d / 2],
+          [w / 2, -d / 2],
+          [-w / 2, d / 2],
+          [w / 2, d / 2],
+        ].map(([cx, cz], i) => (
+          <mesh
+            key={`corner-chamfer-${i}`}
+            position={[cx, 0, cz]}
+            rotation={[0, Math.PI / 4, 0]}
+            material={materials.concreteTrim}
+            castShadow
+          >
+            <boxGeometry args={[chamfer * 1.6, h * 0.99, chamfer * 1.6]} />
+          </mesh>
+        ))}
+      </group>
+
+      {/* Recessed architectural base plinth band grounding the slab */}
+      <mesh
+        position={[0, -halfH + 0.04, 0]}
+        material={materials.concreteDark}
+        receiveShadow
+      >
+        <boxGeometry args={[w + 0.02, 0.08, d + 0.02]} />
       </mesh>
 
       {/* 2. Surface paver deck with subtle expansion joint texture */}
@@ -69,7 +99,7 @@ const BeveledPlatform: React.FC<PlatformProps> = ({
           receiveShadow
           material={materials.concretePaver}
         >
-          <planeGeometry args={[w - 0.08, d - 0.08]} />
+          <planeGeometry args={[w - 0.06, d - 0.06]} />
         </mesh>
       )}
 
@@ -179,7 +209,7 @@ const BeveledPlatform: React.FC<PlatformProps> = ({
         </group>
       )}
 
-      {/* 4. Facade panel reveal seams and service details breaking blank slab faces */}
+      {/* 4. Facade panel reveal seams, bolt anchors, and service details */}
       {facadeDetails && h >= 1.0 && (
         <group>
           {/* Horizontal precast joints */}
@@ -196,6 +226,18 @@ const BeveledPlatform: React.FC<PlatformProps> = ({
             <planeGeometry args={[d * 0.94, 0.012]} />
           </mesh>
 
+          {/* Architectural Form-Tie Bolt Anchor Hardware on North/South facade */}
+          {[-w * 0.35, 0, w * 0.35].map((bx, idx) => (
+            <React.Fragment key={`form-tie-${idx}`}>
+              <mesh position={[bx, 0.05, d / 2 + 0.005]} material={materials.metalBolt}>
+                <cylinderGeometry args={[0.015, 0.015, 0.008, 8]} />
+              </mesh>
+              <mesh position={[bx, -0.05, d / 2 + 0.005]} material={materials.metalBolt}>
+                <cylinderGeometry args={[0.015, 0.015, 0.008, 8]} />
+              </mesh>
+            </React.Fragment>
+          ))}
+
           {/* Vertical joints and recessed intake louvers on tall slabs (h >= 2.4) */}
           {h >= 2.4 && (
             <>
@@ -207,11 +249,22 @@ const BeveledPlatform: React.FC<PlatformProps> = ({
                 <planeGeometry args={[w * 0.94, 0.012]} />
               </mesh>
 
-              {/* Recessed ventilation / intake louvers in lower facade */}
+              {/* Recessed ventilation / intake louvers in lower facade with 3D blades */}
               <group position={[0, -halfH * 0.5, d / 2 + 0.004]}>
                 <mesh material={materials.facadeLouver}>
                   <planeGeometry args={[Math.min(w * 0.55, 1.8), 0.42]} />
                 </mesh>
+                {/* Horizontal metal louver blades */}
+                {[-0.15, -0.075, 0, 0.075, 0.15].map((ly, lIdx) => (
+                  <mesh
+                    key={`louver-blade-${lIdx}`}
+                    position={[0, ly, 0.01]}
+                    rotation={[-Math.PI / 6, 0, 0]}
+                    material={materials.metalRails}
+                  >
+                    <boxGeometry args={[Math.min(w * 0.55, 1.8) - 0.02, 0.015, 0.025]} />
+                  </mesh>
+                ))}
                 {/* Louver perimeter trim */}
                 <mesh position={[0, 0.22, 0]} material={materials.metalRails}>
                   <boxGeometry args={[Math.min(w * 0.55, 1.8) + 0.04, 0.02, 0.01]} />
@@ -264,7 +317,7 @@ const BeveledPlatform: React.FC<PlatformProps> = ({
  * Features:
  * - Tempered translucent safety glass panels
  * - Brushed stainless steel stanchions and top cap handrail
- * - Structural base mounting spigots
+ * - Structural base mounting spigots with visible bolt details
  */
 interface BalustradeProps {
   start: [number, number, number];
@@ -302,12 +355,19 @@ const GlassBalustrade: React.FC<BalustradeProps> = ({
 
   return (
     <group position={[midX, baseY, midZ]} rotation={[0, angle, 0]}>
-      {/* Metal Posts with Base Mounting Plates */}
+      {/* Metal Posts with Base Mounting Plates and Hardware */}
       {posts.map((offset, idx) => (
         <group key={`post-${idx}`} position={[0, 0, offset]}>
           {/* Base mounting shoe */}
           <mesh position={[0, 0.03, 0]} material={materials.metalRails} castShadow>
             <boxGeometry args={[postThickness * 1.8, 0.06, postThickness * 1.8]} />
+          </mesh>
+          {/* Anchor bolt fasteners */}
+          <mesh position={[postThickness * 0.6, 0.065, 0]} material={materials.metalBolt}>
+            <cylinderGeometry args={[0.008, 0.008, 0.015, 6]} />
+          </mesh>
+          <mesh position={[-postThickness * 0.6, 0.065, 0]} material={materials.metalBolt}>
+            <cylinderGeometry args={[0.008, 0.008, 0.015, 6]} />
           </mesh>
           {/* Vertical Stanchion */}
           <mesh position={[0, height / 2, 0]} material={materials.metalRails} castShadow>
@@ -419,11 +479,12 @@ const Stairs: React.FC<StairsProps> = ({
 /**
  * Realistic Industrial Rooftop HVAC Chiller Unit.
  * Features:
- * - Heavy sheet metal casing with beveled edge chamfers
- * - Vibration isolator curb
- * - Recessed dark intake louvers on 2 sides with distinct horizontal blade planes
- * - Recessed top exhaust plenum with horizontal circular fan shroud ring and grille
- * - Electrical disconnect switch, piping manifold, and status LED
+ * - Heavy sheet metal casing with beveled edge chamfers on all 4 upper perimeters
+ * - Vibration isolator curb with corner isolation mounting plates
+ * - Recessed dark intake louvers on 2 sides with distinct horizontal 3D blade planes
+ * - Recessed top exhaust plenum with horizontal circular fan shroud ring and grille (axis along Y)
+ * - Center aerodynamic fan spinner dome and radial spoke structure
+ * - Copper/steel piping manifold with elbow flanges, disconnect switch, and status LED
  */
 interface HVACUnitProps {
   position: [number, number, number];
@@ -434,6 +495,7 @@ const HVACUnit: React.FC<HVACUnitProps> = ({ position, size }) => {
   const [w, h, d] = size;
   const curbHeight = 0.14;
   const fanRadius = Math.min(w, d) * 0.32;
+  const chamfer = 0.022;
 
   return (
     <group position={position}>
@@ -442,47 +504,110 @@ const HVACUnit: React.FC<HVACUnitProps> = ({ position, size }) => {
         <boxGeometry args={[w * 0.96, curbHeight, d * 0.96]} />
       </mesh>
 
+      {/* Corner Neoprene/Steel Vibration Dampers */}
+      {[-w * 0.44, w * 0.44].map((vx, i) =>
+        [-d * 0.44, d * 0.44].map((vz, j) => (
+          <mesh
+            key={`damper-${i}-${j}`}
+            position={[vx, curbHeight + 0.015, vz]}
+            material={materials.metalBolt}
+          >
+            <cylinderGeometry args={[0.035, 0.04, 0.03, 8]} />
+          </mesh>
+        ))
+      )}
+
       {/* Main Sheet Metal Housing */}
       <mesh position={[0, curbHeight + h / 2, 0]} material={materials.hvacHousing} castShadow receiveShadow>
         <boxGeometry args={[w, h, d]} />
       </mesh>
 
-      {/* Physical 45° chamfered edge highlights on top casing */}
+      {/* Physical 45° chamfered edge highlights on all 4 top casing edges */}
       <mesh
-        position={[0, curbHeight + h, d / 2 - 0.015]}
+        position={[0, curbHeight + h, d / 2 - chamfer / 2]}
         rotation={[Math.PI / 4, 0, 0]}
         material={materials.metalFrame}
         castShadow
       >
-        <boxGeometry args={[w * 0.98, 0.022, 0.022]} />
+        <boxGeometry args={[w * 0.98, chamfer, chamfer]} />
       </mesh>
       <mesh
-        position={[0, curbHeight + h, -d / 2 + 0.015]}
+        position={[0, curbHeight + h, -d / 2 + chamfer / 2]}
         rotation={[Math.PI / 4, 0, 0]}
         material={materials.metalFrame}
         castShadow
       >
-        <boxGeometry args={[w * 0.98, 0.022, 0.022]} />
+        <boxGeometry args={[w * 0.98, chamfer, chamfer]} />
       </mesh>
-
-      {/* Front Intake Louver Grille */}
-      <mesh position={[0, curbHeight + h * 0.5, d / 2 + 0.005]} material={materials.hvacLouvers}>
-        <planeGeometry args={[w * 0.78, h * 0.65]} />
-      </mesh>
-
-      {/* Rear Intake Louver Grille */}
       <mesh
-        position={[0, curbHeight + h * 0.5, -d / 2 - 0.005]}
-        rotation={[0, Math.PI, 0]}
-        material={materials.hvacLouvers}
+        position={[-w / 2 + chamfer / 2, curbHeight + h, 0]}
+        rotation={[0, 0, Math.PI / 4]}
+        material={materials.metalFrame}
+        castShadow
       >
-        <planeGeometry args={[w * 0.78, h * 0.65]} />
+        <boxGeometry args={[chamfer, chamfer, d * 0.98]} />
+      </mesh>
+      <mesh
+        position={[w / 2 - chamfer / 2, curbHeight + h, 0]}
+        rotation={[0, 0, Math.PI / 4]}
+        material={materials.metalFrame}
+        castShadow
+      >
+        <boxGeometry args={[chamfer, chamfer, d * 0.98]} />
       </mesh>
 
-      {/* Side Maintenance Access Panel */}
-      <mesh position={[w / 2 + 0.003, curbHeight + h * 0.5, 0]} rotation={[0, Math.PI / 2, 0]} material={materials.metalFrame}>
-        <planeGeometry args={[d * 0.6, h * 0.65]} />
-      </mesh>
+      {/* Front Intake Louver Recess & Blades */}
+      <group position={[0, curbHeight + h * 0.5, d / 2 + 0.005]}>
+        <mesh material={materials.hvacLouvers}>
+          <planeGeometry args={[w * 0.78, h * 0.65]} />
+        </mesh>
+        {/* Horizontal blade slats */}
+        {[-h * 0.22, -h * 0.11, 0, h * 0.11, h * 0.22].map((by, idx) => (
+          <mesh
+            key={`louver-f-${idx}`}
+            position={[0, by, 0.012]}
+            rotation={[-Math.PI / 5, 0, 0]}
+            material={materials.metalFrame}
+          >
+            <boxGeometry args={[w * 0.76, 0.018, 0.035]} />
+          </mesh>
+        ))}
+      </group>
+
+      {/* Rear Intake Louver Recess & Blades */}
+      <group position={[0, curbHeight + h * 0.5, -d / 2 - 0.005]} rotation={[0, Math.PI, 0]}>
+        <mesh material={materials.hvacLouvers}>
+          <planeGeometry args={[w * 0.78, h * 0.65]} />
+        </mesh>
+        {[-h * 0.22, -h * 0.11, 0, h * 0.11, h * 0.22].map((by, idx) => (
+          <mesh
+            key={`louver-r-${idx}`}
+            position={[0, by, 0.012]}
+            rotation={[-Math.PI / 5, 0, 0]}
+            material={materials.metalFrame}
+          >
+            <boxGeometry args={[w * 0.76, 0.018, 0.035]} />
+          </mesh>
+        ))}
+      </group>
+
+      {/* Side Maintenance Access Panel with Hinges */}
+      <group position={[w / 2 + 0.003, curbHeight + h * 0.5, 0]} rotation={[0, Math.PI / 2, 0]}>
+        <mesh material={materials.metalFrame}>
+          <planeGeometry args={[d * 0.6, h * 0.65]} />
+        </mesh>
+        {/* Panel hinges */}
+        <mesh position={[-d * 0.26, h * 0.22, 0.008]} material={materials.metalBolt}>
+          <boxGeometry args={[0.02, 0.04, 0.015]} />
+        </mesh>
+        <mesh position={[-d * 0.26, -h * 0.22, 0.008]} material={materials.metalBolt}>
+          <boxGeometry args={[0.02, 0.04, 0.015]} />
+        </mesh>
+        {/* Recessed turn-handle */}
+        <mesh position={[d * 0.22, 0, 0.01]} material={materials.metalBolt}>
+          <boxGeometry args={[0.015, 0.05, 0.015]} />
+        </mesh>
+      </group>
 
       {/* Top Exhaust Fan Shroud Ring - upright cylinder on top casing (axis aligned along Y) */}
       <mesh
@@ -491,6 +616,23 @@ const HVACUnit: React.FC<HVACUnitProps> = ({ position, size }) => {
         castShadow
       >
         <cylinderGeometry args={[fanRadius, fanRadius * 1.05, 0.08, 16]} />
+      </mesh>
+
+      {/* Aerodynamic Center Motor Dome / Spinner */}
+      <mesh
+        position={[0, curbHeight + h + 0.045, 0]}
+        material={materials.metalRails}
+        castShadow
+      >
+        <cylinderGeometry args={[fanRadius * 0.24, fanRadius * 0.28, 0.07, 16]} />
+      </mesh>
+
+      {/* Structural Fan Grille Spokes (Cross) */}
+      <mesh position={[0, curbHeight + h + 0.065, 0]} material={materials.metalFrame}>
+        <boxGeometry args={[fanRadius * 1.9, 0.015, 0.025]} />
+      </mesh>
+      <mesh position={[0, curbHeight + h + 0.065, 0]} material={materials.metalFrame}>
+        <boxGeometry args={[0.025, 0.015, fanRadius * 1.9]} />
       </mesh>
 
       {/* Top Fan Center Hub & Recessed Grille (horizontal plane) */}
@@ -502,18 +644,35 @@ const HVACUnit: React.FC<HVACUnitProps> = ({ position, size }) => {
         <circleGeometry args={[fanRadius * 0.92, 16]} />
       </mesh>
 
-      {/* Copper/Steel Refrigerant Piping Manifold */}
-      <mesh position={[w / 2 + 0.035, curbHeight + h * 0.35, -d * 0.2]} material={materials.metalConduit}>
-        <cylinderGeometry args={[0.025, 0.025, h * 0.65, 12]} />
-      </mesh>
-      <mesh position={[w / 2 + 0.035, curbHeight + h * 0.35, d * 0.2]} material={materials.metalConduit}>
-        <cylinderGeometry args={[0.025, 0.025, h * 0.65, 12]} />
-      </mesh>
+      {/* Copper/Steel Refrigerant Piping Manifold with Flanges */}
+      <group position={[w / 2 + 0.035, curbHeight + h * 0.35, -d * 0.2]}>
+        <mesh material={materials.metalConduit}>
+          <cylinderGeometry args={[0.025, 0.025, h * 0.65, 12]} />
+        </mesh>
+        <mesh position={[0, h * 0.25, 0]} material={materials.metalBolt}>
+          <cylinderGeometry args={[0.038, 0.038, 0.02, 8]} />
+        </mesh>
+      </group>
+      <group position={[w / 2 + 0.035, curbHeight + h * 0.35, d * 0.2]}>
+        <mesh material={materials.metalConduit}>
+          <cylinderGeometry args={[0.025, 0.025, h * 0.65, 12]} />
+        </mesh>
+        <mesh position={[0, h * 0.25, 0]} material={materials.metalBolt}>
+          <cylinderGeometry args={[0.038, 0.038, 0.02, 8]} />
+        </mesh>
+      </group>
 
-      {/* Electrical Disconnect Safety Switch Box */}
-      <mesh position={[w / 2 + 0.038, curbHeight + h * 0.72, 0]} material={materials.metalRails} castShadow>
-        <boxGeometry args={[0.06, 0.16, 0.14]} />
-      </mesh>
+      {/* Electrical Disconnect Safety Switch Box with Lever */}
+      <group position={[w / 2 + 0.038, curbHeight + h * 0.72, 0]}>
+        <mesh material={materials.metalRails} castShadow>
+          <boxGeometry args={[0.06, 0.16, 0.14]} />
+        </mesh>
+        {/* Disconnect lever */}
+        <mesh position={[0.035, 0.02, 0.02]} rotation={[0, 0, Math.PI / 6]} material={materials.metalBolt}>
+          <boxGeometry args={[0.02, 0.07, 0.015]} />
+        </mesh>
+      </group>
+
       {/* Lime Status LED indicator */}
       <mesh position={[w / 2 + 0.07, curbHeight + h * 0.74, 0]} material={materials.limeEmissive}>
         <boxGeometry args={[0.01, 0.02, 0.02]} />
@@ -582,6 +741,11 @@ const CommunicationsMast: React.FC<{
         <boxGeometry args={[sw, sh, sd]} />
       </mesh>
 
+      {/* Pedestal steel anchor plate */}
+      <mesh position={[0, sh + 0.01, 0]} material={materials.metalRails} castShadow>
+        <boxGeometry args={[sw * 0.75, 0.02, sd * 0.75]} />
+      </mesh>
+
       {/* Vertical Mast Column */}
       <mesh position={[0, sh + 1.3, 0]} material={materials.metalMast} castShadow>
         <cylinderGeometry args={[0.035, 0.06, 2.6, 12]} />
@@ -609,7 +773,7 @@ const CommunicationsMast: React.FC<{
 };
 
 /**
- * Roof Access Hatch with diamond-plate lid and grab handle.
+ * Roof Access Hatch with diamond-plate lid, grab handle, and curb chamfer.
  * Derived directly from canonical COURSE_BOUNDS.architecturalObstacles.
  */
 const RoofAccessHatch: React.FC<{
@@ -633,15 +797,63 @@ const RoofAccessHatch: React.FC<{
       <mesh position={[0, sh + 0.05, sd * 0.35]} material={materials.metalRails}>
         <boxGeometry args={[0.22, 0.03, 0.03]} />
       </mesh>
+      {/* Heavy-duty padlock latch assembly */}
+      <mesh position={[0, sh + 0.04, -sd * 0.42]} material={materials.metalBolt}>
+        <boxGeometry args={[0.06, 0.03, 0.04]} />
+      </mesh>
     </group>
   );
 };
 
 /**
- * Concrete Planter Box with layered architectural greenery:
- * - Geometric boxwood shrubs
- * - Vertical ornamental grasses
- * - Cascading edge vines
+ * High-Fidelity Clustered Leaf Cluster for Architectural Boxwoods.
+ * Builds intersecting angular faceted leaf planes that catch directional sunlight,
+ * cast detailed self-shadows, and avoid the flat/blockout look of simple dodecahedrons.
+ */
+interface ShrubClusterProps {
+  position: [number, number, number];
+  scale?: number;
+  material?: THREE.Material;
+}
+
+const ShrubCluster: React.FC<ShrubClusterProps> = ({
+  position,
+  scale = 0.22,
+  material = materials.foliageMain,
+}) => {
+  return (
+    <group position={position} scale={scale}>
+      {/* Core dense foliage mass */}
+      <mesh material={material} castShadow receiveShadow>
+        <dodecahedronGeometry args={[1.0, 1]} />
+      </mesh>
+      {/* Layer 1: intersecting faceted leaf planes catching directional specular highlights */}
+      <mesh position={[0.25, 0.35, 0.2]} rotation={[0.4, 0.6, 0.2]} material={materials.foliageLight} castShadow>
+        <dodecahedronGeometry args={[0.72, 0]} />
+      </mesh>
+      <mesh position={[-0.28, 0.3, -0.22]} rotation={[-0.3, 0.5, 0.4]} material={materials.foliageAccent} castShadow>
+        <dodecahedronGeometry args={[0.65, 0]} />
+      </mesh>
+      <mesh position={[0.15, 0.52, -0.1]} rotation={[0.2, -0.4, 0.3]} material={materials.foliageLight} castShadow>
+        <dodecahedronGeometry args={[0.55, 0]} />
+      </mesh>
+      {/* Layer 2: perimeter micro-leaf tufts breaking the silhouette */}
+      <mesh position={[-0.45, 0.1, 0.3]} rotation={[0.5, 0.2, -0.3]} material={materials.foliageMain} castShadow>
+        <octahedronGeometry args={[0.45, 0]} />
+      </mesh>
+      <mesh position={[0.45, 0.12, -0.28]} rotation={[-0.4, -0.3, 0.5]} material={materials.foliageLight} castShadow>
+        <octahedronGeometry args={[0.48, 0]} />
+      </mesh>
+    </group>
+  );
+};
+
+/**
+ * Concrete Planter Box with refined architectural landscaping:
+ * - Geometric beveled concrete planter with rim lip
+ * - Layered boxwood shrub clusters with multi-faceted leaf planes
+ * - Tapered ornamental fountain grasses
+ * - Overhanging creeping vine tendrils
  */
 const PlanterBox: React.FC<{
   position: [number, number, number];
@@ -650,6 +862,7 @@ const PlanterBox: React.FC<{
 }> = ({ position, size, sparseFoliage = false }) => {
   const [w, h, d] = size;
   const wallThickness = 0.06;
+  const rimOverhang = 0.025;
 
   return (
     <group position={position}>
@@ -658,41 +871,50 @@ const PlanterBox: React.FC<{
         <boxGeometry args={[w, h, d]} />
       </mesh>
 
+      {/* Top perimeter coping rim lip */}
+      <mesh position={[0, h, 0]} material={materials.concreteMain} castShadow receiveShadow>
+        <boxGeometry args={[w + rimOverhang * 2, 0.035, d + rimOverhang * 2]} />
+      </mesh>
+
       {/* Dark potting soil */}
-      <mesh position={[0, h - 0.03, 0]} material={materials.planterSoil} receiveShadow>
+      <mesh position={[0, h - 0.02, 0]} material={materials.planterSoil} receiveShadow>
         <boxGeometry args={[w - wallThickness * 2, 0.02, d - wallThickness * 2]} />
       </mesh>
 
       {/* Layered Architectural Foliage */}
       <group position={[0, h, 0]}>
-        {/* Main sculpted boxwood shrubs */}
-        <mesh position={[-w * 0.22, 0.14, -d * 0.2]} material={materials.foliageMain} castShadow>
-          <dodecahedronGeometry args={[0.19, 0]} />
-        </mesh>
-        <mesh position={[w * 0.24, 0.15, d * 0.12]} material={materials.foliageLight} castShadow>
-          <dodecahedronGeometry args={[0.21, 0]} />
-        </mesh>
-        <mesh position={[0, 0.2, 0]} material={materials.foliageMain} castShadow>
-          <dodecahedronGeometry args={[0.23, 0]} />
-        </mesh>
+        {/* Main clustered boxwood shrubs with faceted leaf clusters */}
+        <ShrubCluster position={[-w * 0.22, 0.14, -d * 0.2]} scale={0.21} material={materials.foliageMain} />
+        <ShrubCluster position={[w * 0.24, 0.16, d * 0.12]} scale={0.23} material={materials.foliageLight} />
+        <ShrubCluster position={[0, 0.20, 0]} scale={0.25} material={materials.foliageMain} />
 
         {!sparseFoliage && (
           <>
-            {/* Architectural grass tufts */}
-            <mesh position={[-w * 0.35, 0.18, d * 0.25]} material={materials.foliageAccent} castShadow>
-              <coneGeometry args={[0.08, 0.32, 6]} />
+            {/* Architectural tapered ornamental grass tufts */}
+            <mesh position={[-w * 0.35, 0.18, d * 0.25]} rotation={[0.1, 0, -0.1]} material={materials.foliageAccent} castShadow>
+              <coneGeometry args={[0.08, 0.34, 6]} />
             </mesh>
-            <mesh position={[w * 0.35, 0.18, -d * 0.25]} material={materials.foliageAccent} castShadow>
-              <coneGeometry args={[0.08, 0.32, 6]} />
+            <mesh position={[w * 0.35, 0.18, -d * 0.25]} rotation={[-0.1, 0, 0.1]} material={materials.foliageAccent} castShadow>
+              <coneGeometry args={[0.08, 0.34, 6]} />
             </mesh>
 
-            {/* Overhanging trailing vine tendrils */}
-            <mesh position={[w / 2 + 0.02, -0.07, 0]} material={materials.foliageLight} castShadow>
-              <boxGeometry args={[0.035, 0.24, 0.18]} />
-            </mesh>
-            <mesh position={[-w / 2 - 0.02, -0.09, d * 0.18]} material={materials.foliageMain} castShadow>
-              <boxGeometry args={[0.035, 0.28, 0.16]} />
-            </mesh>
+            {/* Overhanging trailing vine tendrils with layered leaves */}
+            <group position={[w / 2 + 0.015, -0.06, 0]}>
+              <mesh material={materials.foliageLight} castShadow>
+                <boxGeometry args={[0.03, 0.24, 0.18]} />
+              </mesh>
+              <mesh position={[0.01, -0.06, 0.04]} rotation={[0, 0, 0.2]} material={materials.foliageAccent} castShadow>
+                <boxGeometry args={[0.025, 0.14, 0.12]} />
+              </mesh>
+            </group>
+            <group position={[-w / 2 - 0.015, -0.08, d * 0.18]}>
+              <mesh material={materials.foliageMain} castShadow>
+                <boxGeometry args={[0.03, 0.28, 0.16]} />
+              </mesh>
+              <mesh position={[-0.01, -0.08, -0.03]} rotation={[0, 0, -0.2]} material={materials.foliageLight} castShadow>
+                <boxGeometry args={[0.025, 0.16, 0.11]} />
+              </mesh>
+            </group>
           </>
         )}
       </group>
@@ -701,7 +923,12 @@ const PlanterBox: React.FC<{
 };
 
 /**
- * Rectangular Overhead Steel Pavilion Frame on Résumé rooftop.
+ * Rectangular Overhead Steel Pavilion Frame on Résumé rooftop (Centerpiece).
+ * Features:
+ * - 4 vertical steel box columns with heavy base anchor shoes and anchor bolts
+ * - Top header box beams with welded corner plates
+ * - Intermediate architectural rafters with underside recessed linear acid-lime light strips
+ * - Horizontal sunshade louvers casting intricate geometric linear shadows on the deck
  */
 const OverheadSteelFrame: React.FC<{
   center: [number, number, number];
@@ -718,13 +945,27 @@ const OverheadSteelFrame: React.FC<{
 
   return (
     <group position={[cx, cy, cz]}>
-      {/* 4 Vertical Steel Columns with Base Anchor Plates */}
+      {/* 4 Vertical Steel Columns with Base Anchor Plates and Bolts */}
       {[-halfW, halfW].map((x) =>
         [-halfD, halfD].map((z) => (
           <group key={`col-${x}-${z}`} position={[x, 0, z]}>
+            {/* Base anchor shoe plate */}
             <mesh position={[0, -halfH + 0.03, 0]} material={materials.metalFrame} castShadow>
               <boxGeometry args={[colSize * 1.6, 0.06, colSize * 1.6]} />
             </mesh>
+            {/* Anchor bolts */}
+            {[-colSize * 0.6, colSize * 0.6].map((bx, bi) =>
+              [-colSize * 0.6, colSize * 0.6].map((bz, bj) => (
+                <mesh
+                  key={`col-bolt-${bi}-${bj}`}
+                  position={[bx, -halfH + 0.065, bz]}
+                  material={materials.metalBolt}
+                >
+                  <cylinderGeometry args={[0.008, 0.008, 0.015, 6]} />
+                </mesh>
+              ))
+            )}
+            {/* Main vertical column */}
             <mesh position={[0, 0, 0]} material={materials.metalFrame} castShadow>
               <boxGeometry args={[colSize, height, colSize]} />
             </mesh>
@@ -746,17 +987,29 @@ const OverheadSteelFrame: React.FC<{
         <boxGeometry args={[beamSize, beamSize, depth]} />
       </mesh>
 
-      {/* Intermediate Architectural Rafters */}
-      {[-0.5, 0, 0.5].map((factor, i) => (
+      {/* Intermediate Architectural Rafters with Underside Acid-Lime Linear Light Strips */}
+      {[-0.6, -0.3, 0, 0.3, 0.6].map((factor, i) => (
         <group key={`rafter-${i}`} position={[halfW * factor, halfH, 0]}>
           <mesh material={materials.metalFrame} castShadow>
-            <boxGeometry args={[beamSize * 0.75, beamSize * 0.75, depth]} />
+            <boxGeometry args={[beamSize * 0.7, beamSize * 0.75, depth]} />
           </mesh>
-          {/* Subtle architectural underside linear light strip */}
-          <mesh position={[0, -beamSize * 0.4, 0]} material={materials.limeEmissive}>
-            <boxGeometry args={[0.02, 0.01, depth * 0.85]} />
+          {/* Underside recessed architectural lime linear light strip */}
+          <mesh position={[0, -beamSize * 0.38, 0]} material={materials.limeEmissive}>
+            <boxGeometry args={[0.02, 0.01, depth * 0.9]} />
           </mesh>
         </group>
+      ))}
+
+      {/* Sunshade louvers on top surface casting linear shadows */}
+      {[-halfD * 0.7, -halfD * 0.35, 0, halfD * 0.35, halfD * 0.7].map((lz, li) => (
+        <mesh
+          key={`sunshade-${li}`}
+          position={[0, halfH + beamSize * 0.45, lz]}
+          material={materials.metalFrame}
+          castShadow
+        >
+          <boxGeometry args={[width * 0.95, 0.015, 0.04]} />
+        </mesh>
       ))}
     </group>
   );
@@ -823,99 +1076,224 @@ const CheckpointBeacon: React.FC<CheckpointBeaconProps> = ({
 };
 
 /**
- * Floor route decals and tactical markings on the Start rooftop.
+ * Integrated continuous acid-lime course wayfinding marks across the safe running path.
  */
-const StartRooftopMarkings: React.FC<{ position: [number, number, number] }> = ({ position }) => {
+const CourseWayfinding: React.FC = () => {
   return (
-    <group position={position}>
-      {/* Route Directional Chevrons */}
-      {[
-        [0, 0.4],
-        [0.45, 0.0],
-        [0.9, -0.45],
-      ].map(([x, z], i) => (
-        <group key={`arrow-${i}`} position={[x, 0, z]} rotation={[-Math.PI / 2, 0, -Math.PI / 4]}>
-          <mesh material={materials.limeFloorArrows}>
-            <planeGeometry args={[0.18, 0.44]} />
-          </mesh>
-        </group>
-      ))}
-
-      {/* Runway-Style START Boundary Mark */}
-      <group position={[-0.8, 0, 0.6]} rotation={[-Math.PI / 2, 0, 0]}>
-        {/* Northwest corner */}
-        <mesh position={[-0.35, 0.25, 0]} material={materials.limeFloorArrows}>
-          <planeGeometry args={[0.25, 0.03]} />
+    <group name="course-wayfinding">
+      {/* 1. START ROOFTOP: Runner directional marks & takeoff threshold */}
+      <group position={[-3.6, 1.203, 3.8]}>
+        {/* Dual runway guide stripes */}
+        <mesh position={[-0.45, 0, 0]} rotation={[-Math.PI / 2, 0, 0]} material={materials.limeFloorArrows}>
+          <planeGeometry args={[0.04, 1.4]} />
         </mesh>
-        <mesh position={[-0.46, 0.14, 0]} material={materials.limeFloorArrows}>
-          <planeGeometry args={[0.03, 0.25]} />
+        <mesh position={[0.45, 0, 0]} rotation={[-Math.PI / 2, 0, 0]} material={materials.limeFloorArrows}>
+          <planeGeometry args={[0.04, 1.4]} />
         </mesh>
-        {/* Southeast corner */}
-        <mesh position={[0.35, -0.25, 0]} material={materials.limeFloorArrows}>
-          <planeGeometry args={[0.25, 0.03]} />
-        </mesh>
-        <mesh position={[0.46, -0.14, 0]} material={materials.limeFloorArrows}>
-          <planeGeometry args={[0.03, 0.25]} />
-        </mesh>
+        {/* Directional chevrons pointing toward lower landing */}
+        {[-0.3, 0.1, 0.5].map((z, i) => (
+          <group key={`start-chev-${i}`} position={[0, 0, z]} rotation={[-Math.PI / 2, 0, Math.PI]}>
+            <mesh material={materials.limeFloorArrows}>
+              <planeGeometry args={[0.22, 0.035]} />
+            </mesh>
+          </group>
+        ))}
       </group>
+
+      {/* Takeoff threshold indicator at Start north edge facing stepping stone 1 */}
+      <mesh
+        position={[-3.6, 0.603, 1.45]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        material={materials.limeFloorArrows}
+      >
+        <planeGeometry args={[0.8, 0.04]} />
+      </mesh>
+
+      {/* 2. WORK ROOFTOP: Landing threshold, beacon track, and balance beam takeoff */}
+      {/* Landing threshold at South edge */}
+      <mesh
+        position={[-3.6, 3.803, -1.8]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        material={materials.limeFloorArrows}
+      >
+        <planeGeometry args={[0.9, 0.04]} />
+      </mesh>
+      {/* Wayfinding guide track connecting landing to Checkpoint 1 beacon */}
+      <mesh
+        position={[-4.0, 3.803, -2.8]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        material={materials.limeFloorArrows}
+      >
+        <planeGeometry args={[0.035, 1.8]} />
+      </mesh>
+      {/* Takeoff marker toward high balance beam */}
+      <mesh
+        position={[-1.6, 3.803, -3.8]}
+        rotation={[-Math.PI / 2, 0, Math.PI / 2]}
+        material={materials.limeFloorArrows}
+      >
+        <planeGeometry args={[0.6, 0.04]} />
+      </mesh>
+
+      {/* 3. EXPLORATION ROOFTOP: Landing threshold, terrace guide, and stair indicator */}
+      {/* Lower terrace landing mark */}
+      <mesh
+        position={[0.8, 1.803, -2.6]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        material={materials.limeFloorArrows}
+      >
+        <planeGeometry args={[0.7, 0.04]} />
+      </mesh>
+      {/* Guide line across lower terrace to stairs */}
+      <mesh
+        position={[0.8, 1.803, -1.8]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        material={materials.limeFloorArrows}
+      >
+        <planeGeometry args={[0.035, 1.4]} />
+      </mesh>
+      {/* Upper terrace threshold to Checkpoint 2 beacon */}
+      <mesh
+        position={[0.8, 2.603, 0.4]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        material={materials.limeFloorArrows}
+      >
+        <planeGeometry args={[0.035, 1.2]} />
+      </mesh>
+      {/* Takeoff threshold at east edge facing stepping stones */}
+      <mesh
+        position={[2.0, 2.603, 1.2]}
+        rotation={[-Math.PI / 2, 0, Math.PI / 2]}
+        material={materials.limeFloorArrows}
+      >
+        <planeGeometry args={[0.6, 0.04]} />
+      </mesh>
+
+      {/* 4. RÉSUMÉ ROOFTOP: Landing threshold and runway line under pavilion to Checkpoint 3 */}
+      <mesh
+        position={[4.6, 4.203, 1.8]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        material={materials.limeFloorArrows}
+      >
+        <planeGeometry args={[0.8, 0.04]} />
+      </mesh>
+      <mesh
+        position={[5.2, 4.203, 0.5]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        material={materials.limeFloorArrows}
+      >
+        <planeGeometry args={[0.035, 2.4]} />
+      </mesh>
     </group>
   );
 };
 
 /**
  * Distant Futuristic City Skyline Silhouettes.
- * Positioned further back in the distant negative Z horizon (receding into atmospheric depth fog)
- * with varied heights, setbacks, and open atmospheric breathing gaps rather than a solid wall.
+ * Multi-tiered architectural depth:
+ * - Mid-distance towers (z: -20 to -26) with curtain-wall window grids, setbacks, and crowns
+ * - Far-distance towers (z: -32 to -42) receding into atmospheric depth fog
+ * - Mobile tier optimizes by filtering far-distance towers while keeping the silhouette
  */
 interface DistantSkylineProps {
   isMobile?: boolean;
 }
 
 const DistantSkyline: React.FC<DistantSkylineProps> = ({ isMobile = false }) => {
-  // Slender, setback tower definitions [x, baseY, z, width, height, depth, hasGlassBand]
-  const towers: Array<[number, number, number, number, number, number, boolean]> = [
-    [-20.0, 3.0, -28.0, 2.6, 16.0, 2.6, true],
-    [-13.0, 5.0, -32.0, 2.8, 20.0, 2.8, true],
-    [-7.0, 2.5, -27.0, 2.2, 14.0, 2.2, false],
-    [-1.5, 7.0, -35.0, 3.2, 24.0, 3.2, true],
-    [4.5, 4.0, -29.0, 2.4, 17.0, 2.4, false],
-    [11.0, 6.0, -33.0, 2.8, 21.0, 2.8, true],
-    [17.0, 3.5, -28.0, 2.4, 15.0, 2.4, false],
-    [23.0, 7.5, -36.0, 3.0, 25.0, 3.0, true],
+  // Diverse architectural skyscraper profiles:
+  // [x, baseY, z, width, height, depth, hasGlass, crownType]
+  // crownType: 1 = stepped setback, 2 = angled spire, 3 = mechanical penthouse, 4 = twin-mast
+  const towers: Array<[number, number, number, number, number, number, boolean, number]> = [
+    // Mid-distance layer framing the rooftops
+    [-22.0, 3.0, -24.0, 2.8, 17.0, 2.8, true, 1],
+    [-15.0, 5.5, -26.0, 3.2, 22.0, 3.2, true, 2],
+    [-8.5, 3.5, -22.0, 2.4, 15.0, 2.4, false, 3],
+    [-2.0, 7.5, -28.0, 3.6, 26.0, 3.6, true, 1],
+    [5.0, 4.5, -23.0, 2.6, 18.0, 2.6, false, 2],
+    [12.0, 6.5, -27.0, 3.0, 23.0, 3.0, true, 4],
+    [18.5, 4.0, -22.0, 2.6, 16.0, 2.6, false, 3],
+    [25.0, 8.0, -29.0, 3.4, 28.0, 3.4, true, 1],
+
+    // Far-distance layer receding into atmospheric fog
+    [-28.0, 8.0, -38.0, 4.0, 32.0, 4.0, true, 2],
+    [-18.0, 10.0, -42.0, 4.5, 36.0, 4.5, true, 1],
+    [-10.0, 6.0, -34.0, 3.5, 24.0, 3.5, false, 3],
+    [0.0, 12.0, -45.0, 5.0, 42.0, 5.0, true, 2],
+    [9.0, 9.0, -38.0, 3.8, 30.0, 3.8, true, 4],
+    [21.0, 11.0, -42.0, 4.2, 35.0, 4.2, true, 1],
+    [30.0, 7.5, -36.0, 3.6, 26.0, 3.6, false, 3],
   ];
 
-  // In mobile tier, render half the towers to reduce draw calls
-  const activeTowers = isMobile ? towers.filter((_, i) => i % 2 === 0) : towers;
+  // In mobile tier, filter out far-distance towers (z < -30) to preserve draw calls
+  const activeTowers = isMobile ? towers.filter(([_, __, z]) => z >= -30.0) : towers;
 
   return (
     <group name="distant-skyline">
-      {activeTowers.map(([x, y, z, w, h, d, hasGlass], idx) => (
+      {activeTowers.map(([x, y, z, w, h, d, hasGlass, crownType], idx) => (
         <group key={`tower-${idx}`} position={[x, y, z]}>
           {/* Main Tower Monolith */}
-          <mesh material={materials.skylineTower}>
+          <mesh material={materials.skylineTower} receiveShadow>
             <boxGeometry args={[w, h, d]} />
           </mesh>
 
-          {/* Stepped Architectural Crown 1 */}
-          <mesh position={[0, h / 2 + 1.0, 0]} material={materials.skylineTower}>
-            <boxGeometry args={[w * 0.72, 2.0, d * 0.72]} />
+          {/* Stepped Architectural Crown Setback 1 */}
+          <mesh position={[0, h / 2 + 1.2, 0]} material={materials.skylineTower}>
+            <boxGeometry args={[w * 0.75, 2.4, d * 0.75]} />
           </mesh>
 
-          {/* Stepped Architectural Crown 2 */}
-          <mesh position={[0, h / 2 + 2.2, 0]} material={materials.skylineTower}>
-            <boxGeometry args={[w * 0.45, 1.2, d * 0.45]} />
+          {/* Stepped Architectural Crown Setback 2 */}
+          <mesh position={[0, h / 2 + 2.7, 0]} material={materials.skylineTower}>
+            <boxGeometry args={[w * 0.48, 1.4, d * 0.48]} />
           </mesh>
 
-          {/* Rooftop Spire */}
-          <mesh position={[0, h / 2 + 3.4, 0]} material={materials.metalMast}>
-            <cylinderGeometry args={[0.025, 0.06, 1.6, 8]} />
-          </mesh>
-
-          {/* Glass Facade Bands */}
-          {hasGlass && (
-            <mesh position={[0, 0, d / 2 + 0.015]} material={materials.skylineTowerGlass}>
-              <planeGeometry args={[w * 0.75, h * 0.72]} />
+          {/* Crown Variations */}
+          {crownType === 1 && (
+            <mesh position={[0, h / 2 + 3.8, 0]} material={materials.metalMast}>
+              <cylinderGeometry args={[0.03, 0.07, 1.8, 8]} />
             </mesh>
+          )}
+
+          {crownType === 2 && (
+            <group position={[0, h / 2 + 3.5, 0]}>
+              <mesh material={materials.metalMast}>
+                <cylinderGeometry args={[0.02, 0.08, 2.4, 8]} />
+              </mesh>
+              {/* Slanted architectural glass crown tip */}
+              <mesh position={[0, -0.4, 0]} rotation={[0.2, 0, 0]} material={materials.skylineTowerGlass}>
+                <boxGeometry args={[w * 0.35, 0.8, d * 0.35]} />
+              </mesh>
+            </group>
+          )}
+
+          {crownType === 3 && (
+            /* Mechanical penthouse with louvers */
+            <mesh position={[0, h / 2 + 3.6, 0]} material={materials.facadeLouver}>
+              <boxGeometry args={[w * 0.42, 1.2, d * 0.42]} />
+            </mesh>
+          )}
+
+          {crownType === 4 && (
+            /* Twin communications mast spires */
+            <group position={[0, h / 2 + 3.6, 0]}>
+              <mesh position={[-w * 0.15, 0, 0]} material={materials.metalMast}>
+                <cylinderGeometry args={[0.02, 0.05, 1.6, 8]} />
+              </mesh>
+              <mesh position={[w * 0.15, 0, 0]} material={materials.metalMast}>
+                <cylinderGeometry args={[0.02, 0.05, 1.6, 8]} />
+              </mesh>
+            </group>
+          )}
+
+          {/* Glass Facade Window Bands */}
+          {hasGlass && (
+            <>
+              <mesh position={[0, 0, d / 2 + 0.015]} material={materials.skylineTowerGlass}>
+                <planeGeometry args={[w * 0.78, h * 0.74]} />
+              </mesh>
+              <mesh position={[0, 0, -d / 2 - 0.015]} rotation={[0, Math.PI, 0]} material={materials.skylineTowerGlass}>
+                <planeGeometry args={[w * 0.78, h * 0.74]} />
+              </mesh>
+            </>
           )}
         </group>
       ))}
@@ -1005,8 +1383,6 @@ export const CourseGeometry: React.FC<CourseGeometryProps> = ({
         rotationY={Math.PI}
       />
 
-      <StartRooftopMarkings position={startRooftop.floorArrowsPosition} />
-
       {/* 2. BACK-LEFT ELEVATED WORK ROOFTOP (Checkpoint 01) */}
       <BeveledPlatform
         position={workRooftop.mainSlab.position}
@@ -1057,7 +1433,7 @@ export const CourseGeometry: React.FC<CourseGeometryProps> = ({
         rotationY={Math.PI}
       />
 
-      {/* Planters with architectural foliage */}
+      {/* Planters with architectural clustered foliage */}
       {explorationRooftop.planters.map((planter, idx) => (
         <PlanterBox
           key={`planter-${idx}`}
@@ -1132,6 +1508,9 @@ export const CourseGeometry: React.FC<CourseGeometryProps> = ({
           height={b.height}
         />
       ))}
+
+      {/* 7. CONTINUOUS ACID-LIME WAYFINDING SYSTEM */}
+      <CourseWayfinding />
     </group>
   );
 };

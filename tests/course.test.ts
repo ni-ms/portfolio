@@ -168,8 +168,8 @@ describe('Ramp Configurations & Uphill Direction', () => {
     }
   });
 
-  it('Start and Exploration ramps have uphill direction purely in -Z (Y-rotation = 0)', () => {
-    // rotation[1] = 0 → uphill is straight -Z
+  it('Start and Exploration ramps uphill direction is -Z (Y-rotation = 0)', () => {
+    // rotation[1] = 0 → local uphill is -Z; live physics normal confirms this
     expect(START_STAIRS_RAMP.uphillDirXZ[0]).toBeCloseTo(0, 3);
     expect(START_STAIRS_RAMP.uphillDirXZ[1]).toBeCloseTo(-1, 3);
 
@@ -177,38 +177,50 @@ describe('Ramp Configurations & Uphill Direction', () => {
     expect(EXPLORATION_STAIRS_RAMP.uphillDirXZ[1]).toBeCloseTo(-1, 3);
   });
 
-  it('Résumé ramp uphillDirXZ points in +X/-Z diagonal, NOT purely -Z', () => {
-    const [x, z] = RESUME_STAIRS_RAMP.uphillDirXZ;
-    // Y-rotation = -0.7854 (-45°) → x = -sin(-0.7854) ≈ +0.7071, z = -cos(-0.7854) ≈ -0.7071
-    expect(x).toBeGreaterThan(0.5); // significant +X component
-    expect(z).toBeLessThan(-0.5);   // significant -Z component
-    expect(x).toBeCloseTo(0.7071, 2);
-    expect(z).toBeCloseTo(-0.7071, 2);
+  it('Résumé ramp uphillDirXZ documents actual uphill as +Z (verified from live Rapier normal)', () => {
+    // Live Rapier physics normal for RESUME_STAIRS_RAMP ≈ [0, 0.850, -0.527].
+    // Normal-based uphill formula: -(nx*vx + nz*vz)/ny = -(0*0 + (-0.527)*vz)/0.850
+    // Positive when vz > 0 (+Z direction) → uphill is +Z, not -Z.
+    // Controller uses live normal, not this field; uphillDirXZ = [0, +1] documents the result.
+    expect(RESUME_STAIRS_RAMP.uphillDirXZ[0]).toBeCloseTo(0, 3);
+    expect(RESUME_STAIRS_RAMP.uphillDirXZ[1]).toBeCloseTo(1, 3); // +Z is uphill
   });
 
-  it('assist fires when moving uphill on Résumé ramp (dot product > 0)', () => {
-    const [dx, dz] = RESUME_STAIRS_RAMP.uphillDirXZ;
-    // Simulate a +X/-Z diagonal move (the true uphill direction)
-    const uphillVx = 3.0;
-    const uphillVz = -3.0;
-    const dotUphill = uphillVx * dx + uphillVz * dz;
-    expect(dotUphill).toBeGreaterThan(0.1); // assist fires
-
-    // Pure -Z movement also has a positive uphill component on the Résumé ramp
-    // (the ramp is rotated -45°, so -Z has a partial uphill component).
-    const forwardVx = 0;
-    const forwardVz = -3.0;
-    const dotForward = forwardVx * dx + forwardVz * dz;
-    expect(dotForward).toBeGreaterThan(0.1); // also fires — correct for diagonal ramp
+  it('normal-based rise formula: downhill (-Z) on Résumé ramp gives negative rise (no assist)', () => {
+    // Simulate live normal [0, 0.850, -0.527]; walking forward targetVz = -3 (downhill)
+    const nx = 0, ny = 0.8499, nz = -0.5269;
+    const targetVx = 0, targetVz = -3.0; // forward = -Z = downhill on Résumé ramp
+    const rise = -(nx * targetVx + nz * targetVz) / ny;
+    // rise = -(0 + (-0.5269)*(-3)) / 0.8499 = -(1.5807)/0.8499 = -1.860 → negative → no assist
+    expect(rise).toBeLessThan(0);
   });
 
-  it('assist does NOT fire when moving downhill on Résumé ramp (dot product ≤ 0)', () => {
-    const [dx, dz] = RESUME_STAIRS_RAMP.uphillDirXZ;
-    // Downhill is the opposite direction: -X/+Z
-    const downhillVx = -3.0;
-    const downhillVz = 3.0;
-    const dot = downhillVx * dx + downhillVz * dz;
-    expect(dot).toBeLessThan(0.1); // assist must NOT fire
+  it('normal-based rise formula: uphill (+Z) on Résumé ramp gives positive rise (assist fires)', () => {
+    // Simulate live normal [0, 0.850, -0.527]; walking +Z (uphill)
+    const nx = 0, ny = 0.8499, nz = -0.5269;
+    const targetVx = 0, targetVz = 3.0; // +Z = uphill on Résumé ramp
+    const rise = -(nx * targetVx + nz * targetVz) / ny;
+    // rise = -(0 + (-0.5269)*(3)) / 0.8499 = 1.5807/0.8499 = +1.860 → positive → assist fires
+    expect(rise).toBeGreaterThan(0.1);
+  });
+
+  it('normal-based rise formula: Start ramp uphill (-Z) gives positive rise', () => {
+    // Start ramp rotation [0.6435, 0, 0]; normal ≈ [0, cos(0.6435), sin(0.6435)] ≈ [0, 0.796, 0.604]
+    // (approximate; actual live normal may vary slightly)
+    const nx = 0, ny = 0.796, nz = 0.604;
+    const targetVx = 0, targetVz = -3.0; // -Z = uphill for Start ramp
+    const rise = -(nx * targetVx + nz * targetVz) / ny;
+    // rise = -(0 + 0.604*(-3)) / 0.796 = 1.812/0.796 = +2.276 → positive → assist fires
+    expect(rise).toBeGreaterThan(0.1);
+  });
+
+  it('normal-based rise formula: flat ground (normal [0,1,0]) gives zero rise regardless of direction', () => {
+    // On flat ground the normal is straight up; rise = 0 for any horizontal movement
+    const nx = 0, ny = 1.0, nz = 0;
+    const rise1 = -(nx * 0 + nz * (-3.0)) / ny; // forward
+    const rise2 = -(nx * 3.0 + nz * 0) / ny;    // strafe
+    expect(rise1).toBeCloseTo(0, 10);
+    expect(rise2).toBeCloseTo(0, 10);
   });
 
   it('all ramps have elevation bounds (minY < maxY) and Z bounds (minZ < maxZ)', () => {

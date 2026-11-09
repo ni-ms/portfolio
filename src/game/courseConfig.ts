@@ -134,9 +134,11 @@ export const RESUME_STAIRS_RAMP: RampConfig = {
   maxY: 4.2,
   minZ: 3.2,
   maxZ: 4.4,
-  // Y-rotation = -0.7854 (-45°) → x=-sin(-0.7854)≈+0.7071, z=-cos(-0.7854)≈-0.7071
-  // Uphill on the Résumé ramp is the +X/-Z diagonal (northeast), NOT purely -Z.
-  uphillDirXZ: [0.7071, -0.7071],
+  // Y-rotation = -0.7854 but full XYZ Euler gives world normal ≈ [0, 0.850, -0.527].
+  // Actual uphill direction (from physics): +Z (walking toward higher Z goes up the ramp).
+  // The controller uses the live Rapier normal rather than this field; uphillDirXZ is
+  // documentation only and matches the verified live physics: uphill = +Z.
+  uphillDirXZ: [0, 1],
 };
 
 export const RAMP_DEFINITIONS: RampConfig[] = [

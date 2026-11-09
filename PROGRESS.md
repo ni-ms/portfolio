@@ -6,7 +6,8 @@
 - T01 DONEe5b4940: independently approved theme/router/history/hash/focus/mobile navigation.
 - T02 DONEa3a8d93/source744ab4d+a0d16f2/contact78c225d: factual content, inspected2-page PDF/identicalDOCX/exportsource.
 - T03 DONE9297a343217b172bc90dbdb9c8ea82f132d500a0: pages/allroutes/factualcontent/downloads/both themes; prior independent approval and28foundation+route browsers.
-- T04 DONEc6b9656: actual support-normal ramp assistance, controller/input/focus/visibility/full route fixes; source sequence in state.json; reportsT04/T04-review. Corrected unused uphill metadata/tests included.\n- T05 DONE source19da6f1 integrated8d1cc69, report qualifications0405cab; full12commit sequence in state.json. Independent bounded production/geometry/lifecycle/art repairs approved; source reportsT05.md/T05-art.md retained. Improved courtyard/slabs/pavers/glass/MEP/foliage/skyline/lime cues/local environment; chosen staticBpreview camera. No production debugAPI.
+- T04 DONEc6b9656: actual support-normal ramp assistance, controller/input/focus/visibility/full route fixes; source sequence in state.json; reportsT04/T04-review. Corrected unused uphill metadata/tests included.
+- T05 DONE source19da6f1 integrated8d1cc69, report qualifications0405cab; full12commit sequence in state.json. Independent bounded production/geometry/lifecycle/art repairs approved; source reportsT05.md/T05-art.md retained. Improved courtyard/slabs/pavers/glass/MEP/foliage/skyline/lime cues/local environment; chosen staticBpreview camera. No production debugAPI.
 - Root combinedchecks typecheck/82units/buildPASS. Foundation+gameplay browsers24pass/12explicit viewportskips/0fail50.7s; logs.agent-runs/T05-integrated/{typecheck,unit,build,browser-synchronized}.log. Priorraw23pass1offscreenfail12skip retainedbrowser.log. Runtime probe offscreen t170/337msalways,t563msnever/frame51,t968/1773never/frame51; fixed200mssleep sampledIO/Reactcommit. Bounded expect.poll actualnever2sec then unchangedrect/frame350ms assertions independentlyAPPROVED b2e815c4; no assertionweakening.
 - T05 scene is module-ready; rootHome still staticfallback untilT06 actualmount. Full integrated hero/perimeter/responsive visual acceptance belongsT06 and finalT08; no exact rasterparity/hardwareGPUfps claim.
 
@@ -30,15 +31,29 @@
 - Light-theme touch controls inherited dark text on fixed charcoal panels. Coordinator changed only four direction foregrounds and Reset foreground to #F2F1EA. Independent static approval; two affected mobile interaction tests PASS19.5s, ten computed both-theme contrast checks minimum9.457:1 over conservative white backdrop. Updated root-phone-{dark,light}-expanded-controls.png inspected; poststyle typecheck/82units/build PASS. Logs touch-contrast* and *-touch.log.
 - Reviewer166e3448 badge evidence: 284 checks,60 return frames,12 correct clicks with actual Chromium minimumFont18/22 at390/360/rotation/remount. R1 owned/foreign loss, R3 original exit/rotation dimensions, R4 modifier mutation accepted. Worker immutable evidence .agent-runs/T06-review-{8ba0bf0,371e859,a41c6ae,01fad57}/. Old as-found overwritten files documented. No Safari/hardware GPU guarantee.
 
-## Active T07 next action
+## T07 accepted purposeful motion integration
 
-- T06 dependency is DONE. T07 Purposeful GSAP/reduced motion; CONTRACTS revision3 published. Motion child b0eb9dc6-fa65-4cab-b2e0-a779d01ddd66 produced candidate f7d01ae9206411d174781bc075e40c7dd3332ad9.
-- Independent reviewer 5785bbf1-dfb0-4ed5-8b79-bd381d7ed988 (Antigravity gemini-3.8-flash high/full_access) acknowledged T07-review-f7d01ae; review underway read-only in /Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t07-motion with evidence directed to .agent-runs/T07-review-f7d01ae/**.
-- Reviewer will check single property ownership, immediate content availability, route/lifecycle cleanup, initial/live reduced motion, accurate benchmark bar reveals, and restrained theme transition.
-- Exact next action: await independent reviewer 5785bbf1 verdict. Upon APPROVE, proceed to serial integration into root worktree, execute root verification, record acceptance, and release T08. If changes requested, assign bounded repairs to worker b0eb9dc6.
+- T07 DONE at 34905f9. Motion worker b0eb9dc6 candidate f7d01ae independently reviewed by 5785bbf1 and APPROVED. Single property ownership verified (physics moves player, frame loop writes camera transforms, GSAP coordinates numerical transition target offsets and DOM state).
+- Immediate content availability: zero trapped opacity, navigation links, CTAs (/resume, /about#contact), and keyboard Tab focus interactive from initial frame.
+- Accurate benchmark reveals: static factual text (684 µs, 539 µs, ▼ 21%, ~91%, 145 µs, and workload qualifier) uncorrupted; baseline (100%) and optimized (78.8%) bars scale smoothly without layout shifts.
+- Live and initial reduced motion: prefers-reduced-motion: reduce renders immediately without delay, halts camera drift, and clears active tweens on live toggle.
+- Restrained theme transition: 220ms .theme-transitioning applied strictly to DOM containers, exempting 3D canvas and game wrappers; bypassed on reduced motion.
+- Integrated validation on root worktree:
+  - `npm run typecheck`: PASS (0 errors)
+  - `npm test` (Vitest): 88/88 PASS
+  - `npm run build`: PASS (Vite production build succeeds, lazy GameExperience chunk 3.28 MB)
+  - `tests/e2e/motion.spec.ts`: 28/28 PASS across 4 viewports (Desktop 1585x992, Mobile 390x844, Mobile Small 360x740, Tablet 768x1024)
+  - Combined Playwright suite (`portfolio-pages`, `foundation`, `home-game`, `gameplay`): 47 passed, 33 explicit skips, 0 failures (2.4m)
+  - Visual captures and verification log in verification/T07/.
+
+## Active T08 next action
+
+- T07 dependency is DONE. Active ticket is T08: Final Polish, Full Browser & Accessibility Audit, and Release Preparation.
+- Scope: End-to-end audit across all routes, responsive viewports, and both themes; accessibility verification (keyboard navigation, focus indicators, aria labels, color contrast, screen reader semantics); production build verification; packaging final report and release documentation.
+- No user decision needed; proceed autonomously to dispatch T08.
 
 ## Constraints and tools
 
 - No push, deploy, force reset, bulk clean or external messages. Preserve worktrees, user changes and immutable evidence. Maximum two coding workers/four agents including coordinator/reviewer.
 - Traycer A2A/worktrees, local Playwright and in-app browser available. rg unavailable; targeted fallback. No reliable context meter/native compaction API; durable checkpoints and one substantial ticket per worker.
-- Applied traycer-execute/loop-protocol/review and prior PDF inspection. All T01–T06 accepted work is preserved; do not restart completed tickets.
+- Applied traycer-execute/loop-protocol/review and prior PDF inspection. All T01–T07 accepted work is preserved; do not restart completed tickets.

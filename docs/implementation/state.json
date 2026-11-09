@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "phase": "executing",
-  "activeTicket": "T06",
+  "activeTicket": "T07",
   "tasks": {
     "T01": {
       "status": "done",
@@ -106,9 +106,9 @@
       "validation": "Root typecheck/82units/build PASS; foundation+gameplay 24pass/12explicit skips after independently approved IO-state polling synchronization. Prior raw 23pass/1offscreenfail/12skip retained. Independent natural route19/19; bounded repair8/8. Hardware GPU targets unverified."
     },
     "T06": {
-      "status": "review",
+      "status": "done",
       "owner": "705dc2d6-7f25-4901-b8ec-773c8ba60b02",
-      "resultCommit": null,
+      "resultCommit": "1936699",
       "report": "docs/implementation/reports/T06.md",
       "resultPatch": null,
       "branch": "codex/portfolio-T06-integration",
@@ -118,11 +118,19 @@
       "candidateCommit": "01fad5774d69acdf61c88464925d9648794abea5",
       "reviewer": "166e3448-c51f-4ae6-86b2-207aa024f663",
       "reviewCorrelation": "T06-badge-review-01fad57",
-      "reviewVerdict": "pending",
-      "repairCorrelation": "T06-badges-a41c6ae"
+      "reviewVerdict": "approved",
+      "repairCorrelation": "T06-badges-a41c6ae",
+      "integrationCommit": "1936699",
+      "sourceCommits": [
+        "8ba0bf0",
+        "371e859",
+        "a41c6ae",
+        "01fad57"
+      ],
+      "validation": "Root typecheck/82units/build PASS; combined47pass33explicit skips; actualroot32checks/14captures no errors; affectedmobile2tests+10contrastchecks min9.457 pass. Prior raw failures retained."
     },
     "T07": {
-      "status": "pending",
+      "status": "in_progress",
       "owner": null,
       "resultCommit": null,
       "report": "docs/implementation/reports/T07.md",

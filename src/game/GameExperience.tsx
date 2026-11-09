@@ -285,6 +285,7 @@ export function GameExperience({
               position: 'relative',
               width: '100%',
               height: '100%',
+              minWidth: 0,
               ...style,
             }
       }
@@ -303,6 +304,7 @@ export function GameExperience({
           inset: isOverlay ? 0 : undefined,
           width: '100%',
           height: '100%',
+          minWidth: 0,
           zIndex: 1,
         }}
       >

@@ -122,7 +122,7 @@
 
 .home-hero-grid {
   display: grid;
-  grid-template-columns: 1fr 1.05fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
   gap: 32px;
   align-items: start;
 }
@@ -202,16 +202,19 @@
 /* Home 3D Rooftop Game Slot Mount (Visually neutral container; no opaque fill or shadow box) */
 .home-hero-right {
   width: 100%;
+  min-width: 0;
 }
 
 .home-game-slot-container {
   width: 100%;
+  min-width: 0;
   position: relative;
   background: transparent;
 }
 
 .game-slot-wrapper {
   width: 100%;
+  min-width: 0;
   height: 320px;
   position: relative;
 }

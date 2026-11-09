@@ -290,6 +290,7 @@ export const Scene: React.FC<SceneProps> = ({
         position: 'relative',
         width: '100%',
         height: '100%',
+        minWidth: 0,
         background: 'transparent',
         ...style,
       }}
@@ -390,6 +391,7 @@ export const Scene: React.FC<SceneProps> = ({
           inset: 0,
           pointerEvents: 'none',
           zIndex: 3,
+          overflow: 'hidden',
         }}
       />
     </div>

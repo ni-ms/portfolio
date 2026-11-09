@@ -276,7 +276,7 @@ StaticGameFallback.displayName = 'StaticGameFallback';
  *
  * - Lazy-loads GameExperience with zero loading lag on page content.
  * - Detects WebGL availability and catches runtime context loss, falling back gracefully.
- * - Captures actual `webglcontextlost` events on window, cleanly tearing down simulation, input, and scroll lock.
+ * - Scoped webglcontextlost listener strictly checks for owned canvas target, preventing foreign canvas false falls.
  * - Soft perimeter atmosphere (feather fade + peripheral blur) surrounding crisp center inside Scene visual layer.
  * - Sized cleanly to fit hero slot wrapper without rectangular clipping.
  * - Clean lifecycle: unmounts on inner route navigation without lingering listeners or physics.
@@ -292,6 +292,7 @@ export const HomeGame: React.FC<HomeGameProps> = ({
   const [webGLAvailable, setWebGLAvailable] = useState(true);
   const [hasContextLoss, setHasContextLoss] = useState(false);
   const fallbackRef = useRef<HTMLDivElement>(null);
+  const canvasWrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setWebGLAvailable(checkWebGLAvailable());
@@ -299,28 +300,29 @@ export const HomeGame: React.FC<HomeGameProps> = ({
 
   // Listen for actual WebGL context loss events (using capture to intercept non-bubbling canvas events)
   useEffect(() => {
-    let unmountTimer: ReturnType<typeof setTimeout> | null = null;
-
     const handleContextLost = (e: Event) => {
+      // Strictly verify that the event originated on our owned live canvas
+      const ownedCanvas = canvasWrapRef.current?.querySelector('canvas');
+      if (!e.target || !ownedCanvas || e.target !== ownedCanvas) {
+        return; // Foreign canvas loss; ignore completely
+      }
+
       // Prevent browser default behavior and cleanly unmount 3D simulation
       e.preventDefault();
-      console.warn('[HomeGame] WebGL context lost; safely unmounting simulation and restoring navigation');
+      console.warn('[HomeGame] WebGL context lost on owned canvas; safely unmounting simulation and restoring navigation');
 
       // Reset store mode, input, and remove body scroll lock immediately
       gameStore.getState().actions.clearInput();
       gameStore.getState().actions.setMode('preview');
       document.body.classList.remove('scroll-locked');
 
-      // Allow probe assertions to observe isContextLost() on the canvas element before unmounting
-      unmountTimer = setTimeout(() => {
-        setHasContextLoss(true);
-      }, 80);
+      // Unmount canvas immediately without test delays
+      setHasContextLoss(true);
     };
 
     window.addEventListener('webglcontextlost', handleContextLost, true);
     return () => {
       window.removeEventListener('webglcontextlost', handleContextLost, true);
-      if (unmountTimer) clearTimeout(unmountTimer);
     };
   }, []);
 
@@ -359,7 +361,7 @@ export const HomeGame: React.FC<HomeGameProps> = ({
         />
       ) : (
         <GameErrorBoundary theme={theme} onNavigate={onNavigate}>
-          <div className="home-game-canvas-wrap">
+          <div className="home-game-canvas-wrap" ref={canvasWrapRef}>
             <Suspense
               fallback={
                 <StaticGameFallback

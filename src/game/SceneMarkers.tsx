@@ -1,4 +1,5 @@
 import React from 'react';
+import * as THREE from 'three';
 import { Html } from '@react-three/drei';
 import { COURSE_BOUNDS, CHECKPOINTS } from './courseConfig';
 
@@ -16,6 +17,39 @@ interface MarkerItem {
   targetRoute: string;
   position: [number, number, number];
 }
+
+const vPos = new THREE.Vector3();
+
+/**
+ * Calibrated position calculator ensuring badges remain visibly positioned within canvas bounds
+ * across all viewports (preventing offscreen badges extending scrollWidth or causing keyboard tab panning).
+ */
+const calculateClampedPosition = (
+  el: THREE.Object3D,
+  camera: THREE.Camera,
+  size: { width: number; height: number }
+): [number, number] => {
+  vPos.setFromMatrixPosition(el.matrixWorld);
+  vPos.project(camera);
+  const widthHalf = size.width / 2;
+  const heightHalf = size.height / 2;
+  const rawX = vPos.x * widthHalf + widthHalf;
+  const rawY = -vPos.y * heightHalf + heightHalf;
+
+  // Approximate badge bounding box:
+  // - width up to ~146px ('02 / EXPLORATIONS' is longest)
+  // - height ~46px (badge ~28px + leader line ~18px)
+  // We clamp within canvas margins so every badge stays visible, clickable, and keyboard-focusable
+  // without exceeding canvas bounds or causing document pan.
+  const minX = 12;
+  const maxX = Math.max(minX, size.width - 146);
+  const minY = 48;
+  const maxY = Math.max(minY, size.height - 12);
+
+  const clampedX = Math.max(minX, Math.min(rawX, maxX));
+  const clampedY = Math.max(minY, Math.min(rawY, maxY));
+  return [clampedX, clampedY];
+};
 
 export const SceneMarkers: React.FC<SceneMarkersProps> = ({
   onSelectCheckpoint,
@@ -85,6 +119,7 @@ export const SceneMarkers: React.FC<SceneMarkersProps> = ({
           position={marker.position}
           center={false}
           portal={portal as React.RefObject<HTMLElement> | undefined}
+          calculatePosition={calculateClampedPosition}
           zIndexRange={[50, 0]}
           style={{
             pointerEvents: 'auto',
@@ -105,6 +140,7 @@ export const SceneMarkers: React.FC<SceneMarkersProps> = ({
               href={marker.targetRoute || `#${marker.sectionId}`}
               onClick={(e) => handleClick(e, marker)}
               aria-label={`Jump to ${marker.labelNumber} ${marker.labelTitle} section`}
+              tabIndex={0}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',

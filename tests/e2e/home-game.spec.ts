@@ -203,6 +203,89 @@ test.describe('T06 HomeGame Integration, Atmosphere & Lifecycle Durable Suite', 
     expect(workLabel!.rect.bottom).toBeLessThanOrEqual(snap.canvasRect!.bottom);
   });
 
+  test('Desktop Sizing Settled — Return to Constrained Dimensions After Expanded Play', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'Desktop Target (1585x992)', 'Desktop target only');
+
+    await openHomeGameHarness(page);
+
+    const initial = await page.evaluate(() => {
+      const c = document.querySelector('.scene-canvas-container canvas');
+      const s = document.querySelector('.game-slot-wrapper');
+      return {
+        canvasWidth: c?.getBoundingClientRect().width || 0,
+        slotWidth: s?.getBoundingClientRect().width || 0,
+      };
+    });
+
+    // Enter play and expand to overlay
+    await page.getByTestId('enter-play-btn').click();
+    await page.getByTestId('inline-expand-btn').click();
+    await page.waitForFunction(() => document.querySelector('canvas')?.getBoundingClientRect().width === 1585);
+
+    // Exit overlay
+    await page.getByTestId('overlay-exit-btn').click();
+    await page.waitForTimeout(600);
+
+    const exitSettled = await page.evaluate(() => {
+      const c = document.querySelector('.scene-canvas-container canvas');
+      const s = document.querySelector('.game-slot-wrapper');
+      return {
+        canvasWidth: c?.getBoundingClientRect().width || 0,
+        slotWidth: s?.getBoundingClientRect().width || 0,
+        bodyScrollWidth: document.body.scrollWidth,
+        scrollX: window.scrollX,
+      };
+    });
+
+    expect(Math.abs(exitSettled.slotWidth - initial.slotWidth)).toBeLessThan(2);
+    expect(Math.abs(exitSettled.canvasWidth - initial.canvasWidth)).toBeLessThan(2);
+    expect(exitSettled.bodyScrollWidth).toBeLessThanOrEqual(1585);
+    expect(exitSettled.scrollX).toBe(0);
+  });
+
+  test('Mobile Portal Containment & Tab Navigation — No Document Pan', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'Mobile Target (390x844)', 'Mobile target only');
+
+    await openHomeGameHarness(page);
+
+    // Document and body widths must not exceed viewport width
+    const initialWidths = await page.evaluate(() => ({
+      docWidth: document.documentElement.scrollWidth,
+      bodyWidth: document.body.scrollWidth,
+    }));
+    expect(initialWidths.docWidth).toBeLessThanOrEqual(390);
+    expect(initialWidths.bodyWidth).toBeLessThanOrEqual(390);
+
+    // Tab through all markers to Jump to 03 RÉSUMÉ section
+    for (let i = 0; i < 20; i++) {
+      await page.keyboard.press('Tab');
+      const label = await page.evaluate(() => document.activeElement?.getAttribute('aria-label') || '');
+      if (label === 'Jump to 03 RÉSUMÉ section') break;
+    }
+
+    const tabState = await page.evaluate(() => {
+      const active = document.activeElement;
+      const rect = active?.getBoundingClientRect();
+      const canvas = document.querySelector('canvas');
+      const canvasRect = canvas?.getBoundingClientRect();
+      return {
+        activeLabel: active?.getAttribute('aria-label'),
+        scrollX: window.scrollX,
+        docScrollLeft: document.documentElement.scrollLeft,
+        canvasLeft: canvasRect?.left,
+        activeLeft: rect?.left,
+        activeRight: rect?.right,
+      };
+    });
+
+    expect(tabState.activeLabel).toBe('Jump to 03 RÉSUMÉ section');
+    expect(tabState.scrollX).toBe(0);
+    expect(tabState.docScrollLeft).toBe(0);
+    expect(Math.abs((tabState.canvasLeft || 0) - 24)).toBeLessThan(2);
+    expect(tabState.activeLeft).toBeGreaterThanOrEqual(0);
+    expect(tabState.activeRight).toBeLessThanOrEqual(390);
+  });
+
   test('WebGL Context Loss during Expanded Play — Safely Unmounts, Clears Input & Unlocks Scroll', async ({ page }, testInfo) => {
     test.skip(testInfo.project.name !== 'Desktop Target (1585x992)', 'Desktop target only');
 
@@ -215,9 +298,37 @@ test.describe('T06 HomeGame Integration, Atmosphere & Lifecycle Durable Suite', 
 
     expect(await page.evaluate(() => document.body.classList.contains('scroll-locked'))).toBe(true);
 
-    // Trigger actual WebGL context loss via canvas extension
+    // 1. Verify foreign canvas context loss does NOT affect owned simulation
+    const foreignResult = await page.evaluate(async () => {
+      const owned = document.querySelector('.scene-canvas-container canvas') as HTMLCanvasElement;
+      const ownGl = owned.getContext('webgl2') as WebGL2RenderingContext;
+      const foreign = document.createElement('canvas');
+      foreign.id = 'foreign-test-canvas';
+      foreign.style.cssText = 'position:fixed;width:2px;height:2px;bottom:0;left:0';
+      document.body.append(foreign);
+      const foreignGl = foreign.getContext('webgl2') as WebGL2RenderingContext;
+
+      return await new Promise<{ ownLost: boolean; foreignLost: boolean; prevented: boolean; mode: string }>((resolve) => {
+        foreign.addEventListener('webglcontextlost', (e) => {
+          resolve({
+            ownLost: ownGl.isContextLost(),
+            foreignLost: foreignGl.isContextLost(),
+            prevented: e.defaultPrevented,
+            mode: (window as any).__homeGame?.gameStore?.getState().mode,
+          });
+        }, { once: true });
+        foreignGl.getExtension('WEBGL_lose_context')?.loseContext();
+      });
+    });
+    expect(foreignResult.ownLost).toBe(false);
+    expect(foreignResult.foreignLost).toBe(true);
+    expect(foreignResult.mode).toBe('play-overlay');
+    await expect(page.locator('.scene-canvas-container canvas')).toHaveCount(1);
+    await expect(page.getByTestId('home-game-fallback')).toHaveCount(0);
+
+    // 2. Trigger actual WebGL context loss on OWNED canvas via extension
     const lostInjected = await page.evaluate(() => {
-      const canvas = document.querySelector('canvas');
+      const canvas = document.querySelector('.scene-canvas-container canvas') as HTMLCanvasElement;
       if (!canvas) return false;
       const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
       const ext = gl?.getExtension('WEBGL_lose_context');
@@ -233,14 +344,18 @@ test.describe('T06 HomeGame Integration, Atmosphere & Lifecycle Durable Suite', 
     await expect(fallback).toContainText('ROOFTOP COURSE · STATIC PREVIEW');
     await expect(fallback).toContainText('WebGL error · Fast navigation active');
 
-    // Simulation cleanly unmounts after grace window
-    await expect(page.locator('canvas')).toHaveCount(0);
+    // Simulation cleanly unmounts
+    await expect(page.locator('.scene-canvas-container canvas')).toHaveCount(0);
 
     // Store mode is reset to preview
     expect(await page.evaluate(() => (window as any).__homeGame?.gameStore?.getState().mode)).toBe('preview');
 
     // Body scroll lock is removed
     expect(await page.evaluate(() => document.body.classList.contains('scroll-locked'))).toBe(false);
+
+    // Focus automatically connected to fallback link
+    const focusedTag = await page.evaluate(() => document.activeElement?.tagName);
+    expect(focusedTag).toBe('A');
 
     // Keyboard movement is not accepted
     await page.keyboard.down('KeyW');
@@ -277,19 +392,19 @@ test.describe('T06 HomeGame Integration, Atmosphere & Lifecycle Durable Suite', 
     await expect(projectLink).toBeVisible();
 
     const modifiedClick = await projectLink.evaluate((el) => {
-      let prevented = false;
-      const captureHandler = (e: MouseEvent) => {
-        prevented = e.defaultPrevented;
-        // Prevent top-frame browser navigation in test harness so harness page remains loaded
+      let result: { defaultPrevented: boolean } | null = null;
+      const bubbleHandler = (e: MouseEvent) => {
+        result = { defaultPrevented: e.defaultPrevented };
+        // Prevent top-frame browser navigation in test harness after recording
         e.preventDefault();
       };
-      window.addEventListener('click', captureHandler, { capture: true, once: true });
+      document.addEventListener('click', bubbleHandler, { once: true });
       const evt = new MouseEvent('click', { bubbles: true, cancelable: true, ctrlKey: true });
       el.dispatchEvent(evt);
-      return { defaultPrevented: prevented };
+      return result;
     });
     // Our handler must NOT have called preventDefault
-    expect(modifiedClick.defaultPrevented).toBe(false);
+    expect((modifiedClick as any)?.defaultPrevented).toBe(false);
     // Active route is unchanged
     await expect(page.locator('#harness-controls')).toContainText('Active Route: /');
 

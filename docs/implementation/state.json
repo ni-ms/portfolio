@@ -107,10 +107,14 @@
     },
     "T06": {
       "status": "in_progress",
-      "owner": null,
+      "owner": "705dc2d6-7f25-4901-b8ec-773c8ba60b02",
       "resultCommit": null,
       "report": "docs/implementation/reports/T06.md",
-      "resultPatch": null
+      "resultPatch": null,
+      "branch": "codex/portfolio-T06-integration",
+      "worktree": "/Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t06-integration",
+      "baseCommit": "a04aa4a",
+      "correlation": "T06-boundary-a04aa4a"
     },
     "T07": {
       "status": "pending",

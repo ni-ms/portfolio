@@ -2,7 +2,7 @@
 
 ## Accepted integration
 
-- Coordinator328379e6-9fdd-49e1-8842-9aeabbcf0abe, root noble-walrus worktree branch traycer/portfolio-noble-walrus. Current checkpoint follows0405cab; exact SHA gitlog.
+- Coordinator328379e6-9fdd-49e1-8842-9aeabbcf0abe, root noble-walrus worktree branch traycer/portfolio-noble-walrus. Current checkpoint followsa04aa4a; exact SHA gitlog.
 - T01 DONEe5b4940: independently approved theme/router/history/hash/focus/mobile navigation.
 - T02 DONEa3a8d93/source744ab4d+a0d16f2/contact78c225d: factual content, inspected2-page PDF/identicalDOCX/exportsource.
 - T03 DONE9297a343217b172bc90dbdb9c8ea82f132d500a0: pages/allroutes/factualcontent/downloads/both themes; prior independent approval and28foundation+route browsers.
@@ -25,7 +25,11 @@
 
 - TicketT06 Home/gameintegration, softblur/resilientloading; depsT03+T05 nowintegrated. CoordinatorownsApp/rootwiring/overallintegration. CONTRACTSrevision2 published: Home-only HomeGame({theme,onNavigate}), lazyGameExperience, accessibleloading/error/WebGLfallback, actualresponsivecanvas, one simulation, edgeeffects onlyvisualnotcontrols, relaxedexpandedplay.
 - PlannedboundedchildownsHomeGame/newscopedhome-game.css/game-wrapperresponsive/error/lifecycle refinements andrelevantbrowserchecks, ownreportT06/verificationT06. CoordinatoraloneApp/pagesglobalCSS/packages/state/integration. Preserveacceptedphysics/controller/course/motion/env; requestchangesifneeded.
-- Nextaction: createfreshT06workerisolatedworktree fromcurrentrootacceptancecheckpoint perselectionguide (AntigravityFlashhigh/full_access). AssignboundedT06packetwithHomepair/finalapprovedscene/evidence andearlyactual-root-sizedcaptures; coordinatorplugsHomeGameintoApp aftercandidateexists. Review/code/browser thenintegratebeforeT07. No userdecisionneeded.
+- Fresh T06worker705dc2d6-7f25-4901-b8ec-773c8ba60b02 Antigravitygemini-3.8-flashhigh/full_access assignedT06-boundary-a04aa4a expectReply=true. Worktree /Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t06-integration branchcodex/portfolio-T06-integration basea04aa4a; depssymlinked; ownserver3007.
+- ExactscopeHomeGame.tsx/newscopedhome-game.css, necessaryGameExperience/Scene/CameraRigresponsive/error/lifecycleonly, ownhome-game.spec.ts/fixture/reportT06/verificationT06. CoordinatorApp/globalpagesCSS/packages/state. Physics/controller/coursebounds/materials/geometryfrozen. ReadpacketT06/Homepair/CONTRACTSrev2. No nestedagents.
+- Brief: lazyloading/contentfirst, accessibleWebGL/error/staticfallback, actualresponsivecanvas/previewlabels/playernextlanding, onepersistentCanvas/world/input, innerroutecleanup, perimeterfeather+progressivebluronlycanvas/atmosphere/relaxexpanded/pointer-safe, mobilearea/touch/resize/focus/scroll. NoancestorCSSfilter/transformtrappingfixedoverlay, duplicatecanvas orproductiondebugAPI. PreserveeffectiveReview/livemotion/envtargetplateau.
+- WorkerfixturemustmountactualPortfolioPageswithHomeGame; actualrootremainsfallbackuntilcoordinatorAppwire. RequireactualCSS/canvasboundsnotclippedmin420illusion; immutablecandidatehashcapturesdesktop/mobilethemespreviewplay/identitypauseunmount/touch/fallbackforcedbybrowserfixture. Relevantchecks/exactcounts/limitations. T05routeacceptedwheresourceunchanged/noGPUfpsclaims.
+- Exactnextaction: consumeT06ACK/earlyCHECKPOINTorREADY, inspectboundedsource/actualslotcaptures; coordinatorconnectAppuseTheme/useNavigation/Home-onlyHomeGame aftermoduleexists. Reviewriskyboundariesindependently, integratedbrowserandproductionbuildbeforeT06done/T07. Agentreplyowesnextmove; no userdecisionneeded.
 
 ## Constraints and tools
 

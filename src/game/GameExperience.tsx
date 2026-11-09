@@ -29,6 +29,8 @@ export function GameExperience({
   const cancelFocusRestoreRef = useRef(false);
   const savedScrollYRef = useRef(0);
 
+  const isLight = theme === 'light';
+
   // Visibility and intersection tracking for physics suspension and frameloop control
   const [isIntersecting, setIsIntersecting] = useState(true);
   const [isDocVisible, setIsDocVisible] = useState(
@@ -271,7 +273,7 @@ export function GameExperience({
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
-              backgroundColor: theme === 'light' ? 'var(--color-bg, #F2F1EA)' : 'var(--color-bg, #101414)',
+              backgroundColor: isLight ? 'var(--color-bg, #F2F1EA)' : 'var(--color-bg, #101414)',
               paddingTop: 'max(16px, env(safe-area-inset-top))',
               paddingBottom: 'max(12px, env(safe-area-inset-bottom))',
               paddingLeft: 'max(16px, env(safe-area-inset-left))',
@@ -392,11 +394,11 @@ export function GameExperience({
               style={{
                 fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
                 fontSize: '10.5px',
-                color: theme === 'light' ? 'rgba(16, 20, 20, 0.65)' : 'rgba(242, 241, 234, 0.5)',
-                background: theme === 'light' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(16, 20, 20, 0.7)',
+                color: isLight ? '#101414' : 'rgba(242, 241, 234, 0.7)',
+                background: isLight ? 'rgba(242, 241, 234, 0.92)' : 'rgba(16, 20, 20, 0.7)',
                 padding: '4px 8px',
                 borderRadius: '3px',
-                border: '1px solid rgba(242, 241, 234, 0.1)',
+                border: isLight ? '1px solid rgba(16, 20, 20, 0.15)' : '1px solid rgba(242, 241, 234, 0.1)',
                 backdropFilter: 'blur(4px)',
               }}
             >
@@ -406,7 +408,7 @@ export function GameExperience({
         </div>
       )}
 
-      {/* DESKTOP PLAY-INLINE HUD (Non-fullscreen overlay bar) */}
+      {/* DESKTOP PLAY-INLINE HUD (Theme-aware with contrast >= 4.5:1) */}
       {mode === 'play-inline' && (
         <div
           className="game-inline-hud"
@@ -441,11 +443,11 @@ export function GameExperience({
                 fontSize: '11px',
                 fontWeight: 600,
                 letterSpacing: '0.1em',
-                color: 'var(--color-text, #F2F1EA)',
-                background: 'rgba(16, 20, 20, 0.82)',
+                color: isLight ? '#101414' : '#F2F1EA',
+                background: isLight ? 'rgba(242, 241, 234, 0.94)' : 'rgba(16, 20, 20, 0.85)',
                 padding: '4px 10px',
                 borderRadius: '4px',
-                border: '1px solid rgba(242, 241, 234, 0.12)',
+                border: isLight ? '1px solid rgba(16, 20, 20, 0.2)' : '1px solid rgba(242, 241, 234, 0.12)',
                 backdropFilter: 'blur(6px)',
               }}
             >
@@ -466,12 +468,13 @@ export function GameExperience({
                 style={{
                   fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
                   fontSize: '11px',
-                  color: 'var(--color-text-muted, #8E9596)',
+                  color: isLight ? '#565F60' : '#8E9596',
                 }}
               >
                 {String(unlockedCheckpointsCount).padStart(2, '0')} / 03
               </span>
 
+              {/* Expand Button: Theme-aware contrast >= 4.5:1 in both light and dark themes */}
               <button
                 type="button"
                 data-testid="inline-expand-btn"
@@ -481,13 +484,13 @@ export function GameExperience({
                   minWidth: '44px',
                   minHeight: '44px',
                   padding: '4px 10px',
-                  background: 'rgba(23, 29, 30, 0.85)',
-                  border: '1px solid rgba(242, 241, 234, 0.2)',
+                  background: isLight ? 'rgba(242, 241, 234, 0.95)' : 'rgba(23, 29, 30, 0.85)',
+                  border: isLight ? '1px solid rgba(16, 20, 20, 0.25)' : '1px solid rgba(242, 241, 234, 0.2)',
                   borderRadius: '4px',
                   fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
                   fontSize: '11px',
                   fontWeight: 600,
-                  color: 'var(--color-text, #F2F1EA)',
+                  color: isLight ? '#101414' : '#F2F1EA',
                   cursor: 'pointer',
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -505,13 +508,13 @@ export function GameExperience({
                   minWidth: '44px',
                   minHeight: '44px',
                   padding: '4px 12px',
-                  background: 'rgba(23, 29, 30, 0.85)',
-                  border: '1px solid rgba(242, 241, 234, 0.2)',
+                  background: isLight ? 'rgba(242, 241, 234, 0.95)' : 'rgba(23, 29, 30, 0.85)',
+                  border: isLight ? '1px solid rgba(16, 20, 20, 0.25)' : '1px solid rgba(242, 241, 234, 0.2)',
                   borderRadius: '4px',
                   fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
                   fontSize: '11px',
                   fontWeight: 600,
-                  color: 'var(--color-text, #F2F1EA)',
+                  color: isLight ? '#101414' : '#F2F1EA',
                   cursor: 'pointer',
                 }}
               >
@@ -531,12 +534,14 @@ export function GameExperience({
                 display: 'flex',
                 alignItems: 'center',
                 gap: '12px',
-                background: 'rgba(23, 29, 30, 0.92)',
-                border: '1px solid var(--color-border-accent, rgba(214, 255, 100, 0.45))',
+                background: isLight ? 'rgba(242, 241, 234, 0.96)' : 'rgba(23, 29, 30, 0.92)',
+                border: isLight
+                  ? '1px solid rgba(16, 20, 20, 0.35)'
+                  : '1px solid var(--color-border-accent, rgba(214, 255, 100, 0.45))',
                 borderRadius: '6px',
                 padding: '8px 16px',
                 backdropFilter: 'blur(10px)',
-                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.35)',
                 pointerEvents: 'auto',
               }}
             >
@@ -544,7 +549,7 @@ export function GameExperience({
                 style={{
                   fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
                   fontSize: '11px',
-                  color: 'var(--color-accent, #D6FF64)',
+                  color: isLight ? '#101414' : 'var(--color-accent, #D6FF64)',
                   fontWeight: 600,
                   letterSpacing: '0.06em',
                 }}
@@ -581,7 +586,7 @@ export function GameExperience({
             style={{
               fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
               fontSize: '10.5px',
-              color: 'var(--color-text-dim, #565F60)',
+              color: isLight ? '#565F60' : 'var(--color-text-dim, #565F60)',
               textAlign: 'center',
               letterSpacing: '0.1em',
             }}
@@ -619,10 +624,10 @@ export function GameExperience({
                 fontSize: '11px',
                 fontWeight: 600,
                 letterSpacing: '0.12em',
-                color: 'var(--color-text, #F2F1EA)',
-                background: 'rgba(16, 20, 20, 0.75)',
+                color: isLight ? '#101414' : 'var(--color-text, #F2F1EA)',
+                background: isLight ? 'rgba(242, 241, 234, 0.92)' : 'rgba(16, 20, 20, 0.75)',
                 padding: '5px 10px',
-                border: '1px solid rgba(242, 241, 234, 0.1)',
+                border: isLight ? '1px solid rgba(16, 20, 20, 0.15)' : '1px solid rgba(242, 241, 234, 0.1)',
                 borderRadius: '4px',
                 backdropFilter: 'blur(8px)',
               }}
@@ -646,7 +651,7 @@ export function GameExperience({
                 fontSize: '13px',
                 fontWeight: 700,
                 letterSpacing: '0.15em',
-                color: 'var(--color-text-muted, #8E9596)',
+                color: isLight ? '#565F60' : 'var(--color-text-muted, #8E9596)',
                 textTransform: 'uppercase',
               }}
             >
@@ -668,7 +673,7 @@ export function GameExperience({
                   fontSize: '11px',
                   fontWeight: 500,
                   letterSpacing: '0.08em',
-                  color: 'var(--color-text-muted, #8E9596)',
+                  color: isLight ? '#565F60' : 'var(--color-text-muted, #8E9596)',
                 }}
               >
                 {String(unlockedCheckpointsCount).padStart(2, '0')} / 03
@@ -685,10 +690,10 @@ export function GameExperience({
                   height: '44px',
                   minWidth: '44px',
                   minHeight: '44px',
-                  background: 'rgba(23, 29, 30, 0.85)',
-                  border: '1px solid rgba(242, 241, 234, 0.2)',
+                  background: isLight ? 'rgba(242, 241, 234, 0.95)' : 'rgba(23, 29, 30, 0.85)',
+                  border: isLight ? '1px solid rgba(16, 20, 20, 0.25)' : '1px solid rgba(242, 241, 234, 0.2)',
                   borderRadius: '50%',
-                  color: 'var(--color-text, #F2F1EA)',
+                  color: isLight ? '#101414' : 'var(--color-text, #F2F1EA)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -726,12 +731,14 @@ export function GameExperience({
                 display: 'flex',
                 alignItems: 'center',
                 gap: '12px',
-                background: 'rgba(23, 29, 30, 0.92)',
-                border: '1px solid var(--color-border-accent, rgba(214, 255, 100, 0.35))',
+                background: isLight ? 'rgba(242, 241, 234, 0.96)' : 'rgba(23, 29, 30, 0.92)',
+                border: isLight
+                  ? '1px solid rgba(16, 20, 20, 0.35)'
+                  : '1px solid var(--color-border-accent, rgba(214, 255, 100, 0.35))',
                 borderRadius: '6px',
                 padding: '8px 16px',
                 backdropFilter: 'blur(10px)',
-                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.35)',
                 pointerEvents: 'auto',
               }}
             >
@@ -739,7 +746,7 @@ export function GameExperience({
                 style={{
                   fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
                   fontSize: '11px',
-                  color: 'var(--color-accent, #D6FF64)',
+                  color: isLight ? '#101414' : 'var(--color-accent, #D6FF64)',
                   fontWeight: 600,
                   letterSpacing: '0.06em',
                 }}

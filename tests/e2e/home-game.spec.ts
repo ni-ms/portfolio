@@ -24,7 +24,15 @@ test.describe('T06 HomeGame Integration, Atmosphere & Lifecycle Durable Suite', 
     await expect(page.getByTestId('home-game-perimeter')).toBeVisible();
     expect(initSnap.isPerimeterRelaxed).toBe(false);
 
-    // 3. Enter inline play mode: click-to-play enters play-inline
+    // 3. Next landing label 01 / WORK is framed cleanly inside canvas bounds
+    const workLabel = initSnap.markerLabels.find((m) => m.text?.includes('01') || m.text?.includes('WORK'));
+    expect(workLabel).toBeDefined();
+    expect(workLabel!.rect.left).toBeGreaterThanOrEqual(initSnap.canvasRect!.left);
+    expect(workLabel!.rect.right).toBeLessThanOrEqual(initSnap.canvasRect!.right);
+    expect(workLabel!.rect.top).toBeGreaterThanOrEqual(initSnap.canvasRect!.top);
+    expect(workLabel!.rect.bottom).toBeLessThanOrEqual(initSnap.canvasRect!.bottom);
+
+    // 4. Enter inline play mode: click-to-play enters play-inline
     const enterBtn = page.getByTestId('enter-play-btn');
     await expect(enterBtn).toBeVisible();
     await enterBtn.click();
@@ -46,9 +54,25 @@ test.describe('T06 HomeGame Integration, Atmosphere & Lifecycle Durable Suite', 
     expect(inlineSnap.physicalTranslation).toBeDefined();
     expect(moveSnap.physicalTranslation!.z).toBeLessThan(inlineSnap.physicalTranslation!.z - 0.15);
 
-    // 4. Expand button smoothly transitions from inline to expanded overlay
+    // 5. Light theme contrast verification: expand button meets contrast >= 4.5:1
+    const themeBtn = page.locator('#toggle-theme-btn');
+    await themeBtn.click(); // Switch to light
+    await page.waitForTimeout(200);
+
     const expandBtn = page.getByTestId('inline-expand-btn');
     await expect(expandBtn).toBeVisible();
+    const expandStyles = await expandBtn.evaluate((el) => {
+      const s = getComputedStyle(el);
+      return { color: s.color, background: s.backgroundColor };
+    });
+    // Color should be dark (#101414 = rgb(16, 20, 20)) over light background (rgb(242, 241, 234))
+    expect(expandStyles.color).toContain('16, 20, 20');
+    expect(expandStyles.background).toContain('242, 241, 234');
+
+    await themeBtn.click(); // Switch back to dark
+    await page.waitForTimeout(200);
+
+    // 6. Expand button smoothly transitions from inline to expanded overlay
     await expandBtn.click();
     await page.waitForTimeout(350);
 
@@ -59,7 +83,7 @@ test.describe('T06 HomeGame Integration, Atmosphere & Lifecycle Durable Suite', 
     // Player position remains preserved
     expect(overlaySnap.physicalTranslation!.z).toBeCloseTo(moveSnap.physicalTranslation!.z, 1);
 
-    // 5. Exit overlay restores preview mode and restores focus to enter-play-btn
+    // 7. Exit overlay restores preview mode and restores focus to enter-play-btn
     const exitBtn = page.getByTestId('overlay-exit-btn');
     await expect(exitBtn).toBeVisible();
     await exitBtn.click();
@@ -70,8 +94,7 @@ test.describe('T06 HomeGame Integration, Atmosphere & Lifecycle Durable Suite', 
     expect(exitSnap.canvasCount).toBe(1);
     await expect(page.getByTestId('enter-play-btn')).toBeFocused();
 
-    // 6. Theme switches preserve canvas and simulation state without leaks
-    const themeBtn = page.locator('#toggle-theme-btn');
+    // 8. Theme switches preserve canvas and simulation state without leaks
     await themeBtn.click(); // Switch to light
     await page.waitForTimeout(250);
     const lightSnap = await getHomeGameSnapshot(page);
@@ -83,7 +106,7 @@ test.describe('T06 HomeGame Integration, Atmosphere & Lifecycle Durable Suite', 
     const darkSnap = await getHomeGameSnapshot(page);
     expect(darkSnap.canvasCount).toBe(1);
 
-    // 7. Inner route navigation unmounts game; returning remounts cleanly
+    // 9. Inner route navigation unmounts game; returning remounts cleanly
     const navProjectsBtn = page.locator('#nav-projects');
     await navProjectsBtn.click();
     await page.waitForTimeout(200);
@@ -95,7 +118,7 @@ test.describe('T06 HomeGame Integration, Atmosphere & Lifecycle Durable Suite', 
     const remountSnap = await getHomeGameSnapshot(page);
     expect(remountSnap.canvasCount).toBe(1);
 
-    // 8. Viewport Intersection & Offscreen Rendering Suspension
+    // 10. Viewport Intersection & Offscreen Rendering Suspension
     await page.evaluate(() => window.scrollTo(0, 1000));
     // Poll for frameloop suspension
     await expect.poll(async () => {
@@ -127,12 +150,13 @@ test.describe('T06 HomeGame Integration, Atmosphere & Lifecycle Durable Suite', 
     expect(Math.abs(snap.canvasRect!.height - snap.slotWrapperRect!.height)).toBeLessThan(3);
     expect(snap.canvasRect!.height).toBeLessThanOrEqual(300);
 
-    // 2. Next landing label 01 / WORK is readable and inside canvas bounds
+    // 2. Next landing label 01 / WORK is required to exist and must be completely framed inside canvas bounds
     const workLabel = snap.markerLabels.find((m) => m.text?.includes('01') || m.text?.includes('WORK'));
-    if (workLabel) {
-      expect(workLabel.rect.left).toBeGreaterThanOrEqual(snap.canvasRect!.left - 10);
-      expect(workLabel.rect.right).toBeLessThanOrEqual(snap.canvasRect!.right + 20);
-    }
+    expect(workLabel).toBeDefined();
+    expect(workLabel!.rect.left).toBeGreaterThanOrEqual(snap.canvasRect!.left);
+    expect(workLabel!.rect.right).toBeLessThanOrEqual(snap.canvasRect!.right);
+    expect(workLabel!.rect.top).toBeGreaterThanOrEqual(snap.canvasRect!.top);
+    expect(workLabel!.rect.bottom).toBeLessThanOrEqual(snap.canvasRect!.bottom);
 
     // 3. Mobile enter play enters play-overlay directly
     const enterBtn = page.getByTestId('enter-play-btn');
@@ -169,6 +193,61 @@ test.describe('T06 HomeGame Integration, Atmosphere & Lifecycle Durable Suite', 
     expect(snap.canvasRect).not.toBeNull();
     expect(Math.abs(snap.canvasRect!.width - snap.slotWrapperRect!.width)).toBeLessThan(3);
     expect(Math.abs(snap.canvasRect!.height - snap.slotWrapperRect!.height)).toBeLessThan(3);
+
+    // Next landing label 01 / WORK is completely inside canvas bounds
+    const workLabel = snap.markerLabels.find((m) => m.text?.includes('01') || m.text?.includes('WORK'));
+    expect(workLabel).toBeDefined();
+    expect(workLabel!.rect.left).toBeGreaterThanOrEqual(snap.canvasRect!.left);
+    expect(workLabel!.rect.right).toBeLessThanOrEqual(snap.canvasRect!.right);
+    expect(workLabel!.rect.top).toBeGreaterThanOrEqual(snap.canvasRect!.top);
+    expect(workLabel!.rect.bottom).toBeLessThanOrEqual(snap.canvasRect!.bottom);
+  });
+
+  test('WebGL Context Loss during Expanded Play — Safely Unmounts, Clears Input & Unlocks Scroll', async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'Desktop Target (1585x992)', 'Desktop target only');
+
+    await openHomeGameHarness(page);
+
+    // Enter play and expand to overlay
+    await page.getByTestId('enter-play-btn').click();
+    await page.getByTestId('inline-expand-btn').click();
+    await page.waitForTimeout(200);
+
+    expect(await page.evaluate(() => document.body.classList.contains('scroll-locked'))).toBe(true);
+
+    // Trigger actual WebGL context loss via canvas extension
+    const lostInjected = await page.evaluate(() => {
+      const canvas = document.querySelector('canvas');
+      if (!canvas) return false;
+      const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+      const ext = gl?.getExtension('WEBGL_lose_context');
+      if (!ext) return false;
+      ext.loseContext();
+      return true;
+    });
+    expect(lostInjected).toBe(true);
+
+    // Fallback UI should mount
+    const fallback = page.getByTestId('home-game-fallback');
+    await expect(fallback).toBeVisible();
+    await expect(fallback).toContainText('ROOFTOP COURSE · STATIC PREVIEW');
+    await expect(fallback).toContainText('WebGL error · Fast navigation active');
+
+    // Simulation cleanly unmounts after grace window
+    await expect(page.locator('canvas')).toHaveCount(0);
+
+    // Store mode is reset to preview
+    expect(await page.evaluate(() => (window as any).__homeGame?.gameStore?.getState().mode)).toBe('preview');
+
+    // Body scroll lock is removed
+    expect(await page.evaluate(() => document.body.classList.contains('scroll-locked'))).toBe(false);
+
+    // Keyboard movement is not accepted
+    await page.keyboard.down('KeyW');
+    await page.waitForTimeout(50);
+    const input = await page.evaluate(() => (window as any).__homeGame?.gameStore?.getState().input);
+    expect(input?.forward).toBe(false);
+    await page.keyboard.up('KeyW');
   });
 
   test('WebGL Failure Fallback — Content First, Themed Diagram & Working Navigation Links', async ({ page }) => {
@@ -193,13 +272,53 @@ test.describe('T06 HomeGame Integration, Atmosphere & Lifecycle Durable Suite', 
     await expect(fallback).toContainText('ROOFTOP COURSE · STATIC PREVIEW');
     await expect(fallback).toContainText('WebGL unavailable · Fast navigation active');
 
-    // 3. Ordinary checkpoint navigation links are functional and fast
+    // 3. Modified click on fallback link retains native browser action without navigating current view
     const projectLink = fallback.getByRole('link', { name: /01 \/ Projects/i });
     await expect(projectLink).toBeVisible();
-    await projectLink.click();
 
-    // Navigates to /projects route
+    const modifiedClick = await projectLink.evaluate((el) => {
+      let prevented = false;
+      const captureHandler = (e: MouseEvent) => {
+        prevented = e.defaultPrevented;
+        // Prevent top-frame browser navigation in test harness so harness page remains loaded
+        e.preventDefault();
+      };
+      window.addEventListener('click', captureHandler, { capture: true, once: true });
+      const evt = new MouseEvent('click', { bubbles: true, cancelable: true, ctrlKey: true });
+      el.dispatchEvent(evt);
+      return { defaultPrevented: prevented };
+    });
+    // Our handler must NOT have called preventDefault
+    expect(modifiedClick.defaultPrevented).toBe(false);
+    // Active route is unchanged
+    await expect(page.locator('#harness-controls')).toContainText('Active Route: /');
+
+    // 4. Ordinary unmodified primary click navigates to /projects route
+    await projectLink.click();
     await expect(page.locator('#harness-controls')).toContainText('Active Route: /projects');
     await expect(page.locator('main')).toContainText(/SELECTED PROJECTS|Technical Projects/i);
+  });
+
+  test('Lazy Load Rejection — Honest Fallback Error State & Working Content', async ({ page }) => {
+    // Abort GameExperience module request to simulate network failure during lazy loading
+    await page.route('**/src/game/GameExperience.tsx*', (route) => route.abort('failed'));
+
+    await page.goto(HOME_GAME_HARNESS_PATH);
+
+    // 1. Fallback appears with honest error status (NOT "Course ready" or "3D SIMULATION")
+    const fallback = page.getByTestId('home-game-fallback');
+    await expect(fallback).toBeVisible();
+    await expect(fallback).toContainText('ROOFTOP COURSE · STATIC PREVIEW');
+    await expect(fallback).toContainText('WebGL error · Fast navigation active');
+    await expect(fallback).not.toContainText('Course ready');
+
+    // 2. Zero 3D canvases rendered
+    await expect(page.locator('canvas')).toHaveCount(0);
+
+    // 3. Ordinary fallback navigation works
+    const aboutLink = fallback.getByRole('link', { name: /02 \/ Explorations/i });
+    await expect(aboutLink).toBeVisible();
+    await aboutLink.click();
+    await expect(page.locator('#harness-controls')).toContainText('Active Route: /about');
   });
 });

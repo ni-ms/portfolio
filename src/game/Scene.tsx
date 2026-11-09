@@ -212,6 +212,7 @@ export const Scene: React.FC<SceneProps> = ({
   style,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const markersPortalRef = useRef<HTMLDivElement>(null);
   const [isIntersecting, setIsIntersecting] = useState(true);
   const [isDocVisible, setIsDocVisible] = useState(
     typeof document !== 'undefined' ? !document.hidden : true
@@ -357,14 +358,40 @@ export const Scene: React.FC<SceneProps> = ({
           forceDeterministic={effectiveReview}
         />
 
-        {/* Drei HTML Section Markers */}
+        {/* Drei HTML Section Markers (portaled above the perimeter atmosphere layer) */}
         <SceneMarkers
+          portal={markersPortalRef}
           onSelectCheckpoint={onSelectCheckpoint}
           visible={showMarkers && mode !== 'play-overlay'}
         />
 
         {children}
       </Canvas>
+
+      {/* Soft perimeter atmosphere: feather gradients and peripheral blur strictly over 3D canvas */}
+      <div
+        className="home-game-perimeter"
+        aria-hidden="true"
+        data-testid="home-game-perimeter"
+      >
+        <div className="perimeter-feather-top" />
+        <div className="perimeter-feather-bottom" />
+        <div className="perimeter-feather-left" />
+        <div className="perimeter-feather-right" />
+        <div className="perimeter-blur-ring" />
+      </div>
+
+      {/* HTML Scene Markers Portal (rendered strictly above perimeter layer, keeping labels crisp) */}
+      <div
+        ref={markersPortalRef}
+        className="scene-markers-portal"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          pointerEvents: 'none',
+          zIndex: 3,
+        }}
+      />
     </div>
   );
 };

@@ -96,6 +96,17 @@ function HarnessApp() {
     document.documentElement.dataset.theme = theme;
   }, [theme]);
 
+  // In test harness, prevent synthetic unhandled link clicks (like Ctrl-click) from unloading the harness
+  useEffect(() => {
+    const handleHarnessClick = (e: MouseEvent) => {
+      if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) {
+        setTimeout(() => window.stop(), 0);
+      }
+    };
+    window.addEventListener('click', handleHarnessClick);
+    return () => window.removeEventListener('click', handleHarnessClick);
+  }, []);
+
   // Expose global test handle
   (window as any).__homeGame = {
     snapshot: getSnapshot,

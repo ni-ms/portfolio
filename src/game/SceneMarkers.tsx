@@ -5,6 +5,7 @@ import { COURSE_BOUNDS, CHECKPOINTS } from './courseConfig';
 export interface SceneMarkersProps {
   onSelectCheckpoint?: (destination: string) => void;
   visible?: boolean;
+  portal?: React.RefObject<HTMLElement | null>;
 }
 
 interface MarkerItem {
@@ -19,6 +20,7 @@ interface MarkerItem {
 export const SceneMarkers: React.FC<SceneMarkersProps> = ({
   onSelectCheckpoint,
   visible = true,
+  portal,
 }) => {
   if (!visible) return null;
 
@@ -29,9 +31,10 @@ export const SceneMarkers: React.FC<SceneMarkersProps> = ({
       labelTitle: 'WORK',
       sectionId: 'work',
       targetRoute: CHECKPOINTS[1].targetRoute || '/projects',
+      // Calibrated elevation offset ensuring badge stays cleanly inside canvas top in all viewports
       position: [
         COURSE_BOUNDS.workRooftop.beaconPosition[0],
-        COURSE_BOUNDS.workRooftop.beaconPosition[1] + 1.2,
+        COURSE_BOUNDS.workRooftop.beaconPosition[1] + 0.6,
         COURSE_BOUNDS.workRooftop.beaconPosition[2],
       ],
     },
@@ -43,7 +46,7 @@ export const SceneMarkers: React.FC<SceneMarkersProps> = ({
       targetRoute: CHECKPOINTS[2].targetRoute || '/about',
       position: [
         COURSE_BOUNDS.explorationRooftop.beaconPosition[0],
-        COURSE_BOUNDS.explorationRooftop.beaconPosition[1] + 1.2,
+        COURSE_BOUNDS.explorationRooftop.beaconPosition[1] + 0.8,
         COURSE_BOUNDS.explorationRooftop.beaconPosition[2],
       ],
     },
@@ -55,7 +58,7 @@ export const SceneMarkers: React.FC<SceneMarkersProps> = ({
       targetRoute: CHECKPOINTS[3].targetRoute || '/resume',
       position: [
         COURSE_BOUNDS.resumeRooftop.beaconPosition[0],
-        COURSE_BOUNDS.resumeRooftop.beaconPosition[1] + 1.2,
+        COURSE_BOUNDS.resumeRooftop.beaconPosition[1] + 0.8,
         COURSE_BOUNDS.resumeRooftop.beaconPosition[2],
       ],
     },
@@ -81,6 +84,7 @@ export const SceneMarkers: React.FC<SceneMarkersProps> = ({
           key={marker.id}
           position={marker.position}
           center={false}
+          portal={portal as React.RefObject<HTMLElement> | undefined}
           zIndexRange={[50, 0]}
           style={{
             pointerEvents: 'auto',
@@ -141,8 +145,8 @@ export const SceneMarkers: React.FC<SceneMarkersProps> = ({
             {/* Fine Leader Line connecting Label to 3D Anchor Point */}
             <svg
               width="24"
-              height="28"
-              viewBox="0 0 24 28"
+              height="18"
+              viewBox="0 0 24 18"
               style={{
                 display: 'block',
                 marginTop: '1px',
@@ -155,7 +159,7 @@ export const SceneMarkers: React.FC<SceneMarkersProps> = ({
                 x1="0"
                 y1="0"
                 x2="0"
-                y2="22"
+                y2="12"
                 stroke="rgba(214, 255, 100, 0.65)"
                 strokeWidth="1.2"
                 strokeDasharray="2 2"
@@ -163,7 +167,7 @@ export const SceneMarkers: React.FC<SceneMarkersProps> = ({
               {/* Outer halo dot */}
               <circle
                 cx="0"
-                cy="23"
+                cy="13"
                 r="3.5"
                 fill="none"
                 stroke="#D6FF64"
@@ -173,7 +177,7 @@ export const SceneMarkers: React.FC<SceneMarkersProps> = ({
               {/* Center anchor dot */}
               <circle
                 cx="0"
-                cy="23"
+                cy="13"
                 r="1.8"
                 fill="#D6FF64"
               />

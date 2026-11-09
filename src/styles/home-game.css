@@ -37,6 +37,7 @@
 /* --------------------------------------------------------------------------
  * Soft Perimeter: Feather / Fog Fade + Progressive Peripheral Blur
  * Blends 3D atmosphere seamlessly into page background without a hard box frame.
+ * Kept strictly within the Scene visual layer beneath HTML scene markers & controls.
  * -------------------------------------------------------------------------- */
 
 .home-game-perimeter {
@@ -126,6 +127,14 @@
   }
 }
 
+/* HTML Scene Markers Portal (rendered strictly above the perimeter layer) */
+.scene-markers-portal {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
 /* --------------------------------------------------------------------------
  * Static Fallback & Loading UI (No Fake Game / Content-First)
  * Displayed during WebGL unavailability, context errors, or initial lazy load.
@@ -206,6 +215,21 @@
   border-radius: 50%;
   background: var(--color-accent, #D6FF64);
   box-shadow: 0 0 6px var(--color-accent, #D6FF64);
+}
+
+.fallback-tag-dot.is-pulsing {
+  animation: fallback-dot-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes fallback-dot-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.75);
+  }
 }
 
 .home-game-fallback-footer {

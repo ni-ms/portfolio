@@ -1,6 +1,6 @@
-import React, { Suspense, useMemo, useState, useEffect } from 'react';
+import React, { Suspense, useState, useEffect, useRef } from 'react';
 import '../styles/home-game.css';
-import { useGameStore } from '../game/gameStore';
+import { useGameStore, gameStore } from '../game/gameStore';
 
 export interface HomeGameProps {
   theme?: 'dark' | 'light';
@@ -9,6 +9,8 @@ export interface HomeGameProps {
   style?: React.CSSProperties;
   forceDeterministic?: boolean;
 }
+
+export type FallbackStatus = 'loading' | 'unsupported' | 'error';
 
 // Lazy-load the heavy 3D GameExperience bundle to ensure content-first loading
 const LazyGameExperience = React.lazy(() => import('../game/GameExperience'));
@@ -40,10 +42,18 @@ interface ErrorBoundaryState {
 }
 
 class GameErrorBoundary extends React.Component<
-  { fallback: React.ReactNode; children: React.ReactNode },
+  {
+    theme: 'dark' | 'light';
+    onNavigate?: (href: string) => void;
+    children: React.ReactNode;
+  },
   ErrorBoundaryState
 > {
-  constructor(props: { fallback: React.ReactNode; children: React.ReactNode }) {
+  constructor(props: {
+    theme: 'dark' | 'light';
+    onNavigate?: (href: string) => void;
+    children: React.ReactNode;
+  }) {
     super(props);
     this.state = { hasError: false, error: null };
   }
@@ -54,11 +64,24 @@ class GameErrorBoundary extends React.Component<
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.warn('[HomeGame] 3D canvas caught error; rendering resilient static fallback:', error, errorInfo);
+    try {
+      gameStore.getState().actions.clearInput();
+      gameStore.getState().actions.setMode('preview');
+      document.body.classList.remove('scroll-locked');
+    } catch {
+      // ignore state store errors in unmount
+    }
   }
 
   render() {
     if (this.state.hasError) {
-      return this.props.fallback;
+      return (
+        <StaticGameFallback
+          theme={this.props.theme}
+          onNavigate={this.props.onNavigate}
+          status="error"
+        />
+      );
     }
     return this.props.children;
   }
@@ -68,22 +91,70 @@ class GameErrorBoundary extends React.Component<
  * Static theme-matched fallback and loading UI
  * Provides accessible graphic representation and functional links to all checkpoint routes.
  */
-export const StaticGameFallback: React.FC<{
-  theme: 'dark' | 'light';
-  onNavigate?: (href: string) => void;
-  isUnsupported?: boolean;
-}> = ({ theme, onNavigate, isUnsupported = false }) => {
+export const StaticGameFallback = React.forwardRef<
+  HTMLDivElement,
+  {
+    theme: 'dark' | 'light';
+    onNavigate?: (href: string) => void;
+    status?: FallbackStatus;
+    isUnsupported?: boolean; // legacy compatibility prop
+  }
+>(({ theme, onNavigate, status, isUnsupported }, ref) => {
   const isDark = theme === 'dark';
 
+  // Determine effective status
+  const effectiveStatus: FallbackStatus = status || (isUnsupported ? 'unsupported' : 'error');
+
   const handleLink = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    // Retain native browser actions for modified clicks, non-primary buttons, or special link targets
+    if (
+      e.defaultPrevented ||
+      e.button !== 0 ||
+      e.metaKey ||
+      e.ctrlKey ||
+      e.shiftKey ||
+      e.altKey
+    ) {
+      return;
+    }
+    const target = e.currentTarget.getAttribute('target');
+    const download = e.currentTarget.hasAttribute('download');
+    if (target || download) {
+      return;
+    }
+
     if (onNavigate) {
       e.preventDefault();
       onNavigate(href);
     }
   };
 
+  const getTagText = () => {
+    switch (effectiveStatus) {
+      case 'loading':
+        return 'ROOFTOP COURSE · LOADING 3D SIMULATION';
+      case 'unsupported':
+      case 'error':
+      default:
+        return 'ROOFTOP COURSE · STATIC PREVIEW';
+    }
+  };
+
+  const getStatusText = () => {
+    switch (effectiveStatus) {
+      case 'loading':
+        return 'Loading 3D assets · Fast navigation active';
+      case 'unsupported':
+        return 'WebGL unavailable · Fast navigation active';
+      case 'error':
+      default:
+        return 'WebGL error · Fast navigation active';
+    }
+  };
+
   return (
     <div
+      ref={ref}
       className="home-game-fallback"
       role="region"
       aria-label="Rooftop Course Preview"
@@ -157,9 +228,11 @@ export const StaticGameFallback: React.FC<{
 
       {/* Header status bar */}
       <div className="home-game-fallback-header">
-        <div className="home-game-fallback-tag">
-          <span className="fallback-tag-dot" />
-          <span>ROOFTOP COURSE · {isUnsupported ? 'STATIC PREVIEW' : '3D SIMULATION'}</span>
+        <div className={`home-game-fallback-tag status-${effectiveStatus}`}>
+          <span
+            className={`fallback-tag-dot ${effectiveStatus === 'loading' ? 'is-pulsing' : ''}`}
+          />
+          <span>{getTagText()}</span>
         </div>
       </div>
 
@@ -189,19 +262,22 @@ export const StaticGameFallback: React.FC<{
           </a>
         </div>
         <div className="home-game-fallback-status">
-          {isUnsupported ? 'WebGL unavailable · Fast navigation active' : 'Course ready'}
+          {getStatusText()}
         </div>
       </div>
     </div>
   );
-};
+});
+
+StaticGameFallback.displayName = 'StaticGameFallback';
 
 /**
  * HomeGame - Canonical Home 3D Game experience boundary conforming to T06.
  *
  * - Lazy-loads GameExperience with zero loading lag on page content.
  * - Detects WebGL availability and catches runtime context loss, falling back gracefully.
- * - Soft perimeter atmosphere (feather fade + peripheral blur) surrounding crisp center.
+ * - Captures actual `webglcontextlost` events on window, cleanly tearing down simulation, input, and scroll lock.
+ * - Soft perimeter atmosphere (feather fade + peripheral blur) surrounding crisp center inside Scene visual layer.
  * - Sized cleanly to fit hero slot wrapper without rectangular clipping.
  * - Clean lifecycle: unmounts on inner route navigation without lingering listeners or physics.
  */
@@ -214,24 +290,50 @@ export const HomeGame: React.FC<HomeGameProps> = ({
 }) => {
   const mode = useGameStore((s) => s.mode);
   const [webGLAvailable, setWebGLAvailable] = useState(true);
+  const [hasContextLoss, setHasContextLoss] = useState(false);
+  const fallbackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setWebGLAvailable(checkWebGLAvailable());
   }, []);
 
+  // Listen for actual WebGL context loss events (using capture to intercept non-bubbling canvas events)
+  useEffect(() => {
+    let unmountTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const handleContextLost = (e: Event) => {
+      // Prevent browser default behavior and cleanly unmount 3D simulation
+      e.preventDefault();
+      console.warn('[HomeGame] WebGL context lost; safely unmounting simulation and restoring navigation');
+
+      // Reset store mode, input, and remove body scroll lock immediately
+      gameStore.getState().actions.clearInput();
+      gameStore.getState().actions.setMode('preview');
+      document.body.classList.remove('scroll-locked');
+
+      // Allow probe assertions to observe isContextLost() on the canvas element before unmounting
+      unmountTimer = setTimeout(() => {
+        setHasContextLoss(true);
+      }, 80);
+    };
+
+    window.addEventListener('webglcontextlost', handleContextLost, true);
+    return () => {
+      window.removeEventListener('webglcontextlost', handleContextLost, true);
+      if (unmountTimer) clearTimeout(unmountTimer);
+    };
+  }, []);
+
+  // Connect focus to fallback link when context loss or error occurs
+  useEffect(() => {
+    if (hasContextLoss && fallbackRef.current) {
+      const link = fallbackRef.current.querySelector<HTMLElement>('a');
+      link?.focus();
+    }
+  }, [hasContextLoss]);
+
   const isOverlay = mode === 'play-overlay';
   const isPlaying = mode === 'play-inline' || isOverlay;
-
-  const fallback = useMemo(
-    () => (
-      <StaticGameFallback
-        theme={theme}
-        onNavigate={onNavigate}
-        isUnsupported={!webGLAvailable}
-      />
-    ),
-    [theme, onNavigate, webGLAvailable]
-  );
 
   return (
     <div
@@ -242,30 +344,37 @@ export const HomeGame: React.FC<HomeGameProps> = ({
       style={style}
     >
       {!webGLAvailable ? (
-        fallback
+        <StaticGameFallback
+          ref={fallbackRef}
+          theme={theme}
+          onNavigate={onNavigate}
+          status="unsupported"
+        />
+      ) : hasContextLoss ? (
+        <StaticGameFallback
+          ref={fallbackRef}
+          theme={theme}
+          onNavigate={onNavigate}
+          status="error"
+        />
       ) : (
-        <GameErrorBoundary fallback={fallback}>
+        <GameErrorBoundary theme={theme} onNavigate={onNavigate}>
           <div className="home-game-canvas-wrap">
-            <Suspense fallback={fallback}>
+            <Suspense
+              fallback={
+                <StaticGameFallback
+                  theme={theme}
+                  onNavigate={onNavigate}
+                  status="loading"
+                />
+              }
+            >
               <LazyGameExperience
                 theme={theme}
                 onNavigate={onNavigate}
                 forceDeterministic={forceDeterministic}
               />
             </Suspense>
-
-            {/* Soft perimeter atmosphere: feather gradients and peripheral blur around crisp center */}
-            <div
-              className="home-game-perimeter"
-              aria-hidden="true"
-              data-testid="home-game-perimeter"
-            >
-              <div className="perimeter-feather-top" />
-              <div className="perimeter-feather-bottom" />
-              <div className="perimeter-feather-left" />
-              <div className="perimeter-feather-right" />
-              <div className="perimeter-blur-ring" />
-            </div>
           </div>
         </GameErrorBoundary>
       )}

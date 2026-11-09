@@ -15,11 +15,19 @@ export interface CameraRigProps {
   forceDeterministic?: boolean;
 }
 
-// Responsive mobile preview preset: centers player/start and next landing (Work platform)
+// Responsive desktop overview preset: low-oblique architectural hero perspective
+// calibrated so elevated Work terrace and next-landing badge remain fully within canvas bounds.
+const RESPONSIVE_DESKTOP_OVERVIEW = {
+  position: [-0.6, 9.0, 17.5] as [number, number, number],
+  target: [-1.8, 3.0, 0.8] as [number, number, number],
+  zoom: 1.0,
+};
+
+// Responsive mobile/tablet preview preset: centers player/start and next landing (Work platform)
 // so that start launch cue, player, next landing, and 01/WORK label remain readable without clipping.
 const RESPONSIVE_MOBILE_PREVIEW = {
-  position: [-3.0, 10.5, 17.0] as [number, number, number],
-  target: [-3.2, 2.6, 0.5] as [number, number, number],
+  position: [-3.0, 11.2, 17.6] as [number, number, number],
+  target: [-3.2, 3.3, 0.5] as [number, number, number],
   zoom: 1.0,
 };
 
@@ -32,7 +40,7 @@ export const CameraRig: React.FC<CameraRigProps> = ({
   forceDeterministic = false,
 }) => {
   const { camera, size } = useThree();
-  const currentTarget = useRef(new THREE.Vector3().fromArray(CAMERA_PRESETS.desktopOverview.target));
+  const currentTarget = useRef(new THREE.Vector3().fromArray(RESPONSIVE_DESKTOP_OVERVIEW.target));
   const isReview = forceDeterministic || isDeterministicReviewMode();
 
   // Detect system reduced motion preference
@@ -48,7 +56,7 @@ export const CameraRig: React.FC<CameraRigProps> = ({
     }
     const aspect = size.width / Math.max(1, size.height);
     const isNarrow = isMobile || size.width < 640 || aspect < 1.55;
-    return isNarrow ? RESPONSIVE_MOBILE_PREVIEW : CAMERA_PRESETS.desktopOverview;
+    return isNarrow ? RESPONSIVE_MOBILE_PREVIEW : RESPONSIVE_DESKTOP_OVERVIEW;
   }, [mode, isMobile, size.width, size.height]);
 
   // Recenter immediately when signal or targetPreset updates

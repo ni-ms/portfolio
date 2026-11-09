@@ -72,7 +72,7 @@
       "validation": "Integrated tracked gameplay suite: 4 executed pass, 12 explicit viewport skips; .agent-runs/T04-integrated/gameplay.log. Prior typecheck/unit/build/foundation pass preserved."
     },
     "T05": {
-      "status": "review",
+      "status": "in_progress",
       "owner": "56f5d4ec-5146-4ee8-9958-2795cfbd1938",
       "resultCommit": null,
       "report": "docs/implementation/reports/T05.md",
@@ -82,7 +82,9 @@
       "baseCommit": "050cdf8",
       "candidateCommit": "e75969dcceb63d011b00a2be18d8905fdea0d2f0",
       "reviewer": "d93a4e01-0d5b-4af2-abc6-6644cd13e4de",
-      "reviewCorrelation": "T05-review-e75969d"
+      "reviewCorrelation": "T05-review-e75969d",
+      "reviewVerdict": "request_changes",
+      "repairCorrelation": "T05-repair-e75969d"
     },
     "T06": {
       "status": "pending",

@@ -474,12 +474,19 @@ const limeMastBeaconMat = new THREE.MeshStandardMaterial({
 const limeFloorArrowsMat = new THREE.MeshStandardMaterial({
   color: '#D6FF64',
   emissive: '#D6FF64',
-  emissiveIntensity: 2.4,
-  roughness: 0.20,
-  metalness: 0.05,
+  emissiveIntensity: 0.85,
+  roughness: 0.35,
+  metalness: 0.0,
   polygonOffset: true,
-  polygonOffsetFactor: -3,
-  polygonOffsetUnits: -3,
+  polygonOffsetFactor: -2,
+  polygonOffsetUnits: -2,
+});
+
+const wayfindingCharcoalMat = new THREE.MeshBasicMaterial({
+  color: '#141A1C',
+  polygonOffset: true,
+  polygonOffsetFactor: -1,
+  polygonOffsetUnits: -1,
 });
 
 const limeBeaconCoreMat = new THREE.MeshStandardMaterial({
@@ -625,6 +632,7 @@ export const materials = {
   limeEmissive: limeEmissiveMat,
   limeMastBeacon: limeMastBeaconMat,
   limeFloorArrows: limeFloorArrowsMat,
+  wayfindingCharcoal: wayfindingCharcoalMat,
   limeBeaconCore: limeBeaconCoreMat,
   limeBeaconRing: limeBeaconRingMat,
   limeBeaconAura: limeBeaconAuraMat,
@@ -689,9 +697,12 @@ export function applyGameTheme(theme: 'dark' | 'light'): void {
     materials.glassBalustrade.color.set('#A2C0C8');
     materials.glassBalustrade.opacity = 0.38;
 
-    // Mast beacon
+    // Mast beacon & Wayfinding
     materials.limeMastBeacon.color.set('#D6FF64');
     materials.limeMastBeacon.emissive.set('#D6FF64');
+    materials.limeFloorArrows.emissive.set('#D6FF64');
+    materials.limeFloorArrows.emissiveIntensity = 0.75;
+    materials.wayfindingCharcoal.color.set('#1E2628');
 
     // Foliage
     materials.foliageMain.color.set('#3D5438');
@@ -737,9 +748,12 @@ export function applyGameTheme(theme: 'dark' | 'light'): void {
     materials.glassBalustrade.color.set('#3A525C');
     materials.glassBalustrade.opacity = 0.44;
 
-    // Mast beacon
+    // Mast beacon & Wayfinding
     materials.limeMastBeacon.color.set('#D6FF64');
     materials.limeMastBeacon.emissive.set('#D6FF64');
+    materials.limeFloorArrows.emissive.set('#D6FF64');
+    materials.limeFloorArrows.emissiveIntensity = 0.85;
+    materials.wayfindingCharcoal.color.set('#101618');
 
     // Foliage
     materials.foliageMain.color.set('#2B3B28');

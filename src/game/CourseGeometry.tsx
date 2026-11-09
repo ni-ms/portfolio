@@ -1024,47 +1024,55 @@ const OverheadSteelFrame: React.FC<{
  * - Recessed service bays with metal ventilation louvers
  */
 const CourtyardArchitecturalJunction: React.FC = () => {
+  // Directly derived from COURSE_BOUNDS.workRooftop.mainSlab bounds
+  const slab = COURSE_BOUNDS.workRooftop.mainSlab;
+  const wallX = slab.position[0]; // -4.0
+  const wallY = slab.position[1]; // 1.9 (vertical center)
+  const wallZ = slab.position[2] + slab.size[2] / 2; // -1.4 (south solid wall face)
+  const wallW = slab.size[0] - 0.1; // 4.5m (within solid collider envelope)
+  const wallH = slab.size[1] - 0.1; // 3.7m (within solid collider envelope)
+
   return (
-    <group name="courtyard-architectural-junction" position={[-4.0, 1.7, -0.6]}>
-      {/* 1. Integrated Glazed Curtain Wall Facade directly on the solid south face */}
-      {/* Dark recessed glazing backing */}
-      <mesh position={[0, 0, 0.005]} material={materials.skylineTower}>
-        <planeGeometry args={[4.8, 3.1]} />
+    <group name="courtyard-architectural-junction" position={[wallX, wallY, wallZ]}>
+      {/* 1. Integrated Glazed Curtain Wall Facade attached flush within existing solid collider envelope */}
+      {/* Dark recessed glazing backing plane (minimal epsilon offset +0.003) */}
+      <mesh position={[0, 0, 0.003]} material={materials.skylineTower}>
+        <planeGeometry args={[wallW, wallH]} />
       </mesh>
 
-      {/* Translucent reflective architectural glass curtain wall */}
-      <mesh position={[0, 0, 0.015]} material={materials.glassBalustrade}>
-        <planeGeometry args={[4.76, 3.06]} />
+      {/* Translucent reflective architectural glass curtain wall (epsilon offset +0.008) */}
+      <mesh position={[0, 0, 0.008]} material={materials.glassBalustrade}>
+        <planeGeometry args={[wallW - 0.04, wallH - 0.04]} />
       </mesh>
 
-      {/* Vertical structural steel mullions */}
-      {[-1.8, -0.6, 0.6, 1.8].map((mx, mi) => (
-        <mesh key={`mullion-${mi}`} position={[mx, 0, 0.025]} material={materials.metalFrame}>
-          <boxGeometry args={[0.04, 3.1, 0.03]} />
+      {/* Vertical structural steel mullions (epsilon offset +0.015, thickness 0.018) */}
+      {[-1.5, -0.5, 0.5, 1.5].map((mx, mi) => (
+        <mesh key={`mullion-${mi}`} position={[mx, 0, 0.015]} material={materials.metalFrame}>
+          <boxGeometry args={[0.038, wallH, 0.018]} />
         </mesh>
       ))}
 
-      {/* Horizontal transom beams */}
-      {[-0.75, 0.75].map((ty, ti) => (
-        <mesh key={`transom-${ti}`} position={[0, ty, 0.025]} material={materials.metalFrame}>
-          <boxGeometry args={[4.8, 0.04, 0.03]} />
+      {/* Horizontal transom beams (epsilon offset +0.015, thickness 0.018) */}
+      {[-wallH * 0.25, wallH * 0.25].map((ty, ti) => (
+        <mesh key={`transom-${ti}`} position={[0, ty, 0.015]} material={materials.metalFrame}>
+          <boxGeometry args={[wallW, 0.038, 0.018]} />
         </mesh>
       ))}
 
       {/* Warm linear architectural fixture strip along curtain wall header */}
-      <mesh position={[0, 1.55, 0.035]} material={materials.warmFixture}>
-        <boxGeometry args={[4.6, 0.02, 0.02]} />
+      <mesh position={[0, wallH / 2 - 0.05, 0.02]} material={materials.warmFixture}>
+        <boxGeometry args={[wallW - 0.3, 0.025, 0.02]} />
       </mesh>
 
-      {/* Recessed ventilation louver bay in lower-left section */}
-      <group position={[-1.2, -0.9, 0.02]}>
+      {/* Recessed ventilation louver bay in lower section */}
+      <group position={[-1.1, -wallH * 0.28, 0.012]}>
         <mesh material={materials.facadeLouver}>
           <planeGeometry args={[1.0, 0.65]} />
         </mesh>
         {/* Metal louver blades */}
         {[-0.22, -0.11, 0, 0.11, 0.22].map((ly, li) => (
-          <mesh key={`bay-louver-${li}`} position={[0, ly, 0.015]} rotation={[-Math.PI / 6, 0, 0]} material={materials.metalRails}>
-            <boxGeometry args={[0.96, 0.015, 0.03]} />
+          <mesh key={`bay-louver-${li}`} position={[0, ly, 0.008]} rotation={[-Math.PI / 6, 0, 0]} material={materials.metalRails}>
+            <boxGeometry args={[0.96, 0.015, 0.018]} />
           </mesh>
         ))}
       </group>
@@ -1137,94 +1145,140 @@ const CheckpointBeacon: React.FC<CheckpointBeaconProps> = ({
  * Features broad chevrons, runway tracks, and threshold marks with high emissive contrast.
  */
 const CourseWayfinding: React.FC = () => {
+  // Canonical first route jump: from spawn [-3.5, 1.2, 3.5] toward northwest edge [-4.2, 1.2, 1.65]
+  // aimed directly at Stepping Platform 1 at [-4.2, 1.8, 1.35].
+  // Chevrons point along -Z / slightly -X (angle ≈ -0.36 rad) with high-contrast charcoal backing.
+  const chevronAngle = -0.36;
+
   return (
     <group name="course-wayfinding">
-      {/* 1. START ROOFTOP: Bold, purposeful directional runway chevrons & lane tracks */}
-      <group position={[-3.5, 1.204, 3.2]}>
-        {/* Broad directional chevrons pointing toward stairs / landing */}
-        {[-0.55, 0, 0.55].map((z, i) => (
-          <group key={`start-chevron-${i}`} position={[0, 0, z]} rotation={[-Math.PI / 2, 0, Math.PI]}>
-            {/* Left chevron wing */}
-            <mesh position={[-0.14, 0.12, 0]} rotation={[0, 0, Math.PI / 4]} material={materials.limeFloorArrows}>
+      {/* 1. START ROOFTOP: Obvious directional runway chevrons aligned to REAL canonical safe route */}
+      {[
+        [-3.65, 1.204, 3.0],
+        [-3.85, 1.204, 2.5],
+        [-4.05, 1.204, 2.0],
+      ].map(([cx, cy, cz], idx) => (
+        <group key={`start-runway-chevron-${idx}`} position={[cx, cy, cz]} rotation={[0, chevronAngle, 0]}>
+          {/* High-contrast charcoal substrate backing */}
+          <group rotation={[-Math.PI / 2, 0, 0]}>
+            <mesh position={[-0.14, 0.12, -0.001]} rotation={[0, 0, Math.PI / 4]} material={materials.wayfindingCharcoal}>
+              <planeGeometry args={[0.38, 0.12]} />
+            </mesh>
+            <mesh position={[0.14, 0.12, -0.001]} rotation={[0, 0, -Math.PI / 4]} material={materials.wayfindingCharcoal}>
+              <planeGeometry args={[0.38, 0.12]} />
+            </mesh>
+          </group>
+
+          {/* Vibrant #D6FF64 lime chevron pointing forward toward jump takeoff */}
+          <group rotation={[-Math.PI / 2, 0, 0]}>
+            <mesh position={[-0.14, 0.12, 0.001]} rotation={[0, 0, Math.PI / 4]} material={materials.limeFloorArrows}>
               <planeGeometry args={[0.32, 0.065]} />
             </mesh>
-            {/* Right chevron wing */}
-            <mesh position={[0.14, 0.12, 0]} rotation={[0, 0, -Math.PI / 4]} material={materials.limeFloorArrows}>
+            <mesh position={[0.14, 0.12, 0.001]} rotation={[0, 0, -Math.PI / 4]} material={materials.limeFloorArrows}>
               <planeGeometry args={[0.32, 0.065]} />
             </mesh>
           </group>
-        ))}
+        </group>
+      ))}
 
-        {/* Dual outer runway boundary guide tracks */}
-        <mesh position={[-0.85, 0, 0]} rotation={[-Math.PI / 2, 0, 0]} material={materials.limeFloorArrows}>
-          <planeGeometry args={[0.045, 1.8]} />
+      {/* Start Northwest Takeoff Threshold Bar: at canonical takeoff edge [-4.2, 1.204, 1.65] facing Stepping Platform 1 */}
+      <group position={[-4.2, 1.204, 1.65]}>
+        {/* Charcoal substrate */}
+        <mesh rotation={[-Math.PI / 2, 0, 0]} material={materials.wayfindingCharcoal}>
+          <planeGeometry args={[1.3, 0.12]} />
         </mesh>
-        <mesh position={[0.85, 0, 0]} rotation={[-Math.PI / 2, 0, 0]} material={materials.limeFloorArrows}>
-          <planeGeometry args={[0.045, 1.8]} />
-        </mesh>
-      </group>
-
-      {/* Broad Takeoff threshold bar at Start lower landing facing Stepping Platform 1 */}
-      <group position={[-3.5, 0.604, 5.25]}>
-        <mesh rotation={[-Math.PI / 2, 0, 0]} material={materials.limeFloorArrows}>
+        {/* Vibrant Lime bar */}
+        <mesh position={[0, 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]} material={materials.limeFloorArrows}>
           <planeGeometry args={[1.2, 0.07]} />
         </mesh>
-        {/* Threshold corner registration notches */}
-        <mesh position={[-0.6, 0, -0.06]} rotation={[-Math.PI / 2, 0, 0]} material={materials.limeFloorArrows}>
-          <planeGeometry args={[0.05, 0.12]} />
-        </mesh>
-        <mesh position={[0.6, 0, -0.06]} rotation={[-Math.PI / 2, 0, 0]} material={materials.limeFloorArrows}>
-          <planeGeometry args={[0.05, 0.12]} />
+        {/* Takeoff arrow registration notch pointing at Stepping Platform 1 */}
+        <mesh position={[0, 0.001, -0.08]} rotation={[-Math.PI / 2, 0, 0]} material={materials.limeFloorArrows}>
+          <planeGeometry args={[0.07, 0.09]} />
         </mesh>
       </group>
 
-      {/* 2. WORK ROOFTOP: Landing threshold and track to Checkpoint 1 beacon */}
-      <mesh
-        position={[-3.6, 3.804, -1.8]}
-        rotation={[-Math.PI / 2, 0, 0]}
-        material={materials.limeFloorArrows}
-      >
-        <planeGeometry args={[1.1, 0.065]} />
-      </mesh>
-      <mesh
-        position={[-4.0, 3.804, -2.8]}
-        rotation={[-Math.PI / 2, 0, 0]}
-        material={materials.limeFloorArrows}
-      >
-        <planeGeometry args={[0.045, 1.8]} />
-      </mesh>
+      {/* 2. STEPPING PLATFORM 1 & 2: Safe landing registration marks */}
+      <group position={[-4.2, 1.954, 1.35]}>
+        <mesh rotation={[-Math.PI / 2, 0, 0]} material={materials.wayfindingCharcoal}>
+          <planeGeometry args={[0.9, 0.10]} />
+        </mesh>
+        <mesh position={[0, 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]} material={materials.limeFloorArrows}>
+          <planeGeometry args={[0.8, 0.05]} />
+        </mesh>
+      </group>
 
-      {/* 3. EXPLORATION ROOFTOP: Terrace guide path */}
-      <mesh
-        position={[0.8, 1.804, -2.6]}
-        rotation={[-Math.PI / 2, 0, 0]}
-        material={materials.limeFloorArrows}
-      >
-        <planeGeometry args={[0.9, 0.065]} />
-      </mesh>
-      <mesh
-        position={[0.8, 1.804, -1.8]}
-        rotation={[-Math.PI / 2, 0, 0]}
-        material={materials.limeFloorArrows}
-      >
-        <planeGeometry args={[0.045, 1.4]} />
-      </mesh>
+      <group position={[-4.5, 2.804, -0.55]}>
+        <mesh rotation={[-Math.PI / 2, 0, 0]} material={materials.wayfindingCharcoal}>
+          <planeGeometry args={[0.9, 0.10]} />
+        </mesh>
+        <mesh position={[0, 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]} material={materials.limeFloorArrows}>
+          <planeGeometry args={[0.8, 0.05]} />
+        </mesh>
+      </group>
 
-      {/* 4. RÉSUMÉ ROOFTOP: Runway line leading under pavilion to Checkpoint 3 */}
-      <mesh
-        position={[4.6, 4.204, 1.8]}
-        rotation={[-Math.PI / 2, 0, 0]}
-        material={materials.limeFloorArrows}
-      >
-        <planeGeometry args={[0.9, 0.065]} />
-      </mesh>
-      <mesh
-        position={[5.2, 4.204, 0.5]}
-        rotation={[-Math.PI / 2, 0, 0]}
-        material={materials.limeFloorArrows}
-      >
-        <planeGeometry args={[0.045, 2.4]} />
-      </mesh>
+      {/* 3. WORK ROOFTOP: Landing threshold and track to Checkpoint 1 beacon */}
+      <group position={[-4.2, 3.804, -1.55]}>
+        <mesh rotation={[-Math.PI / 2, 0, 0]} material={materials.wayfindingCharcoal}>
+          <planeGeometry args={[1.2, 0.11]} />
+        </mesh>
+        <mesh position={[0, 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]} material={materials.limeFloorArrows}>
+          <planeGeometry args={[1.1, 0.065]} />
+        </mesh>
+      </group>
+      <group position={[-3.6, 3.804, -2.4]}>
+        <mesh rotation={[-Math.PI / 2, 0, 0]} material={materials.wayfindingCharcoal}>
+          <planeGeometry args={[0.08, 1.4]} />
+        </mesh>
+        <mesh position={[0, 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]} material={materials.limeFloorArrows}>
+          <planeGeometry args={[0.045, 1.3]} />
+        </mesh>
+      </group>
+
+      {/* Work Rooftop Takeoff Threshold facing Beam Jump to Explorations */}
+      <group position={[-2.0, 3.804, -3.2]}>
+        <mesh rotation={[-Math.PI / 2, 0, 0]} material={materials.wayfindingCharcoal}>
+          <planeGeometry args={[0.11, 0.9]} />
+        </mesh>
+        <mesh position={[0, 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]} material={materials.limeFloorArrows}>
+          <planeGeometry args={[0.065, 0.8]} />
+        </mesh>
+      </group>
+
+      {/* 4. EXPLORATION ROOFTOP: Terrace guide path & takeoff to Résumé */}
+      <group position={[1.2, 2.604, -0.6]}>
+        <mesh rotation={[-Math.PI / 2, 0, 0]} material={materials.wayfindingCharcoal}>
+          <planeGeometry args={[0.08, 1.2]} />
+        </mesh>
+        <mesh position={[0, 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]} material={materials.limeFloorArrows}>
+          <planeGeometry args={[0.045, 1.1]} />
+        </mesh>
+      </group>
+      <group position={[3.3, 2.604, 0.0]}>
+        <mesh rotation={[-Math.PI / 2, 0, 0]} material={materials.wayfindingCharcoal}>
+          <planeGeometry args={[0.11, 0.9]} />
+        </mesh>
+        <mesh position={[0, 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]} material={materials.limeFloorArrows}>
+          <planeGeometry args={[0.065, 0.8]} />
+        </mesh>
+      </group>
+
+      {/* 5. RÉSUMÉ ROOFTOP: Arrival threshold and runway line under pavilion */}
+      <group position={[5.3, 4.204, 2.2]}>
+        <mesh rotation={[-Math.PI / 2, 0, 0]} material={materials.wayfindingCharcoal}>
+          <planeGeometry args={[1.0, 0.10]} />
+        </mesh>
+        <mesh position={[0, 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]} material={materials.limeFloorArrows}>
+          <planeGeometry args={[0.9, 0.06]} />
+        </mesh>
+      </group>
+      <group position={[5.7, 4.204, 1.2]}>
+        <mesh rotation={[-Math.PI / 2, 0, 0]} material={materials.wayfindingCharcoal}>
+          <planeGeometry args={[0.08, 1.8]} />
+        </mesh>
+        <mesh position={[0, 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]} material={materials.limeFloorArrows}>
+          <planeGeometry args={[0.045, 1.7]} />
+        </mesh>
+      </group>
     </group>
   );
 };

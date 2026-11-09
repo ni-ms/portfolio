@@ -463,71 +463,24 @@ export const COURSE_BOUNDS = {
  * - Option B (Dynamic Vista): Low oblique vista framing Start through Work elevation,
  *   stepping stone flight, and skyline backdrop.
  */
-export const CAMERA_OPTIONS = {
-  optionA: {
-    name: 'Option A: Courtyard Hero',
-    desktopOverview: {
-      position: [-1.8, 6.2, 14.5] as [number, number, number],
-      target: [-2.2, 2.2, 1.5] as [number, number, number],
-      zoom: 1.0,
-    },
-    mobilePreview: {
-      position: [-3.8, 9.0, 16.0] as [number, number, number],
-      target: [-3.8, 2.0, 1.8] as [number, number, number],
-      zoom: 1.0,
-    },
-  },
-  optionB: {
-    name: 'Option B: Dynamic Vista',
-    desktopOverview: {
-      position: [-0.6, 8.5, 17.5] as [number, number, number],
-      target: [-1.8, 2.5, 0.8] as [number, number, number],
-      zoom: 1.0,
-    },
-    mobilePreview: {
-      position: [-3.2, 11.0, 18.5] as [number, number, number],
-      target: [-3.5, 2.2, 1.2] as [number, number, number],
-      zoom: 1.0,
-    },
-  },
-};
 
-let activeOverviewPosition: [number, number, number] = [-1.8, 6.2, 14.5];
-let activeOverviewTarget: [number, number, number] = [-2.2, 2.2, 1.5];
-let activeMobilePosition: [number, number, number] = [-3.8, 9.0, 16.0];
-let activeMobileTarget: [number, number, number] = [-3.8, 2.0, 1.8];
-
-if (typeof window !== 'undefined') {
-  const p = new URLSearchParams(window.location.search).get('cam')?.toUpperCase();
-  if (p === 'B') {
-    activeOverviewPosition = CAMERA_OPTIONS.optionB.desktopOverview.position;
-    activeOverviewTarget = CAMERA_OPTIONS.optionB.desktopOverview.target;
-    activeMobilePosition = CAMERA_OPTIONS.optionB.mobilePreview.position;
-    activeMobileTarget = CAMERA_OPTIONS.optionB.mobilePreview.target;
-  }
-  (window as any).__setCameraPreset = (
-    pos: [number, number, number],
-    tgt: [number, number, number]
-  ) => {
-    activeOverviewPosition = pos;
-    activeOverviewTarget = tgt;
-  };
-}
-
+/**
+ * Calibrated camera presets:
+ * - desktopOverview: Option B: Dynamic Vista - Low oblique architectural hero perspective
+ *   framing Start rooftop through elevated Work terrace, stepping platform flight, and skyline backdrop.
+ * - mobilePreview: Option B Mobile: Low oblique framing with Start and next landing clearly in frame.
+ * - mobilePlay: Third-person chase cam angled behind runner.
+ */
 export const CAMERA_PRESETS: Record<'desktopOverview' | 'mobilePreview' | 'mobilePlay', CameraPreset> = {
-  get desktopOverview() {
-    return {
-      position: activeOverviewPosition,
-      target: activeOverviewTarget,
-      zoom: 1.0,
-    };
+  desktopOverview: {
+    position: [-0.6, 8.5, 17.5],
+    target: [-1.8, 2.5, 0.8],
+    zoom: 1.0,
   },
-  get mobilePreview() {
-    return {
-      position: activeMobilePosition,
-      target: activeMobileTarget,
-      zoom: 1.0,
-    };
+  mobilePreview: {
+    position: [-3.2, 11.0, 18.5],
+    target: [-3.5, 2.2, 1.2],
+    zoom: 1.0,
   },
   mobilePlay: {
     position: [-3.5, 11.5, 13.5],

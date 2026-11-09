@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Page, expect } from '@playwright/test';
 
 export const HOME_GAME_HARNESS_PATH = '/tests/e2e/fixtures/home-game-harness.html';
 
@@ -34,7 +34,12 @@ export async function openHomeGameHarness(page: Page) {
     const snap = (window as any).__homeGame?.snapshot();
     return snap && snap.canvasCount === 1 && (window as any).__homeGame?.getPlayerBody();
   }, { timeout: 15000 });
-  await page.waitForTimeout(300);
+  // Physics readiness precedes the asynchronous Html portal commit. Wait for
+  // rendered badge boxes before tests inspect their required bounds or hits.
+  await expect.poll(async () => {
+    const snap = await getHomeGameSnapshot(page);
+    return snap.markerLabels.filter((marker) => marker.rect.width > 0 && marker.rect.height > 0).length;
+  }, { timeout: 5000, message: 'All three waypoint badges have rendered' }).toBe(3);
 }
 
 export async function getHomeGameSnapshot(page: Page): Promise<HomeGameSnapshot> {

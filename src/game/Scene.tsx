@@ -29,7 +29,7 @@ export interface SceneProps {
  * Procedural local reflection environment baked once per theme change via Drei Environment + Lightformer.
  * Reuses a single stable CubeRenderTarget across theme switches to eliminate PMREM allocation leaks.
  * Memoizes lightformers strictly by theme to prevent spurious recaptures on mode changes or idle renders.
- * Zero network requests, zero remote HDR dependencies, zero recurring frame overhead.
+ * Zero network requests, zero remote HDR dependencies; no idle cubemap recapture; PBR fragment sampling cost remains / hardware unmeasured.
  */
 const StudioEnvironment: React.FC<{ theme: 'dark' | 'light' }> = ({ theme }) => {
   const isLight = theme === 'light';

@@ -27,68 +27,77 @@ export interface SceneProps {
 
 /**
  * Procedural local reflection environment baked once per theme change via Drei Environment + Lightformer.
- * Generates calibrated specular highlight cards for metallic MEP, glass balustrades, and coping edges.
- * Zero network requests, zero remote HDR dependencies, zero recurring frame overhead (frames={1}).
+ * Reuses a single stable CubeRenderTarget across theme switches to eliminate PMREM allocation leaks.
+ * Memoizes lightformers strictly by theme to prevent spurious recaptures on mode changes or idle renders.
+ * Zero network requests, zero remote HDR dependencies, zero recurring frame overhead.
  */
 const StudioEnvironment: React.FC<{ theme: 'dark' | 'light' }> = ({ theme }) => {
   const isLight = theme === 'light';
 
+  const lightformers = useMemo(
+    () => (
+      <>
+        {/* Overhead Key Softbox */}
+        <Lightformer
+          form="rect"
+          intensity={isLight ? 1.8 : 2.5}
+          position={[0, 9, 0]}
+          scale={[16, 16, 1]}
+          rotation={[-Math.PI / 2, 0, 0]}
+          color={isLight ? '#FFFFFF' : '#E4EFF2'}
+        />
+
+        {/* Left/West Fill Card: illuminates HVAC intake louvers, metal conduits & west balustrades */}
+        <Lightformer
+          form="rect"
+          intensity={isLight ? 1.6 : 2.2}
+          position={[-10, 4, 4]}
+          scale={[10, 6, 1]}
+          target={[0, 2, 0]}
+          color={isLight ? '#F0F5F2' : '#B8D0D8'}
+        />
+
+        {/* Right/East Rim Card: sharp metallic edge response on rails, pergolas & balustrade glass */}
+        <Lightformer
+          form="rect"
+          intensity={isLight ? 1.5 : 2.0}
+          position={[10, 6, -4]}
+          scale={[10, 6, 1]}
+          target={[0, 2, 0]}
+          color={isLight ? '#E8EFE8' : '#94B0BC'}
+        />
+
+        {/* Front Horizontal Glint Strip: creates crisp horizontal highlight streaks on coping & HVAC shrouds */}
+        <Lightformer
+          form="rect"
+          intensity={isLight ? 2.2 : 2.8}
+          position={[-2, 3, 10]}
+          scale={[18, 1.2, 1]}
+          target={[-2, 2, 0]}
+          color="#FFFFFF"
+        />
+
+        {/* Low Ground Fill Card: soft upward bounce preventing pitch-black equipment undersides */}
+        <Lightformer
+          form="rect"
+          intensity={isLight ? 0.6 : 0.8}
+          position={[0, -6, 0]}
+          scale={[18, 18, 1]}
+          rotation={[Math.PI / 2, 0, 0]}
+          color={isLight ? '#D0D8D4' : '#45565A'}
+        />
+      </>
+    ),
+    [isLight]
+  );
+
   return (
     <Environment
-      key={theme}
       frames={1}
       resolution={128}
       environmentIntensity={isLight ? 0.75 : 0.95}
     >
-      {/* Overhead Key Softbox */}
-      <Lightformer
-        form="rect"
-        intensity={isLight ? 1.8 : 2.5}
-        position={[0, 9, 0]}
-        scale={[16, 16, 1]}
-        rotation={[-Math.PI / 2, 0, 0]}
-        color={isLight ? '#FFFFFF' : '#E4EFF2'}
-      />
-
-      {/* Left/West Fill Card: illuminates HVAC intake louvers, metal conduits & west balustrades */}
-      <Lightformer
-        form="rect"
-        intensity={isLight ? 1.6 : 2.2}
-        position={[-10, 4, 4]}
-        scale={[10, 6, 1]}
-        target={[0, 2, 0]}
-        color={isLight ? '#F0F5F2' : '#B8D0D8'}
-      />
-
-      {/* Right/East Rim Card: sharp metallic edge response on rails, pergolas & balustrade glass */}
-      <Lightformer
-        form="rect"
-        intensity={isLight ? 1.5 : 2.0}
-        position={[10, 6, -4]}
-        scale={[10, 6, 1]}
-        target={[0, 2, 0]}
-        color={isLight ? '#E8EFE8' : '#94B0BC'}
-      />
-
-      {/* Front Horizontal Glint Strip: creates crisp horizontal highlight streaks on coping & HVAC shrouds */}
-      <Lightformer
-        form="rect"
-        intensity={isLight ? 2.2 : 2.8}
-        position={[-2, 3, 10]}
-        scale={[18, 1.2, 1]}
-        target={[-2, 2, 0]}
-        color="#FFFFFF"
-      />
-
-      {/* Low Ground Fill Card: soft upward bounce preventing pitch-black equipment undersides */}
-      <Lightformer
-        form="rect"
-        intensity={isLight ? 0.6 : 0.8}
-        position={[0, -6, 0]}
-        scale={[18, 18, 1]}
-        rotation={[Math.PI / 2, 0, 0]}
-        color={isLight ? '#D0D8D4' : '#45565A'}
-      />
+      {lightformers}
     </Environment>
   );
 };
@@ -354,7 +363,6 @@ export const Scene: React.FC<SceneProps> = ({
           visible={showMarkers && mode !== 'play-overlay'}
         />
 
-        {/* Slot for PlayerController / Avatar */}
         {children}
       </Canvas>
     </div>

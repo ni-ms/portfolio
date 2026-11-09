@@ -80,11 +80,11 @@
       "branch": "codex/portfolio-T05-art",
       "worktree": "/Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t05-art",
       "baseCommit": "80a77e844a1d7903ad175510da10c151c7a97c1b",
-      "candidateCommit": "0b799e467cd0c74b944a9d15908b3a28b307ffba",
+      "candidateCommit": "0833699a98a5a023644e9f57dd7685791fee88c8",
       "reviewer": "d93a4e01-0d5b-4af2-abc6-6644cd13e4de",
       "reviewCorrelation": "T05-envreview-6be19bf",
       "reviewVerdict": "bounded_lifecycle_approved_visual_open",
-      "repairCorrelation": "T05-art-view-0b799e4",
+      "repairCorrelation": "T05-art-finalize-0833699",
       "priorOwner": "56f5d4ec-5146-4ee8-9958-2795cfbd1938",
       "priorWorktree": "/Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t05-world-3ba6a4330a67"
     },

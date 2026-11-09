@@ -73,18 +73,20 @@
     },
     "T05": {
       "status": "in_progress",
-      "owner": "56f5d4ec-5146-4ee8-9958-2795cfbd1938",
+      "owner": "b5dee62d-7c4a-4d0f-8ca0-2ed86050eec4",
       "resultCommit": null,
       "report": "docs/implementation/reports/T05.md",
       "resultPatch": null,
-      "branch": "codex/portfolio-T05-world",
-      "worktree": "/Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t05-world-3ba6a4330a67",
-      "baseCommit": "050cdf8",
-      "candidateCommit": "6be19bfe37d469145a1043c23e2579747f1f068c",
+      "branch": "codex/portfolio-T05-art",
+      "worktree": "/Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t05-art",
+      "baseCommit": "80a77e844a1d7903ad175510da10c151c7a97c1b",
+      "candidateCommit": "80a77e844a1d7903ad175510da10c151c7a97c1b",
       "reviewer": "d93a4e01-0d5b-4af2-abc6-6644cd13e4de",
       "reviewCorrelation": "T05-envreview-6be19bf",
       "reviewVerdict": "bounded_lifecycle_approved_visual_open",
-      "repairCorrelation": "T05-art-handoff-6be19bf"
+      "repairCorrelation": "T05-art-80a77e8",
+      "priorOwner": "56f5d4ec-5146-4ee8-9958-2795cfbd1938",
+      "priorWorktree": "/Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t05-world-3ba6a4330a67"
     },
     "T06": {
       "status": "pending",

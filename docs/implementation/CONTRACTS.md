@@ -48,3 +48,11 @@ Coordinator may revise this allocation before dispatch. Do not concurrently edit
 - HomeGame lazy-loads GameExperience and provides an accessible theme-matched static loading/error/WebGL fallback without delaying page content. One persistent Canvas/physics world survives theme/preview/expanded transitions; inner route navigation cleans up.
 - Responsive dimensions must describe the actual canvas, not a cropped minimum-height wrapper. Perimeter effects apply to canvas/atmosphere only; controls and HTML remain sharp. Expanded play relaxes edge treatment.
 - Preserve T05 canonical physics/course/spawns, reachable launch cue, correct arrow heading, open upright fan collars, deterministic/live reduced-motion gating and stable procedural environment allocation. Request ownership changes before touching these.
+
+## Revision 3 — T07 motion ownership
+
+- T07 owns src/motion/**, src/styles/motion.css, page/component motion hooks and minimal data attributes; CameraRig may consume GSAP transition-target state while its frame loop alone writes camera transforms.
+- Physics/controller/course/geometry/materials remain frozen. No animation may move the player or create another canvas, input owner, theme owner or scene.
+- HomeGame and GameExperience receive only minimal motion hooks/data attributes if required; preserve context-loss ownership, fallback states, responsive sizing, marker measurements and all cleanup contracts. Request coordinator permission for routing/provider/root or package edits.
+- Keep content and navigation available immediately, use short cancellable transitions, clear route-specific animations, and respond to live reduced-motion changes. Benchmark values and primary-workload qualifiers remain visible and factual.
+- Root App, Router/ThemeProvider, packages and execution state stay coordinator-owned. T07 returns a scoped candidate for independent lifecycle/reduced-motion review before integration.

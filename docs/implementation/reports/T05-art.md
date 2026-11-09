@@ -1,18 +1,18 @@
 # T05-art — Architectural Art Refinement & Repair Implementation Report
 
-Status: READY_FOR_REVIEW (Repairs Applied — Candidate T05-art-repair)  
-Owner: Worker `b5dee62d-7c4a-4d0f-8ca0-2ed86050eec4`  
-Branch/worktree: `codex/portfolio-T05-art` at `/Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t05-art`  
-Base commit: `80a77e844a1d7903ad175510da10c151c7a97c1b`  
-Interim commits: `0b799e4` (checkpoint 1), `0833699` (checkpoint 2), `0cc2acc` (candidate runtime), `7bc2b57` (first candidate evidence)  
-Current repair candidate: Ready for review commit  
-Dev server: Active on `http://127.0.0.1:3006`  
+Status: Module accepted after independent bounded repair review; integrated hero acceptance continues in T06
+Owner: Worker `b5dee62d-7c4a-4d0f-8ca0-2ed86050eec4`
+Branch/worktree: `codex/portfolio-T05-art` at `/Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t05-art`
+Base commit: `80a77e844a1d7903ad175510da10c151c7a97c1b`
+Interim commits: `0b799e4` (checkpoint 1), `0833699` (checkpoint 2), `0cc2acc` (candidate runtime), `7bc2b57` (first candidate evidence)
+Current source candidate: 19da6f1; root integration 8d1cc69
+Dev server: Active on `http://127.0.0.1:3006`
 
 ---
 
 ## 1. Executive Summary & Reviewer Defect Resolutions
 
-Following independent technical and visual review (`.agent-runs/artreview-0cc2acc/review.md`), all prioritized findings have been addressed:
+Following independent technical review and coordinator inspection (`.agent-runs/artreview-0cc2acc/review.md`), all prioritized findings have been addressed:
 
 1. **Fix 1 (P2) — Start Takeoff Marking Placed on Reachable, Visible Ground**:
    - In `src/game/CourseGeometry.tsx`, previously the threshold at `[-4.2, 1.204, 1.65]` and chevron at $Z=2.0$ were buried beneath Step 1 footprint ($X \in [-4.9, -3.5], Z \in [0.6, 2.10]$, underside $Y=1.65$, runner side contact $Z \approx 2.30$).
@@ -37,7 +37,7 @@ Following independent technical and visual review (`.agent-runs/artreview-0cc2ac
    - The fan interior is exposed through the collar rim from both top-down and oblique camera angles, resolving the flat black appearance in prior crops.
 
 4. **Fix 4 (P3) — Qualified Evidence & Slot Sizing Documentation**:
-   - Documented exact dimensions: `GameExperience` canvas measures 738×420px; outer slot box in the test harness constrains overflow to 738×322px (desktop) and 342×300px (mobile) to match production `.game-slot-wrapper`.
+   - Documented exact dimensions: `GameExperience` canvas measures 738×420px; outer slot box in the test harness constrains overflow to 738×322px (desktop) and 342×300px (mobile) as a diagnostic approximation of the intended slot. This is not verification of the final production canvas size; T06 owns responsive integration.
    - In mobile hero slot crops, distant rooftop labels (such as Work at the top or Explorations at the far right) are clipped by outer overflow boundaries; full responsive slot framing and camera zoom adaptation belong to coordinator-owned T06 integration.
    - Retained raw failed full-size route runs without asserting speculative SwiftShader causation claims. Product visual acceptance is retained by the coordinator.
 
@@ -60,19 +60,19 @@ Following independent technical and visual review (`.agent-runs/artreview-0cc2ac
 | `npm run typecheck` | **PASS (0 errors)** | `tsc --noEmit` exited with code 0. |
 | `npx vitest run` | **PASS (82/82)** | 4 passed test files: `course.test.ts` (28/28), `game-controller.test.ts` (25/25), `layout.test.tsx` (19/19), `realPortfolio.test.ts` (10/10). Duration 323ms. |
 | `npm run build` | **PASS** | Vite production bundle built in 365ms (`dist/assets/index-CrulhiVW.js` 280.77 kB, gzip: 83.42 kB). |
-| `git diff --check` | **PASS (0 whitespace errors)** | Clean git diff check. |
+| `git diff --check` | **PASS (0 whitespace errors)** | Working-tree check passed in the worker. The commit-range check reported seven Markdown hard-break whitespace lines; coordinator removed trailing whitespace during integration. Source-only range check passed. |
 | Geometry Inspection (`verify-geometry-3006.mjs`) | **PASS** | 6 stair stringers verified strictly ascending (Start rise 0.60m, Exploration 0.80m, Résumé 1.20m); 2 HVAC fan shrouds have vertical Y axis `[0, 1, 0]` with radius 0.416m, height 0.08m; scene meshes = 671. |
 | Wayfinding & Heading Probes | **PASS** | Chevron forward vector is `[-0.352, 0, -0.936]`; takeoff threshold at `[-4.2, 1.204, 2.65]` has 0 overhead obstruction meshes. |
 | Fan Shroud Ray Inspection | **PASS** | HVAC fan shroud cylinder confirmed `openEnded: true` at $Y=4.88$, exposing spinner ($Y=4.875$), spokes ($Y=4.885$), and rotor disk ($Y=4.855$). |
-| Independent Review Route Evidence (`review.md`) | **ACCEPTED (19/19)** | Full natural route 19/19 pass (738x420, 0 controller placements, 3 framework sync writes); 10 barrier pairs, 6 ascending stringers, 2 upright HVAC axes, flush facade at $Z=-1.4$. |
+| Independent Review Route Evidence (`review.md`) | **ACCEPTED (19/19)** | Prior 0cc2acc full natural route 19/19 pass (738x420, 0 controller placements, 3 framework sync writes); 10 barrier pairs, 6 ascending stringers, 2 upright HVAC axes, flush facade at $Z=-1.4$. |
 | Continuous Traversal Evaluator (`verify-traversal-3006.mjs`) | **RAW FAIL (exit 1)** | Raw evaluator run against port 3006 failed at `approach-first-jump` (`passed: 0, failed: 2, error: "Cannot continue route after failed landing: approach-first-jump"`). Process exited with code 1. Qualified and retained without assertion weakening. |
-| Candidate Evidence Suite (`design/verification/T05-art-repair/`) | **PASS (18/18 captures)** | Complete evidence suite generated via actual `GameExperience` confirming canvas, render, and player presence. |
+| Candidate Evidence Suite (`design/verification/T05-art-repair/`) | **PASS (18/18 captures)** | Twelve scene/slot/play images use actual GameExperience with canvas/render/player checks; six diagnostic closeups mount CourseGeometry alone and do not prove wrapper or runner behavior. |
 
 ---
 
 ## 3. Evidence Directory Inventory (`design/verification/T05-art-repair/`)
 
-All captures confirm real WebGL canvas rendering with runner at Start spawn and Option B perspective:
+Overview, slot and play captures show real GameExperience with the runner and Option B perspective. Six diagnostic geometry closeups have independent cameras and omit the wrapper/runner:
 
 - **Desktop Full Overview (1585x992)**:
   - `desktop-overview-B-dark.png`: Full vista in dark theme. Option B perspective framing Start stairs, flush glazed Work facade, warm toe-kick lights, and bold `#D6FF64` chevrons on charcoal substrate with distant skyline depth.
@@ -111,3 +111,13 @@ All captures confirm real WebGL canvas rendering with runner at Start spawn and 
   - `src/game/Scene.tsx`, `PlayerController.tsx`, physics colliders, barriers, spawns, and follow offsets untouched.
   - `src/game/courseConfig.ts` camera presets retained as granted (`desktopOverview` and `mobilePreview` Option B presets); no other changes.
   - Root `App.tsx` and package/configuration files preserved untouched.
+
+## Independent repair acceptance and integration limits
+
+At source 19da6f1, the independent repair probe passed 8/8 with no page errors: keyboard approach to the visible cue and a natural first-step jump retained the original landing tolerances and had zero placement/reset calls. Four cue rays were clear; both upright open fan collars exposed spokes. The prior full natural route at 0cc2acc passed 19/19 and was retained where unchanged; this bounded review did not rerun the full route.
+
+Comparable 738x420 follow-camera observations changed 481 to 366 draws, 878 to 671 meshes, 812 to 648 allocated geometries, and 10 to 10 textures. Software rAF median/mean/p95 were 57.9/59.15/63.3 ms; hardware GPU targets remain unverified. Three changed halos froze in deterministic mode.
+
+Fresh independent typecheck, 82 units and production build passed. The original focused offscreen test passed with its existing waits unchanged. This is separate from the earlier full tracked result of 3 passes, 1 offscreen failure and 12 skips; it is not a new clean full-matrix result.
+
+Immutable reviewer evidence is in the art worktree under .agent-runs/artreview-19da6f1/. Root integration checks are recorded in PROGRESS.md. T06 must verify the actual mounted hero, responsive canvas, clipped labels, edge treatment and page/game transitions. No exact raster parity or representative-device frame-rate guarantee is claimed.

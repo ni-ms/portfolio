@@ -56,7 +56,13 @@ test.describe('Gameplay & GameExperience Durable Tracked Suite', () => {
       const vp = document.querySelector('#viewport') as HTMLElement;
       if (vp) vp.style.marginTop = '1400px';
     });
-    await page.waitForTimeout(200);
+    // IntersectionObserver and React commit asynchronously. Wait for the actual
+    // suspended state, then measure frame stability; a wall-clock sleep can
+    // sample before the observer commits on a software-rendered browser.
+    await expect.poll(
+      async () => (await getGameplaySnapshot(page)).frameloop,
+      { timeout: 2000, message: 'Offscreen rendering suspends within two seconds' }
+    ).toBe('never');
 
     const offscreenSnapStart = await getGameplaySnapshot(page);
     expect(offscreenSnapStart.rect!.top).toBeGreaterThan(992);

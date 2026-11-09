@@ -40,3 +40,11 @@ Coordinator may revise this allocation before dispatch. Do not concurrently edit
 - T04: publish GameExperience({theme, onNavigate}) from src/game/GameExperience.tsx, where theme is dark|light and onNavigate receives a route href. This owns exactly one Canvas, overlay, input lifecycle and preview/play controls; no root App edit. Coordinator plugs it into Home at T06. T04 owns src/types/game.ts after this publication.
 - T05: extends the T04 experience without changing this wrapper contract.
 - No new package dependency is currently needed for routing; maintain existing R3F/React/GSAP stack.
+
+## Revision 2 — T06 Home integration
+
+- Coordinator connects App useTheme/useNavigation to a Home-only HomeGame({theme,onNavigate}) export in src/components/HomeGame.tsx. Inner routes unmount the game; ordinary links remain available.
+- T06 child owns HomeGame, its scoped src/styles/home-game.css, game-specific responsive canvas/error/lifecycle refinements, and relevant browser checks. Root App, page layout CSS, package files and execution state stay coordinator owned.
+- HomeGame lazy-loads GameExperience and provides an accessible theme-matched static loading/error/WebGL fallback without delaying page content. One persistent Canvas/physics world survives theme/preview/expanded transitions; inner route navigation cleans up.
+- Responsive dimensions must describe the actual canvas, not a cropped minimum-height wrapper. Perimeter effects apply to canvas/atmosphere only; controls and HTML remain sharp. Expanded play relaxes edge treatment.
+- Preserve T05 canonical physics/course/spawns, reachable launch cue, correct arrow heading, open upright fan collars, deterministic/live reduced-motion gating and stable procedural environment allocation. Request ownership changes before touching these.

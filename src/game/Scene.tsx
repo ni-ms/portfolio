@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { Canvas } from '@react-three/fiber';
+import { Environment, Lightformer } from '@react-three/drei';
 import { GameMode } from '../types/game';
 import { CourseGeometry } from './CourseGeometry';
 import { CameraRig } from './CameraRig';
@@ -25,11 +26,78 @@ export interface SceneProps {
 }
 
 /**
+ * Procedural local reflection environment baked once per theme change via Drei Environment + Lightformer.
+ * Generates calibrated specular highlight cards for metallic MEP, glass balustrades, and coping edges.
+ * Zero network requests, zero remote HDR dependencies, zero recurring frame overhead (frames={1}).
+ */
+const StudioEnvironment: React.FC<{ theme: 'dark' | 'light' }> = ({ theme }) => {
+  const isLight = theme === 'light';
+
+  return (
+    <Environment
+      key={theme}
+      frames={1}
+      resolution={128}
+      environmentIntensity={isLight ? 0.75 : 0.95}
+    >
+      {/* Overhead Key Softbox */}
+      <Lightformer
+        form="rect"
+        intensity={isLight ? 1.8 : 2.5}
+        position={[0, 9, 0]}
+        scale={[16, 16, 1]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        color={isLight ? '#FFFFFF' : '#E4EFF2'}
+      />
+
+      {/* Left/West Fill Card: illuminates HVAC intake louvers, metal conduits & west balustrades */}
+      <Lightformer
+        form="rect"
+        intensity={isLight ? 1.6 : 2.2}
+        position={[-10, 4, 4]}
+        scale={[10, 6, 1]}
+        target={[0, 2, 0]}
+        color={isLight ? '#F0F5F2' : '#B8D0D8'}
+      />
+
+      {/* Right/East Rim Card: sharp metallic edge response on rails, pergolas & balustrade glass */}
+      <Lightformer
+        form="rect"
+        intensity={isLight ? 1.5 : 2.0}
+        position={[10, 6, -4]}
+        scale={[10, 6, 1]}
+        target={[0, 2, 0]}
+        color={isLight ? '#E8EFE8' : '#94B0BC'}
+      />
+
+      {/* Front Horizontal Glint Strip: creates crisp horizontal highlight streaks on coping & HVAC shrouds */}
+      <Lightformer
+        form="rect"
+        intensity={isLight ? 2.2 : 2.8}
+        position={[-2, 3, 10]}
+        scale={[18, 1.2, 1]}
+        target={[-2, 2, 0]}
+        color="#FFFFFF"
+      />
+
+      {/* Low Ground Fill Card: soft upward bounce preventing pitch-black equipment undersides */}
+      <Lightformer
+        form="rect"
+        intensity={isLight ? 0.6 : 0.8}
+        position={[0, -6, 0]}
+        scale={[18, 18, 1]}
+        rotation={[Math.PI / 2, 0, 0]}
+        color={isLight ? '#D0D8D4' : '#45565A'}
+      />
+    </Environment>
+  );
+};
+
+/**
  * Lighting rig calibrated for both dark and light architectural themes:
- * - Directional key light with balanced shadow camera frustum
- * - Soft ambient fill light preventing harsh black shadows
- * - Hemisphere light providing sky/ground color gradation
- * - Opposite rim light for crisp architectural silhouette separation
+ * - Strong directional key light preserving directional/contact depth on concrete
+ * - Genuinely bright pale neutral fill/hemisphere/rim preventing dark shadow dropouts
+ * - Softened shadow filtering (shadow-radius 2.5, tuned bias)
  * - Ground-bounce upward fill illuminating under-slab reveals and mechanical equipment
  * - Restrained warm architectural fixture lights at pergola and stair landings
  */
@@ -53,12 +121,12 @@ const Lighting: React.FC<{
     <>
       <primitive object={lightTarget} />
 
-      {/* Directional Key Light */}
+      {/* Directional Key Light: Strong directional energy preserving crisp concrete contact depth */}
       <directionalLight
         position={[-14, 22, 12]}
         target={lightTarget}
-        intensity={isLight ? 1.55 : 1.70}
-        color={isLight ? '#FFFDF8' : '#EEF4F6'}
+        intensity={isLight ? 1.65 : 1.75}
+        color={isLight ? '#FFFDF8' : '#F0F6F8'}
         castShadow={enableShadows}
         shadow-mapSize-width={shadowResolution}
         shadow-mapSize-height={shadowResolution}
@@ -70,33 +138,34 @@ const Lighting: React.FC<{
         shadow-camera-bottom={-11}
         shadow-bias={shadowBias}
         shadow-normalBias={shadowNormalBias}
+        shadow-radius={2.5}
       />
 
-      {/* Soft Ambient Fill - prevents pitch-black shadow dropouts */}
+      {/* Soft Ambient Fill: Genuinely bright pale neutral gray-white, eliminating pitch-black shadow dropouts */}
       <ambientLight
-        color={isLight ? '#DFE3E0' : '#364447'}
-        intensity={isLight ? 0.75 : 0.85}
+        color={isLight ? '#F5F6F4' : '#C8D2D6'}
+        intensity={isLight ? 0.65 : 0.55}
       />
 
-      {/* Hemisphere Light (Sky tone to Ground tone) */}
+      {/* Hemisphere Light: Atmospheric sky-to-ground graduation separating horizontal decks from vertical walls */}
       <hemisphereLight
-        color={isLight ? '#F0F4F2' : '#566B70'}
-        groundColor={isLight ? '#CAD0CB' : '#222C2F'}
-        intensity={isLight ? 0.50 : 0.60}
+        color={isLight ? '#F8FAF8' : '#B0C4CC'}
+        groundColor={isLight ? '#D4DAD5' : '#48565C'}
+        intensity={isLight ? 0.55 : 0.60}
       />
 
-      {/* Opposite rim fill light */}
+      {/* Opposite Rim Fill Light: Sharp silhouette delineation on reverse geometry */}
       <directionalLight
         position={[14, 10, -12]}
-        intensity={isLight ? 0.30 : 0.45}
-        color={isLight ? '#BCC4C0' : '#3E5054'}
+        intensity={isLight ? 0.40 : 0.50}
+        color={isLight ? '#E0E6E2' : '#889EA6'}
       />
 
-      {/* Ground-bounce upward fill light (illuminates under-slab reveals and underside MEP) */}
+      {/* Ground-Bounce Upward Fill Light: Illuminates under-slab reveals and mechanical equipment undersides */}
       <directionalLight
         position={[6, -6, 8]}
-        intensity={isLight ? 0.20 : 0.35}
-        color={isLight ? '#D0D6D2' : '#2C3A3D'}
+        intensity={isLight ? 0.25 : 0.35}
+        color={isLight ? '#D6DDD8' : '#6C8288'}
       />
 
       {/* Warm architectural fixture lights (pergola roof & start stair landing) */}
@@ -250,6 +319,9 @@ export const Scene: React.FC<SceneProps> = ({
             theme === 'light' ? 72 : 72,
           ]}
         />
+
+        {/* Procedural Local Reflection Environment (Bake-once per theme) */}
+        <StudioEnvironment theme={theme} />
 
         {/* Calibrated Lighting Rig */}
         <Lighting

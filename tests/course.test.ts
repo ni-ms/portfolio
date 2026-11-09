@@ -90,6 +90,9 @@ describe('Physical Materials & Theme Response', () => {
 
     expect(materials.concreteDark.roughness).toBeGreaterThanOrEqual(0.85);
     expect(materials.concreteDark.metalness).toBeLessThanOrEqual(0.05);
+
+    expect(materials.concreteParapet.roughness).toBeGreaterThanOrEqual(0.85);
+    expect(materials.concreteParapet.metalness).toBeLessThanOrEqual(0.05);
   });
 
   it('metals and mechanical materials have distinct physical responses', () => {
@@ -98,6 +101,16 @@ describe('Physical Materials & Theme Response', () => {
 
     expect(materials.hvacHousing.metalness).toBeGreaterThan(0.5);
     expect(materials.hvacLouvers.metalness).toBeGreaterThan(0.4);
+
+    expect(materials.metalConduit.metalness).toBeGreaterThan(0.7);
+    expect(materials.metalMast.metalness).toBeGreaterThan(0.8);
+  });
+
+  it('glass balustrades are translucent and smooth', () => {
+    expect(materials.glassBalustrade.transparent).toBe(true);
+    expect(materials.glassBalustrade.roughness).toBeLessThan(0.2);
+    expect(materials.glassBalustrade.opacity).toBeGreaterThan(0.2);
+    expect(materials.glassBalustrade.opacity).toBeLessThan(0.6);
   });
 
   it('emissive acid-lime materials use #D6FF64 with emission', () => {
@@ -113,12 +126,16 @@ describe('Physical Materials & Theme Response', () => {
     expect(['101414', '111616', '121717', '141818']).toContain(hex);
   });
 
-  it('applyGameTheme toggles ground slab color between dark and light themes without recreating materials', () => {
+  it('applyGameTheme toggles ground slab and architectural colors between dark and light themes without recreating materials', () => {
     applyGameTheme('light');
     expect(materials.groundSlab.color.getHexString().toLowerCase()).toBe('dce0dd');
+    expect(materials.concreteMain.color.getHexString().toLowerCase()).toBe('d5d8d4');
+    expect(materials.skylineTower.color.getHexString().toLowerCase()).toBe('d0d5d2');
 
     applyGameTheme('dark');
     expect(materials.groundSlab.color.getHexString().toLowerCase()).toBe('121717');
+    expect(materials.concreteMain.color.getHexString().toLowerCase()).toBe('c2c5c1');
+    expect(materials.skylineTower.color.getHexString().toLowerCase()).toBe('141a1b');
   });
 });
 
@@ -127,25 +144,30 @@ describe('Quality Presets', () => {
     expect(DESKTOP_QUALITY.dpr).toBe(2);
     expect(DESKTOP_QUALITY.shadowResolution).toBe(2048);
     expect(DESKTOP_QUALITY.foliageDensity).toBe('full');
+    expect(DESKTOP_QUALITY.skylineDetail).toBe('full');
   });
 
   it('mobile quality uses DPR 1.5 and 1024 shadow resolution', () => {
     expect(MOBILE_QUALITY.dpr).toBe(1.5);
     expect(MOBILE_QUALITY.shadowResolution).toBe(1024);
     expect(MOBILE_QUALITY.foliageDensity).toBe('sparse');
+    expect(MOBILE_QUALITY.skylineDetail).toBe('sparse');
   });
 
   it('deterministic review quality enables deterministic review flag', () => {
     expect(DETERMINISTIC_REVIEW_QUALITY.isDeterministicReview).toBe(true);
     expect(DETERMINISTIC_REVIEW_QUALITY.shadowResolution).toBe(2048);
+    expect(DETERMINISTIC_REVIEW_QUALITY.skylineDetail).toBe('full');
   });
 
   it('getQualityPreset switches based on viewport and review flags', () => {
     const desktop = getQualityPreset(false);
     expect(desktop.dpr).toBe(2);
+    expect(desktop.skylineDetail).toBe('full');
 
     const mobile = getQualityPreset(true);
     expect(mobile.dpr).toBe(1.5);
+    expect(mobile.skylineDetail).toBe('sparse');
 
     const review = getQualityPreset(false, true);
     expect(review.isDeterministicReview).toBe(true);

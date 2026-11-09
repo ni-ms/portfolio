@@ -36,6 +36,7 @@ export interface QualityPreset {
   enableShadows: boolean;
   enablePostprocessing: boolean;
   foliageDensity: 'sparse' | 'full';
+  skylineDetail?: 'sparse' | 'full';
   shadowBias?: number;
   shadowNormalBias?: number;
   isDeterministicReview?: boolean;

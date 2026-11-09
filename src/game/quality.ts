@@ -5,6 +5,7 @@ export interface ExtendedQualityPreset extends QualityPreset {
   shadowNormalBias: number;
   maxAnisotropy: number;
   isDeterministicReview: boolean;
+  skylineDetail: 'full' | 'sparse';
 }
 
 export const DESKTOP_QUALITY: ExtendedQualityPreset = {
@@ -13,8 +14,9 @@ export const DESKTOP_QUALITY: ExtendedQualityPreset = {
   enableShadows: true,
   enablePostprocessing: false,
   foliageDensity: 'full',
+  skylineDetail: 'full',
   shadowBias: -0.0001,
-  shadowNormalBias: 0.02,
+  shadowNormalBias: 0.025,
   maxAnisotropy: 8,
   isDeterministicReview: false,
 };
@@ -25,6 +27,7 @@ export const MOBILE_QUALITY: ExtendedQualityPreset = {
   enableShadows: true,
   enablePostprocessing: false,
   foliageDensity: 'sparse',
+  skylineDetail: 'sparse',
   shadowBias: -0.00015,
   shadowNormalBias: 0.03,
   maxAnisotropy: 4,
@@ -37,21 +40,26 @@ export const DETERMINISTIC_REVIEW_QUALITY: ExtendedQualityPreset = {
   enableShadows: true,
   enablePostprocessing: false,
   foliageDensity: 'full',
+  skylineDetail: 'full',
   shadowBias: -0.0001,
-  shadowNormalBias: 0.02,
+  shadowNormalBias: 0.025,
   maxAnisotropy: 8,
   isDeterministicReview: true,
 };
 
 /**
- * Check if deterministic visual review mode is enabled via URL search param (?review=1)
+ * Check if deterministic visual review mode is enabled via URL search param (?review=1 or ?deterministic)
  * or localStorage flag. In this mode, idle drift is paused and fixed camera angles are used.
  */
 export function isDeterministicReviewMode(): boolean {
   if (typeof window === 'undefined') return false;
   try {
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('review') === 'true' || urlParams.get('review') === '1') {
+    if (
+      urlParams.get('review') === 'true' ||
+      urlParams.get('review') === '1' ||
+      urlParams.has('deterministic')
+    ) {
       return true;
     }
     if (window.localStorage.getItem('parkour_deterministic_review') === 'true') {

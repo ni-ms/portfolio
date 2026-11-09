@@ -10,6 +10,7 @@ import { CAMERA_PRESETS } from './courseConfig';
 
 export interface SceneProps {
   mode?: GameMode;
+  theme?: 'dark' | 'light';
   isMobile?: boolean;
   isDeterministicReview?: boolean;
   recenterSignal?: number;
@@ -23,24 +24,27 @@ export interface SceneProps {
 }
 
 /**
- * Lighting rig calibrated to match the art-directed diorama:
- * - Directional key light from upper-left casting crisp directional contact shadows
+ * Lighting rig calibrated for both dark and light architectural themes:
+ * - Directional key light with balanced shadow camera frustum
  * - Soft ambient fill light preventing harsh black shadows
  * - Hemisphere light providing sky/ground color gradation
- * - Low-intensity rim/fill light for silhouette separation
+ * - Subtle opposite rim light for crisp architectural silhouette separation
  */
 const Lighting: React.FC<{
+  theme: 'dark' | 'light';
   shadowResolution: number;
   shadowBias: number;
   shadowNormalBias: number;
   enableShadows: boolean;
-}> = ({ shadowResolution, shadowBias, shadowNormalBias, enableShadows }) => {
+}> = ({ theme, shadowResolution, shadowBias, shadowNormalBias, enableShadows }) => {
   // Target dummy object for directional key light
   const lightTarget = useMemo(() => {
     const target = new THREE.Object3D();
     target.position.set(1.5, 1.5, 0);
     return target;
   }, []);
+
+  const isLight = theme === 'light';
 
   return (
     <>
@@ -50,35 +54,47 @@ const Lighting: React.FC<{
       <directionalLight
         position={[-14, 22, 12]}
         target={lightTarget}
-        intensity={1.85}
-        color="#F8FAFA"
+        intensity={isLight ? 1.65 : 1.85}
+        color={isLight ? '#FFFDF8' : '#EEF4F6'}
         castShadow={enableShadows}
         shadow-mapSize-width={shadowResolution}
         shadow-mapSize-height={shadowResolution}
         shadow-camera-near={1}
-        shadow-camera-far={45}
-        shadow-camera-left={-14}
-        shadow-camera-right={15}
-        shadow-camera-top={12}
-        shadow-camera-bottom={-10}
+        shadow-camera-far={48}
+        shadow-camera-left={-15}
+        shadow-camera-right={16}
+        shadow-camera-top={13}
+        shadow-camera-bottom={-11}
         shadow-bias={shadowBias}
         shadow-normalBias={shadowNormalBias}
       />
 
       {/* Soft Ambient Fill */}
-      <ambientLight color="#2A3538" intensity={0.65} />
+      <ambientLight
+        color={isLight ? '#E6EAE7' : '#263133'}
+        intensity={isLight ? 0.75 : 0.55}
+      />
 
-      {/* Hemisphere Light (Sky tone to Dark ground tone) */}
-      <hemisphereLight color="#526366" groundColor="#101414" intensity={0.5} />
+      {/* Hemisphere Light (Sky tone to Ground tone) */}
+      <hemisphereLight
+        color={isLight ? '#F4F8F5' : '#46585B'}
+        groundColor={isLight ? '#D0D6D1' : '#0E1212'}
+        intensity={isLight ? 0.55 : 0.45}
+      />
 
       {/* Subtle opposite rim fill light */}
-      <directionalLight position={[12, 8, -10]} intensity={0.3} color="#2E3B3E" />
+      <directionalLight
+        position={[14, 10, -12]}
+        intensity={isLight ? 0.25 : 0.35}
+        color={isLight ? '#C2C9C5' : '#29373A'}
+      />
     </>
   );
 };
 
 export const Scene: React.FC<SceneProps> = ({
   mode = 'preview',
+  theme = 'dark',
   isMobile = false,
   isDeterministicReview = false,
   recenterSignal = 0,
@@ -177,6 +193,8 @@ export const Scene: React.FC<SceneProps> = ({
           powerPreference: 'high-performance',
           stencil: false,
           depth: true,
+          toneMapping: THREE.ACESFilmicToneMapping,
+          toneMappingExposure: theme === 'light' ? 1.05 : 1.15,
         }}
         camera={{
           fov: 29,
@@ -191,16 +209,23 @@ export const Scene: React.FC<SceneProps> = ({
           display: 'block',
         }}
       >
-        {/* Art-directed Lighting Rig */}
+        {/* Soft atmospheric depth fog dissolving into portfolio theme background */}
+        <fog
+          attach="fog"
+          args={[theme === 'light' ? '#F2F1EA' : '#101414', 16, 48]}
+        />
+
+        {/* Calibrated Lighting Rig */}
         <Lighting
+          theme={theme}
           shadowResolution={quality.shadowResolution}
           shadowBias={quality.shadowBias}
           shadowNormalBias={quality.shadowNormalBias}
           enableShadows={quality.enableShadows}
         />
 
-        {/* 3D Course Architecture & Beacons */}
-        <CourseGeometry />
+        {/* 3D Course Architecture, Balustrades, Greenery & Skyline */}
+        <CourseGeometry isMobile={isMobile} theme={theme} />
 
         {/* Camera Rig (Handles presets, following, and damping) */}
         <CameraRig

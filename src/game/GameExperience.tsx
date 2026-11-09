@@ -307,6 +307,7 @@ export function GameExperience({
       >
         <Scene
           mode={mode}
+          theme={theme}
           isMobile={isTouchDevice}
           isDeterministicReview={isDeterministicReview}
           isVisible={isVisible}

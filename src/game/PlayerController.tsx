@@ -117,6 +117,7 @@ export function PlayerController({
 
     let isGrounded = false;
     let groundUserData: any = null;
+    let groundNormal: { x: number; y: number; z: number } | null = null;
 
     try {
       const ray = new rapier.rapier.Ray(rayOrigin, rayDir);
@@ -124,7 +125,7 @@ export function PlayerController({
         ? rapier.rapier.QueryFilterFlags.EXCLUDE_SENSORS
         : undefined;
 
-      const hit = rapier.world.castRay(
+      const hit = rapier.world.castRayAndGetNormal(
         ray,
         maxRayDistance,
         true,
@@ -137,6 +138,7 @@ export function PlayerController({
       if (hit && hit.timeOfImpact <= maxRayDistance && !hit.collider.isSensor()) {
         isGrounded = true;
         groundUserData = hit.collider.parent()?.userData;
+        groundNormal = hit.normal;
       }
     } catch {
       // Fallback: check linear velocity Y near 0 if raycast fails
@@ -191,9 +193,10 @@ export function PlayerController({
     const newVx = THREE.MathUtils.damp(currentLinvel.x, targetVx, accel, safeDelta);
     const newVz = THREE.MathUtils.damp(currentLinvel.z, targetVz, accel, safeDelta);
 
-    // Smooth stair climb assist: ONLY when grounded directly on an actual ramp collider and moving up the slope
-    // Walking flat ground underneath ramps must NEVER trigger assist
-    if (isGrounded && norm.isMoving && !jumpController.isJumping(now) && !input.jump) {
+    // Smooth stair climb assist: ONLY when grounded directly on an actual ramp collider and moving up the slope.
+    // Uses the live Rapier surface normal to determine uphill direction — correct for any ramp rotation.
+    // Walking flat ground underneath ramps must NEVER trigger assist (elevation guard prevents this).
+    if (isGrounded && norm.isMoving && !jumpController.isJumping(now) && !input.jump && groundNormal) {
       for (const ramp of RAMP_DEFINITIONS) {
         const isRampContact =
           groundUserData?.name === ramp.name ||
@@ -206,13 +209,17 @@ export function PlayerController({
           const withinZ = pos.z >= ramp.minZ - 0.25 && pos.z <= ramp.maxZ + 0.25;
 
           if (withinY && withinX && withinZ) {
-            // Apply assist only when the player is moving uphill on this specific ramp.
-            // Dot product of (targetVx, targetVz) against the ramp's canonical uphill
-            // direction determines whether movement is uphill — works for any Y-rotation.
-            const uphillDot =
-              targetVx * ramp.uphillDirXZ[0] + targetVz * ramp.uphillDirXZ[1];
-            if (uphillDot > 0.1) {
-              newVy = Math.max(newVy, uphillDot * ramp.slope);
+            // Compute the required upward velocity to follow the ramp surface:
+            //   rise = -(nx * vx + nz * vz) / ny
+            // This is the Y component needed to keep the player on the slope given
+            // their horizontal velocity, derived from the surface normal (nx, ny, nz).
+            // Positive rise means moving uphill; negative means downhill — no assist fires.
+            const { x: nx, y: ny, z: nz } = groundNormal;
+            if (ny > 0.1) { // guard against near-horizontal normals
+              const rise = -(nx * targetVx + nz * targetVz) / ny;
+              if (rise > 0.1) {
+                newVy = Math.max(newVy, rise);
+              }
             }
             break;
           }

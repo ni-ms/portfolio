@@ -86,7 +86,8 @@
       "reviewVerdict": "pending",
       "repairCorrelation": "T05-art-finalize-0833699",
       "priorOwner": "56f5d4ec-5146-4ee8-9958-2795cfbd1938",
-      "priorWorktree": "/Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t05-world-3ba6a4330a67"
+      "priorWorktree": "/Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t05-world-3ba6a4330a67",
+      "evidenceCommit": "7bc2b57c250efc6b2c231f3970488559acdf66d0"
     },
     "T06": {
       "status": "pending",

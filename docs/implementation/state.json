@@ -132,6 +132,9 @@
     "T07": {
       "status": "in_progress",
       "owner": "b0eb9dc6-fa65-4cab-b2e0-a779d01ddd66",
+      "candidateCommit": "f7d01ae9206411d174781bc075e40c7dd3332ad9",
+      "reviewer": "5785bbf1-dfb0-4ed5-8b79-bd381d7ed988",
+      "reviewCorrelation": "T07-review-f7d01ae",
       "resultCommit": null,
       "report": "docs/implementation/reports/T07.md",
       "resultPatch": null,

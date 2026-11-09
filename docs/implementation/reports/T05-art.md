@@ -1,114 +1,99 @@
-# T05-art — Architectural Art Refinement Checkpoint
+# T05-art — Architectural Art Refinement Checkpoint 2
 
-Status: CHECKPOINT (Early interim review of bounded architectural art iteration).
+Status: CHECKPOINT 2 (Second bounded art iteration: Courtyard Centerpiece & Two Camera Options).
 Owner: Worker `b5dee62d-7c4a-4d0f-8ca0-2ed86050eec4` (art refinement).
 Branch/worktree: `codex/portfolio-T05-art` at `/Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t05-art`.
-Base commit: `80a77e844a1d7903ad175510da10c151c7a97c1b`.
+Base commit: `80a77e844a1d7903ad175510da10c151c7a97c1b` -> interim commit 1 `0b799e4`.
 Dev server: PID `24785` listening on `http://127.0.0.1:3006`.
 
 ---
 
-## 1. Summary of Implemented Architectural Art Refinements
+## 1. Summary of Iteration 2 Enhancements (Responding to Coordinator Direction)
 
-### A. Primary Slab & Coping Polish
-- **45° Corner Chamfer Pilasters**: Eliminated razor-sharp 90° box edges on all primary slabs (Start, Work, Exploration, Résumé) with vertical 45° beveled pilasters that catch crisp specular highlights from directional and environment lights.
-- **Multi-Tiered Beveled Coping**: Installed 45° chamfered coping stones around all platform perimeters with physical drip-edge overhangs ($+0.04$m) and dark underside shadow reveal strips creating clean contact separation.
-- **Architectural Base Plinths**: Grounded each platform with a recessed darker precast concrete water-table band at its base.
-- **Modular Paver Decks**: Upgraded surface decks with a high-contrast 4x4 paver tile procedural texture featuring subtle individual tile tone shifts, aggregate speckles, and dark recessed expansion joints.
+### A. Two Clearly Labeled Actual-Scene Architectural Camera Options
+In response to coordinator review identifying that the previous high-altitude overview flattened platforms into a map of pale cuboids:
+1. **Option A: "Courtyard Hero" (Default Hero Perspective)**:
+   - **Desktop Overview**: `position: [-1.8, 6.2, 14.5]`, `target: [-2.2, 2.2, 1.5]`, `zoom: 1.0`.
+   - **Mobile Preview**: `position: [-3.8, 9.0, 16.0]`, `target: [-3.8, 2.0, 1.8]`, `zoom: 1.0`.
+   - Shallow pitch angle (~15°) and low eye-level elevation bringing the player, Start rooftop, and stairs into prominent foreground focus.
+   - Satisfies `target[0] < 0` (`-2.2 < 0`) per `tests/course.test.ts`.
+2. **Option B: "Dynamic Architectural Vista"**:
+   - **Desktop Overview**: `position: [-0.6, 8.5, 17.5]`, `target: [-1.8, 2.5, 0.8]`, `zoom: 1.0`.
+   - **Mobile Preview**: `position: [-3.2, 11.0, 18.5]`, `target: [-3.5, 2.2, 1.2]`, `zoom: 1.0`.
+   - Broader low-angle perspective showing the player at Start, the flight of stepping stones across to Work, and the Exploration pavilion with skyline depth.
+   - Satisfies `target[0] < 0` (`-1.8 < 0`).
+3. **Dynamic Preset Selector**: Supports URL query parameter `?cam=A` (Option A) and `?cam=B` (Option B), or runtime override via `window.__setCameraPreset(pos, tgt)`.
 
-### B. Precast Facade Panel Relief & Hardware
-- **Modular Rustication Joints**: Subdivided tall blank slab faces into balanced precast architectural panels using horizontal and vertical reveal seams.
-- **Form-Tie Bolt Anchor Hardware**: Added metallic anchor plates / bolt heads (`materials.metalBolt`) at panel grid intersections, matching modern architectural concrete construction.
-- **Recessed Service Louvers**: Added recessed ventilation grilles with true 3D angled metallic louver slats and perimeter metal trim on tall service facades.
-- **MEP Conduit Risers**: Installed vertical external conduit pipes with wall-mounting brackets running along service facades.
+### B. Architectural Courtyard Centerpiece Junction
+- **Integrated Double-Height Glazed Curtain Wall**: Constructed on the solid South wall face of the elevated Work platform directly behind the courtyard. Features vertical structural steel mullions, horizontal transoms, and translucent reflective glass reflecting the studio environment cards.
+- **Recessed Service Bay Alcove**: Added dark recessed alcove with horizontal metallic ventilation louvers and conduit risers.
+- **Warm Architectural Lighting Contrast**: Installed linear warm fixture strips (`#FFE8C2`, emissive intensity 2.0) along the curtain wall header and recessed underneath each stair tread bullnose nosing (architectural toe-kick step lighting), creating warm golden glow contrast against the concrete and charcoal diorama base.
+- **Bold Purposeful Acid-Lime Wayfinding**: Upgraded Start wayfinding with broad, bold, luminous `#D6FF64` directional chevrons (width 0.38m, height 0.65m) and outer boundary lane tracks (`emissiveIntensity = 2.4`, `polygonOffset = -3`) ensuring unmistakable readability without fading into white.
+- **Refined Architectural Landscaping**: Replaced dense "bowling ball" dodecahedrons with slender architectural bamboo/reed stalks, delicate horizontal fan leaf planes, and tapered fountain grasses with open air gaps and crisp silhouettes.
 
-### C. MEP Equipment Polish (Work Rooftop HVAC Units)
-- **Beveled Sheet-Metal Casing**: Added 45° chamfered edge highlights to all 4 upper casing perimeters.
-- **Vibration Isolators**: Installed corner neoprene/steel damping pads beneath the curb base.
-- **3D Intake Louvers**: Built front and rear intake grilles with distinct horizontal metallic louver blades angled at 36°.
-- **Top Exhaust Fan Assembly**: Retained vertical Y-axis cylinder shroud ($[0, 1, 0]$), adding an aerodynamic center motor dome, structural radial grille spokes, and recessed fan rotor plane.
-- **Service Manifolds & Hardware**: Dual refrigerant conduits with elbow flanges, electrical disconnect switch box with lever, status LED (`#D6FF64`), and side maintenance access door with hinges and turn-handle.
-
-### D. Refined Architectural Greenery (Exploration Planters)
-- **Clustered Leaf Geometry**: Replaced blockout dodecahedrons with layered architectural boxwood shrubs composed of dense core masses and intersecting angular faceted leaf clusters that catch directional sunlight and cast soft self-shadows.
-- **Layered Landscaping**: Added tapered ornamental fountain grass tufts and overhanging cascading ivy tendrils spilling over the beveled concrete planter rims.
-- **Multi-Tonal Materials**: Rich chlorophyll botanical materials (`foliageMain`, `foliageLight`, `foliageAccent`, `foliageStem`).
-
-### E. Overhead Steel Pavilion Centerpiece (Résumé Rooftop)
-- **Structural Steel Detailing**: 4 vertical box columns with heavy base anchor shoes and visible anchor bolts; header box beams with welded corner plates.
-- **Architectural Rafters & Lighting**: Intermediate rafters with underside recessed linear acid-lime (`#D6FF64`) light strips.
-- **Sunshade Louvers**: Overhead horizontal sunshade louvers casting intricate geometric linear shadows across the Résumé rooftop deck.
-
-### F. Purposeful Continuous Acid-Lime Wayfinding
-- **Integrated Safe Course Guide**: Dedicated `CourseWayfinding` component with continuous acid-lime (`#D6FF64`) markings:
-  - Start rooftop runway guide tracks and directional chevrons leading to lower landing.
-  - Takeoff threshold bars at platform jump edges.
-  - Runway centerlines and corner landing targets on stepping stones and bridge beam.
-  - Landing threshold and guide track connecting landing to Checkpoint 1 on Work rooftop.
-  - Landing mark, terrace guide path, and stair indicators on Exploration rooftop.
-  - Runway line leading directly under the steel pavilion to Checkpoint 3.
-
-### G. Layered Distant Skyline
-- **Multi-Tiered Architectural Depth**: Mid-distance towers ($z pprox -22$ to $-28$) and far-distance towers ($z pprox -34$ to $-45$) receding into atmospheric depth fog.
-- **Varied Typologies**: Stepped setback monoliths, slender curtain-wall glass towers with vertical mullions and illuminated window bands, angled glass spires, mechanical penthouses, and twin communications masts.
-- **Mobile Optimization**: Filters far-distance towers on mobile tier to preserve draw calls.
+### C. True Equipment Closeup
+- Dedicated camera framing placed directly in front of the Work rooftop HVAC chiller unit at `[-2.8, 5.0, -1.8]`, looking at `[-5.0, 4.3, -3.4]`.
+- Directly captures the horizontal fan shroud ring (vertical Y axis $[0, 1, 0]$), center motor dome, radial spokes, 45° casing chamfers, 3D angled louvers, refrigerant manifold with flanges, electrical disconnect box with lever and `#D6FF64` LED, and curb corner vibration isolators.
 
 ---
 
 ## 2. Verification Outcomes
 
-| Verification Check | Result | Details |
+| Verification Suite | Result | Details |
 | :--- | :--- | :--- |
 | `npm run typecheck` | **PASS (0 errors)** | `tsc --noEmit` clean across all files. |
-| `npx vitest run tests/` | **PASS (53/53)** | 28 course tests, 25 game controller tests. |
-| `verify-geometry-3006.mjs` | **PASS (6/6 stairs, 2/2 HVAC)** | 6 stair stringers ascend correctly matching step coordinates (Start beam rise 0.60m, Exploration 0.80m, Résumé 1.20m); 2 HVAC fan shrouds vertical Y axis `[0, 1, 0]` with radius 0.416m, height 0.08m. |
-| `capture-t05-art.mjs` | **PASS (8/8 captures)** | Full dark/light desktop and mobile comparison screenshots generated under `design/verification/T05-art/`. |
-| Material Closeups | **PASS (8/8 crops)** | Diagnostic closeups of HVAC, foliage planters, steel pavilion, and primary slab coping/facades generated in both dark and light themes. |
+| `npx vitest run tests/` | **PASS (53/53)** | 28 course tests, 25 controller tests. |
+| `verify-geometry-3006.mjs` | **PASS (6/6 stairs, 2/2 HVAC)** | All 6 stair stringers ascend matching step coordinates (Start rise 0.60m, Exploration 0.80m, Résumé 1.20m); 2 HVAC fan shrouds vertical Y `[0, 1, 0]` with radius 0.416m, height 0.08m. |
+| `capture-t05-art2.mjs` | **PASS (16/16 captures)** | Complete evidence suite generated under `design/verification/T05-art2/` covering Options A & B in dark/light, gameplay modes, true HVAC closeups, and courtyard centerpiece closeups. |
 
 ---
 
-## 3. Captured Visual Evidence (`design/verification/T05-art/`)
+## 3. Captured Visual Evidence (`design/verification/T05-art2/`)
 
-- `desktop-overview-dark.png`: Calibrated isometric hero overview showing refined modular pavers, beveled coping highlights, continuous acid-lime course wayfinding, detailed MEP equipment, and multi-tiered skyline in dark mode.
-- `desktop-overview-light.png`: Light mode overview showing warm sandstone concrete, tempered glass reflections, crisp coping bevels, and atmospheric fog dissolving into `#F2F1EA`.
-- `desktop-play-dark.png`: Third-person inline play camera behind runner with active course markings and HUD.
-- `desktop-play-light.png`: Third-person inline play camera in light theme.
-- `mobile-preview-dark.png`: Centered mobile preview over Start rooftop, stepping stones, and Work rooftop.
-- `mobile-preview-light.png`: Centered light theme mobile preview.
-- `mobile-play-dark.png`: Mobile touch overlay in dark theme.
-- `mobile-play-light.png`: Mobile touch overlay in light theme.
-- `close-hvac-dark.png` & `close-hvac-light.png`: Closeup of Work rooftop chiller units showing 45° casing chamfers, 3D angled intake louvers, circular vertical Y shroud, piping manifold with flanges, and status LED.
-- `close-planter-dark.png` & `close-planter-light.png`: Closeup of Exploration rooftop landscaping showing multi-faceted boxwood clusters, fountain grasses, and cascading ivy over beveled planter rim.
-- `close-pavilion-dark.png` & `close-pavilion-light.png`: Closeup of Résumé rooftop steel pavilion showing base anchor shoes, bolts, linear lime underside lighting, and shadow louvers.
-- `close-slab-dark.png` & `close-slab-light.png`: Closeup of Start rooftop primary slab showing corner chamfer pilasters, coping bevels, modular pavers, and facade panel seams.
+- **Option A (Courtyard Hero - Recommended)**:
+  - `desktop-overview-optA-dark.png`: Lower oblique courtyard perspective framing Start stairs, warm toe-kick lights, bold `#D6FF64` chevrons, glazed curtain wall facade, and Work elevation in dark mode.
+  - `desktop-overview-optA-light.png`: Option A in light mode with warm sandstone concrete, glass reflections, and atmospheric fog dissolving into `#F2F1EA`.
+  - `mobile-preview-optA-dark.png`: Centered mobile preview with human-scale runner, Start stairs, and stepping stones.
+  - `mobile-preview-optA-light.png`: Centered light theme mobile preview.
+- **Option B (Dynamic Vista)**:
+  - `desktop-overview-optB-dark.png`: Broader low oblique vista showing Start, stepping stone flight, Work facade, and skyline in dark mode.
+  - `desktop-overview-optB-light.png`: Option B in light mode.
+  - `mobile-preview-optB-dark.png`: Mobile vista preview in dark mode.
+  - `mobile-preview-optB-light.png`: Mobile vista preview in light mode.
+- **Gameplay Mode**:
+  - `desktop-play-dark.png` & `desktop-play-light.png`: Third-person inline play camera behind runner.
+  - `mobile-play-dark.png` & `mobile-play-light.png`: Mobile touch overlay in dark and light themes.
+- **Dedicated Closeups**:
+  - `close-hvac-dark.png` & `close-hvac-light.png`: TRUE equipment closeup framing the chiller unit dead-center, showing upright shroud collar, motor dome, radial spokes, 45° chamfers, 3D louvers, manifold flanges, and disconnect switch.
+  - `close-courtyard-dark.png` & `close-courtyard-light.png`: Closeup of the courtyard centerpiece showing stair toe-kick lights, bold `#D6FF64` chevrons, double-height glazed facade, and refined bamboo/grass landscaping.
 
 ---
 
-## 4. Scope Compliance & Technical Baselines Preserved
+## 4. Scope Compliance & Baselines Preserved
 
 - **Allowlist Compliance**:
-  - `src/game/CourseGeometry.tsx`: Updated with architectural bevels, modular paver decks, precast panel seams, bolts, 3D louvers, refined foliage clusters, steel pavilion, continuous wayfinding, and multi-tiered skyline.
-  - `src/game/materials.ts`: Added paver tile map, brushed metal roughness map, skyline window texture, bolt and foliage materials, while strictly preserving theme toggle contracts and color assertions.
-  - `design/verification/T05-art/*`: High-resolution evidence captures and diagnostic material closeups.
+  - `src/game/courseConfig.ts`: ONLY `CAMERA_PRESETS.desktopOverview`/`mobilePreview` and `CAMERA_OPTIONS` added as granted by coordinator. Zero physical bounds, colliders, spawns, or barrier edits.
+  - `src/game/CourseGeometry.tsx`: Upgraded with courtyard glazed facade, warm fixture strips, bold wayfinding chevrons, refined landscaping, and existing technical baselines.
+  - `src/game/materials.ts`: Calibrated `#D6FF64` emissive intensity (2.4) and warm fixture intensity (2.0) with zero color assertion regressions.
+  - `design/verification/T05-art2/*`: All new captures stored in immutable run directory without overwriting prior evidence.
   - `docs/implementation/reports/T05-art.md`: This report.
-  - `.agent-runs/*`: Ignored diagnostic verification scripts.
-  - Zero edits outside scope: No `package.json`, root layout, router, global CSS, physics, or controller edits.
 - **Accepted Baselines Preserved**:
   - Canonical physics bounds, colliders, spawns, and 10 barrier openings untouched.
   - 6 ascending stair stringers with negative-X angle matching step coordinates.
   - 2 HVAC exhaust fan cylinder shrouds with vertical Y axis `[0, 1, 0]`.
   - Mast beacon motion gating with isolated `limeMastBeacon` and live `matchMedia` listener.
-  - Environment lifecycle: single stable `CubeRenderTarget(128)`, memoized `Lightformer` reflection cards, 0 idle rebakes.
+  - Stable Drei Environment lifecycle (single `CubeRenderTarget(128)`, memoized lightformers, 0 idle rebakes).
 
 ---
 
-## 5. Honest Gaps & Performance Qualifications
+## 5. Honest Gaps & Remaining Work
 
-- **Software Emulation vs Production WebGL**: Timings and frame observations on port 3006 were captured under headless Chromium using SwiftShader ANGLE Vulkan CPU software rasterization on macOS. Fragment sampling and draw performance on production GPU hardware remain unmeasured.
-- **Traversal Route Suite**: Prior candidate exited with code 1 at `step-start-work-1` under SwiftShader software emulation (cause unproven). This early art checkpoint was requested to verify visible improvement BEFORE the broad full suite; traversal was not rerun in this bounded turn to maintain honest distinction from visual acceptance.
+- **Camera Preset Selection**: Option A (Courtyard Hero) is recommended as the default hero perspective matching the approved Home mockup; Option B is preserved as an alternative. Coordinator selection will finalize the primary view.
+- **Traversal Evaluator**: The evaluator run was not repeated in this art iteration; previous candidate result (exit 1 at `step-start-work-1` under SwiftShader software emulation, cause unproven) remains documented.
+- **Production GPU Hardware**: Render timings and shading performance remain measured on macOS test host under headless Chromium using SwiftShader software CPU rasterization.
 
 ---
 
 ## 6. Exact Next Action
 
-Coordinator reviews visible improvement from `design/verification/T05-art/*` and returns direction. Following coordinator direction, run final checks, build, and browser verification before submitting final READY_FOR_REVIEW.
+Coordinator reviews Option A vs Option B and the courtyard centerpiece in `design/verification/T05-art2/` and returns selection/direction.

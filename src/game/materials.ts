@@ -474,12 +474,12 @@ const limeMastBeaconMat = new THREE.MeshStandardMaterial({
 const limeFloorArrowsMat = new THREE.MeshStandardMaterial({
   color: '#D6FF64',
   emissive: '#D6FF64',
-  emissiveIntensity: 1.4,
-  roughness: 0.30,
+  emissiveIntensity: 2.4,
+  roughness: 0.20,
   metalness: 0.05,
   polygonOffset: true,
-  polygonOffsetFactor: -2,
-  polygonOffsetUnits: -2,
+  polygonOffsetFactor: -3,
+  polygonOffsetUnits: -3,
 });
 
 const limeBeaconCoreMat = new THREE.MeshStandardMaterial({
@@ -513,8 +513,8 @@ const limeBeaconAuraMat = new THREE.MeshStandardMaterial({
 const warmFixtureMat = new THREE.MeshStandardMaterial({
   color: '#FFE8C2',
   emissive: '#FFE8C2',
-  emissiveIntensity: 1.2,
-  roughness: 0.25,
+  emissiveIntensity: 2.0,
+  roughness: 0.20,
   metalness: 0.1,
 });
 

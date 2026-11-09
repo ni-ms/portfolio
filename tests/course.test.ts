@@ -81,9 +81,11 @@ describe('3D Course Configuration & Landmarks', () => {
 });
 
 describe('Physical Materials & Theme Response', () => {
-  it('concrete materials have high roughness and low metalness', () => {
+  it('concrete materials have high roughness, low metalness, and procedural bump texture', () => {
     expect(materials.concreteMain.roughness).toBeGreaterThanOrEqual(0.85);
     expect(materials.concreteMain.metalness).toBeLessThanOrEqual(0.05);
+    expect(materials.concreteMain.bumpMap).toBeDefined();
+    expect(materials.concreteMain.bumpScale).toBeGreaterThan(0);
 
     expect(materials.concreteLight.roughness).toBeGreaterThanOrEqual(0.85);
     expect(materials.concreteLight.metalness).toBeLessThanOrEqual(0.05);
@@ -104,6 +106,10 @@ describe('Physical Materials & Theme Response', () => {
 
     expect(materials.metalConduit.metalness).toBeGreaterThan(0.7);
     expect(materials.metalMast.metalness).toBeGreaterThan(0.8);
+
+    expect(materials.facadeLouver).toBeDefined();
+    expect(materials.facadeLouver.roughness).toBeGreaterThanOrEqual(0.5);
+    expect(materials.facadeSeam).toBeDefined();
   });
 
   it('glass balustrades are translucent and smooth', () => {
@@ -171,6 +177,9 @@ describe('Quality Presets', () => {
 
     const review = getQualityPreset(false, true);
     expect(review.isDeterministicReview).toBe(true);
+
+    const normal = getQualityPreset(false, false);
+    expect(normal.isDeterministicReview).toBe(false);
   });
 });
 
@@ -200,47 +209,35 @@ describe('Ramp Configurations & Uphill Direction', () => {
   });
 
   it('Résumé ramp uphillDirXZ documents actual uphill as +Z (verified from live Rapier normal)', () => {
-    // Live Rapier physics normal for RESUME_STAIRS_RAMP ≈ [0, 0.850, -0.527].
-    // Normal-based uphill formula: -(nx*vx + nz*vz)/ny = -(0*0 + (-0.527)*vz)/0.850
-    // Positive when vz > 0 (+Z direction) → uphill is +Z, not -Z.
-    // Controller uses live normal, not this field; uphillDirXZ = [0, +1] documents the result.
     expect(RESUME_STAIRS_RAMP.uphillDirXZ[0]).toBeCloseTo(0, 3);
     expect(RESUME_STAIRS_RAMP.uphillDirXZ[1]).toBeCloseTo(1, 3); // +Z is uphill
   });
 
   it('normal-based rise formula: downhill (-Z) on Résumé ramp gives negative rise (no assist)', () => {
-    // Simulate live normal [0, 0.850, -0.527]; walking forward targetVz = -3 (downhill)
     const nx = 0, ny = 0.8499, nz = -0.5269;
     const targetVx = 0, targetVz = -3.0; // forward = -Z = downhill on Résumé ramp
     const rise = -(nx * targetVx + nz * targetVz) / ny;
-    // rise = -(0 + (-0.5269)*(-3)) / 0.8499 = -(1.5807)/0.8499 = -1.860 → negative → no assist
     expect(rise).toBeLessThan(0);
   });
 
   it('normal-based rise formula: uphill (+Z) on Résumé ramp gives positive rise (assist fires)', () => {
-    // Simulate live normal [0, 0.850, -0.527]; walking +Z (uphill)
     const nx = 0, ny = 0.8499, nz = -0.5269;
     const targetVx = 0, targetVz = 3.0; // +Z = uphill on Résumé ramp
     const rise = -(nx * targetVx + nz * targetVz) / ny;
-    // rise = -(0 + (-0.5269)*(3)) / 0.8499 = 1.5807/0.8499 = +1.860 → positive → assist fires
     expect(rise).toBeGreaterThan(0.1);
   });
 
   it('normal-based rise formula: Start ramp uphill (-Z) gives positive rise', () => {
-    // Start ramp rotation [0.6435, 0, 0]; normal ≈ [0, cos(0.6435), sin(0.6435)] ≈ [0, 0.796, 0.604]
-    // (approximate; actual live normal may vary slightly)
     const nx = 0, ny = 0.796, nz = 0.604;
     const targetVx = 0, targetVz = -3.0; // -Z = uphill for Start ramp
     const rise = -(nx * targetVx + nz * targetVz) / ny;
-    // rise = -(0 + 0.604*(-3)) / 0.796 = 1.812/0.796 = +2.276 → positive → assist fires
     expect(rise).toBeGreaterThan(0.1);
   });
 
   it('normal-based rise formula: flat ground (normal [0,1,0]) gives zero rise regardless of direction', () => {
-    // On flat ground the normal is straight up; rise = 0 for any horizontal movement
     const nx = 0, ny = 1.0, nz = 0;
-    const rise1 = -(nx * 0 + nz * (-3.0)) / ny; // forward
-    const rise2 = -(nx * 3.0 + nz * 0) / ny;    // strafe
+    const rise1 = -(nx * 0 + nz * (-3.0)) / ny;
+    const rise2 = -(nx * 3.0 + nz * 0) / ny;
     expect(rise1).toBeCloseTo(0, 10);
     expect(rise2).toBeCloseTo(0, 10);
   });
@@ -254,55 +251,64 @@ describe('Ramp Configurations & Uphill Direction', () => {
   });
 });
 
-describe("Balustrades, Obstacles & Material Isolation (R1 & R2)", () => {
-  it("defines 10 canonical perimeter balustrades in COURSE_BOUNDS", () => {
+describe('Balustrades, Obstacles & Material Isolation (R1 & R2)', () => {
+  it('defines 10 canonical perimeter balustrades in COURSE_BOUNDS', () => {
     expect(COURSE_BOUNDS.balustrades).toHaveLength(10);
     const ids = COURSE_BOUNDS.balustrades.map((b) => b.id);
-    expect(ids).toContain("balustrade-start-west");
-    expect(ids).toContain("balustrade-start-north");
-    expect(ids).toContain("balustrade-work-west");
-    expect(ids).toContain("balustrade-exp-north");
-    expect(ids).toContain("balustrade-resume-east");
+    expect(ids).toContain('balustrade-start-west');
+    expect(ids).toContain('balustrade-start-north');
+    expect(ids).toContain('balustrade-work-west');
+    expect(ids).toContain('balustrade-exp-north');
+    expect(ids).toContain('balustrade-resume-east');
   });
 
-  it("Start Rooftop West balustrade blocks spawn fall-off at X=-5.6", () => {
-    const westBal = COURSE_BOUNDS.balustrades.find((b) => b.id === "balustrade-start-west");
+  it('Start Rooftop West balustrade blocks spawn fall-off at X=-5.6', () => {
+    const westBal = COURSE_BOUNDS.balustrades.find((b) => b.id === 'balustrade-start-west');
     expect(westBal).toBeDefined();
     expect(westBal!.start[0]).toBe(-5.6);
     expect(westBal!.end[0]).toBe(-5.6);
-    // Covers Z from 1.6 to 4.4, enclosing player spawn Z=3.5
     expect(Math.min(westBal!.start[2], westBal!.end[2])).toBeLessThanOrEqual(3.5);
     expect(Math.max(westBal!.start[2], westBal!.end[2])).toBeGreaterThanOrEqual(3.5);
     expect(westBal!.height).toBeGreaterThanOrEqual(0.85);
   });
 
-  it("Start Rooftop North balustrade preserves jump gap for stepping platform 1", () => {
-    const northBal = COURSE_BOUNDS.balustrades.find((b) => b.id === "balustrade-start-north");
+  it('Start Rooftop North balustrade preserves jump gap for stepping platform 1', () => {
+    const northBal = COURSE_BOUNDS.balustrades.find((b) => b.id === 'balustrade-start-north');
     expect(northBal).toBeDefined();
-    // Stops at X=-4.4, leaving [-4.4, -1.4] open for jumping to platform 1 at [-4.2, 1.8, 1.35]
     expect(northBal!.end[0]).toBeLessThanOrEqual(-4.4);
   });
 
-  it("defines solid architectural obstacles with physics bounds", () => {
+  it('defines solid architectural obstacles with physics bounds and shared definitions', () => {
     expect(COURSE_BOUNDS.architecturalObstacles).toHaveLength(2);
-    const mastPedestal = COURSE_BOUNDS.architecturalObstacles.find((o) => o.id === "obstacle-mast-pedestal");
-    const hatch = COURSE_BOUNDS.architecturalObstacles.find((o) => o.id === "obstacle-roof-hatch");
+    const mastPedestal = COURSE_BOUNDS.architecturalObstacles.find((o) => o.id === 'obstacle-mast-pedestal');
+    const hatch = COURSE_BOUNDS.architecturalObstacles.find((o) => o.id === 'obstacle-roof-hatch');
     expect(mastPedestal).toBeDefined();
     expect(hatch).toBeDefined();
-    expect(mastPedestal!.size[0]).toBeGreaterThan(0.3);
-    expect(hatch!.size[0]).toBeGreaterThan(0.8);
+
+    // Verify exact coupling dimensions shared with visual meshes
+    expect(mastPedestal!.position).toEqual([-5.8, 3.9, -5.1]);
+    expect(mastPedestal!.size).toEqual([0.45, 0.2, 0.45]);
+
+    expect(hatch!.position).toEqual([-2.4, 3.88, -2.1]);
+    expect(hatch!.size).toEqual([0.94, 0.16, 0.94]);
   });
 
-  it("limeMastBeacon material is strictly isolated from shared limeEmissive", () => {
+  it('limeMastBeacon material is strictly isolated from shared limeEmissive and unrelated materials', () => {
     expect(materials.limeMastBeacon).toBeDefined();
     expect(materials.limeMastBeacon).not.toBe(materials.limeEmissive);
+    expect(materials.limeMastBeacon).not.toBe(materials.limeBeaconCore);
+    expect(materials.limeMastBeacon).not.toBe(materials.limeFloorArrows);
 
     const initialSharedIntensity = materials.limeEmissive.emissiveIntensity;
+    const initialCoreIntensity = materials.limeBeaconCore.emissiveIntensity;
+
     materials.limeMastBeacon.emissiveIntensity = 0.2;
     expect(materials.limeEmissive.emissiveIntensity).toBe(initialSharedIntensity);
+    expect(materials.limeBeaconCore.emissiveIntensity).toBe(initialCoreIntensity);
 
     materials.limeMastBeacon.emissiveIntensity = 1.8;
     expect(materials.limeEmissive.emissiveIntensity).toBe(initialSharedIntensity);
+    expect(materials.limeBeaconCore.emissiveIntensity).toBe(initialCoreIntensity);
 
     // Reset beacon to 1.0
     materials.limeMastBeacon.emissiveIntensity = 1.0;

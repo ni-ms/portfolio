@@ -5,7 +5,7 @@ import { GameMode } from '../types/game';
 import { CourseGeometry } from './CourseGeometry';
 import { CameraRig } from './CameraRig';
 import { SceneMarkers } from './SceneMarkers';
-import { getQualityPreset } from './quality';
+import { getQualityPreset, isDeterministicReviewMode } from './quality';
 import { CAMERA_PRESETS } from './courseConfig';
 
 export interface SceneProps {
@@ -13,6 +13,7 @@ export interface SceneProps {
   theme?: 'dark' | 'light';
   isMobile?: boolean;
   isDeterministicReview?: boolean;
+  forceDeterministic?: boolean;
   recenterSignal?: number;
   showMarkers?: boolean;
   onSelectCheckpoint?: (sectionId: string) => void;
@@ -28,7 +29,9 @@ export interface SceneProps {
  * - Directional key light with balanced shadow camera frustum
  * - Soft ambient fill light preventing harsh black shadows
  * - Hemisphere light providing sky/ground color gradation
- * - Subtle opposite rim light for crisp architectural silhouette separation
+ * - Opposite rim light for crisp architectural silhouette separation
+ * - Ground-bounce upward fill illuminating under-slab reveals and mechanical equipment
+ * - Restrained warm architectural fixture lights at pergola and stair landings
  */
 const Lighting: React.FC<{
   theme: 'dark' | 'light';
@@ -54,7 +57,7 @@ const Lighting: React.FC<{
       <directionalLight
         position={[-14, 22, 12]}
         target={lightTarget}
-        intensity={isLight ? 1.55 : 1.65}
+        intensity={isLight ? 1.55 : 1.70}
         color={isLight ? '#FFFDF8' : '#EEF4F6'}
         castShadow={enableShadows}
         shadow-mapSize-width={shadowResolution}
@@ -71,22 +74,45 @@ const Lighting: React.FC<{
 
       {/* Soft Ambient Fill - prevents pitch-black shadow dropouts */}
       <ambientLight
-        color={isLight ? '#DFE3E0' : '#323E40'}
-        intensity={isLight ? 0.70 : 0.80}
+        color={isLight ? '#DFE3E0' : '#364447'}
+        intensity={isLight ? 0.75 : 0.85}
       />
 
       {/* Hemisphere Light (Sky tone to Ground tone) */}
       <hemisphereLight
-        color={isLight ? '#F0F4F2' : '#52666A'}
-        groundColor={isLight ? '#CAD0CB' : '#1C2527'}
-        intensity={isLight ? 0.50 : 0.55}
+        color={isLight ? '#F0F4F2' : '#566B70'}
+        groundColor={isLight ? '#CAD0CB' : '#222C2F'}
+        intensity={isLight ? 0.50 : 0.60}
       />
 
-      {/* Subtle opposite rim fill light */}
+      {/* Opposite rim fill light */}
       <directionalLight
         position={[14, 10, -12]}
-        intensity={isLight ? 0.30 : 0.40}
-        color={isLight ? '#BCC4C0' : '#35464A'}
+        intensity={isLight ? 0.30 : 0.45}
+        color={isLight ? '#BCC4C0' : '#3E5054'}
+      />
+
+      {/* Ground-bounce upward fill light (illuminates under-slab reveals and underside MEP) */}
+      <directionalLight
+        position={[6, -6, 8]}
+        intensity={isLight ? 0.20 : 0.35}
+        color={isLight ? '#D0D6D2' : '#2C3A3D'}
+      />
+
+      {/* Warm architectural fixture lights (pergola roof & start stair landing) */}
+      <pointLight
+        position={[6.9, 5.2, 1.5]}
+        color="#FFE6B3"
+        intensity={isLight ? 0.8 : 1.2}
+        distance={5.0}
+        decay={2}
+      />
+      <pointLight
+        position={[-3.5, 1.5, 4.8]}
+        color="#FFE6B3"
+        intensity={isLight ? 0.5 : 0.8}
+        distance={3.5}
+        decay={2}
       />
     </>
   );
@@ -96,7 +122,8 @@ export const Scene: React.FC<SceneProps> = ({
   mode = 'preview',
   theme = 'dark',
   isMobile = false,
-  isDeterministicReview = false,
+  isDeterministicReview: isDeterministicReviewProp = false,
+  forceDeterministic = false,
   recenterSignal = 0,
   showMarkers = true,
   onSelectCheckpoint,
@@ -110,6 +137,11 @@ export const Scene: React.FC<SceneProps> = ({
   const [isIntersecting, setIsIntersecting] = useState(true);
   const [isDocVisible, setIsDocVisible] = useState(
     typeof document !== 'undefined' ? !document.hidden : true
+  );
+
+  // Combined effective review state
+  const effectiveReview = Boolean(
+    forceDeterministic || isDeterministicReviewProp || isDeterministicReviewMode()
   );
 
   // Document visibility tracking
@@ -165,8 +197,8 @@ export const Scene: React.FC<SceneProps> = ({
   const isEffectiveVisible = isVisibleProp !== undefined ? isVisibleProp : isInternalVisible;
 
   const quality = useMemo(
-    () => getQualityPreset(isMobile, isDeterministicReview),
-    [isMobile, isDeterministicReview]
+    () => getQualityPreset(isMobile, effectiveReview),
+    [isMobile, effectiveReview]
   );
 
   const initialCam = isMobile ? CAMERA_PRESETS.mobilePreview : CAMERA_PRESETS.desktopOverview;
@@ -214,8 +246,8 @@ export const Scene: React.FC<SceneProps> = ({
           attach="fog"
           args={[
             theme === 'light' ? '#F2F1EA' : '#101414',
-            theme === 'light' ? 28 : 26,
-            theme === 'light' ? 68 : 64,
+            theme === 'light' ? 28 : 28,
+            theme === 'light' ? 72 : 72,
           ]}
         />
 
@@ -229,7 +261,11 @@ export const Scene: React.FC<SceneProps> = ({
         />
 
         {/* 3D Course Architecture, Balustrades, Greenery & Skyline */}
-        <CourseGeometry isMobile={isMobile} theme={theme} />
+        <CourseGeometry
+          isMobile={isMobile}
+          theme={theme}
+          isDeterministicReview={effectiveReview}
+        />
 
         {/* Camera Rig (Handles presets, following, and damping) */}
         <CameraRig
@@ -237,7 +273,7 @@ export const Scene: React.FC<SceneProps> = ({
           isMobile={isMobile}
           playerPosition={playerPosition}
           recenterSignal={recenterSignal}
-          forceDeterministic={isDeterministicReview}
+          forceDeterministic={effectiveReview}
         />
 
         {/* Drei HTML Section Markers */}

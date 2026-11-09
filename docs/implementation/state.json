@@ -80,11 +80,11 @@
       "branch": "codex/portfolio-T05-world",
       "worktree": "/Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t05-world-3ba6a4330a67",
       "baseCommit": "050cdf8",
-      "candidateCommit": "1be70b1ea00fab5f6e2593f61d88cb33f1dd7797",
+      "candidateCommit": "19835a1748648f8970737c987268c2c050f361fd",
       "reviewer": "d93a4e01-0d5b-4af2-abc6-6644cd13e4de",
       "reviewCorrelation": "T05-rereview2-1be70b1",
       "reviewVerdict": "request_changes",
-      "repairCorrelation": "T05-repair3-1be70b1"
+      "repairCorrelation": "T05-light-preview-19835a1"
     },
     "T06": {
       "status": "pending",

@@ -106,7 +106,7 @@
       "validation": "Root typecheck/82units/build PASS; foundation+gameplay 24pass/12explicit skips after independently approved IO-state polling synchronization. Prior raw 23pass/1offscreenfail/12skip retained. Independent natural route19/19; bounded repair8/8. Hardware GPU targets unverified."
     },
     "T06": {
-      "status": "in_progress",
+      "status": "review",
       "owner": "705dc2d6-7f25-4901-b8ec-773c8ba60b02",
       "resultCommit": null,
       "report": "docs/implementation/reports/T06.md",
@@ -114,7 +114,10 @@
       "branch": "codex/portfolio-T06-integration",
       "worktree": "/Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t06-integration",
       "baseCommit": "a04aa4a",
-      "correlation": "T06-boundary-a04aa4a"
+      "correlation": "T06-boundary-a04aa4a",
+      "candidateCommit": "8ba0bf084628733990ccffed573cc1958442c036",
+      "reviewer": "166e3448-c51f-4ae6-86b2-207aa024f663",
+      "reviewCorrelation": "T06-review-8ba0bf0"
     },
     "T07": {
       "status": "pending",

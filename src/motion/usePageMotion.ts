@@ -1,140 +1,173 @@
-import { RefObject } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useGSAP } from '@gsap/react';
+import { RefObject, useEffect } from 'react';
+import { gsap } from 'gsap/dist/gsap';
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
+import { isReducedMotion, subscribeReducedMotion } from './reducedMotion';
+import { triggerHomeCameraSettling, resetCameraTransition } from './cameraMotion';
 
-// Register GSAP plugins
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-interface PageMotionOptions {
+export interface PageMotionOptions {
   containerRef: RefObject<HTMLElement | null>;
+  pageKey?: string;
+  isHome?: boolean;
   skipAnimation?: boolean;
 }
 
-export function usePageMotion({ containerRef, skipAnimation = false }: PageMotionOptions) {
-  useGSAP(
-    () => {
-      if (!containerRef.current || skipAnimation) return;
+/**
+ * usePageMotion - Coordinates restrained, purposeful entrance and section reveals.
+ *
+ * Guarantees:
+ * - Content is immediately readable; no long staggers or stuck hidden states.
+ * - Reverts all active timelines and ScrollTriggers on route change / unmount.
+ * - Live reduced-motion changes instantly clear animated properties.
+ * - Coordinates Home identity entry with CameraRig settling.
+ */
+export function usePageMotion({
+  containerRef,
+  pageKey,
+  isHome = false,
+  skipAnimation = false,
+}: PageMotionOptions): void {
+  useEffect(() => {
+    const root = containerRef.current;
+    if (!root || skipAnimation) return;
 
+    // If reduced motion is active, clear all props and ensure full visibility
+    if (isReducedMotion()) {
+      const allAnimated = root.querySelectorAll(
+        '.home-identity-row, .home-intro-paragraph, .home-education-line, .home-cta-row, .portfolio-project-card, .detail-hero-left, .detail-illustration-figure, .detail-grid-layout, .about-section, .resume-section'
+      );
+      if (allAnimated.length > 0) {
+        gsap.set(allAnimated, { clearProps: 'all', opacity: 1 });
+      }
+      resetCameraTransition();
+      return;
+    }
+
+    // Create a scoped GSAP context for automatic cleanup on unmount
+    const ctx = gsap.context(() => {
       const mm = gsap.matchMedia();
 
-      // Standard animation for users who DO NOT prefer reduced motion
       mm.add('(prefers-reduced-motion: no-preference)', () => {
-        // 1. Hero text stagger reveal
-        const heroTl = gsap.timeline({ defaults: { ease: 'power3.out', duration: 0.8 } });
+        // 1. Home Identity & Copy Entry + Camera Settling
+        if (isHome) {
+          triggerHomeCameraSettling(false);
 
-        const eyebrow = containerRef.current?.querySelector('.hero-eyebrow');
-        const headline1 = containerRef.current?.querySelector('.hero-headline-1');
-        const headline2 = containerRef.current?.querySelector('.hero-headline-2');
-        const subhead = containerRef.current?.querySelector('.hero-subhead');
-        const heroCta = containerRef.current?.querySelector('.hero-cta');
-        const routeGraphic = containerRef.current?.querySelector('.hero-route-svg');
-
-        if (eyebrow) {
-          heroTl.fromTo(eyebrow, { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6 });
-        }
-        if (headline1) {
-          heroTl.fromTo(headline1, { y: 25, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7 }, '-=0.4');
-        }
-        if (headline2) {
-          heroTl.fromTo(headline2, { y: 25, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7 }, '-=0.5');
-        }
-        if (subhead) {
-          heroTl.fromTo(subhead, { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6 }, '-=0.4');
-        }
-        if (heroCta) {
-          heroTl.fromTo(heroCta, { y: 15, opacity: 0 }, { y: 0, opacity: 1, duration: 0.6 }, '-=0.4');
-        }
-
-        // 2. Route SVG line drawing animation
-        if (routeGraphic) {
-          const path = routeGraphic.querySelector('path.route-path') as SVGPathElement | null;
-          const dots = routeGraphic.querySelectorAll('.route-dot');
-
-          if (path) {
-            const length = path.getTotalLength ? path.getTotalLength() : 200;
-            gsap.set(path, {
-              strokeDasharray: length,
-              strokeDashoffset: length
-            });
-            heroTl.to(path, {
-              strokeDashoffset: 0,
-              duration: 1.2,
-              ease: 'power2.inOut'
-            }, '-=0.3');
-          }
-
-          if (dots.length > 0) {
-            heroTl.fromTo(dots, { scale: 0, opacity: 0 }, {
-              scale: 1,
-              opacity: 1,
-              stagger: 0.15,
-              duration: 0.4,
-              ease: 'back.out(2)'
-            }, '-=0.8');
-          }
-        }
-
-        // 3. ScrollTrigger reveals for content sections
-        const sections = containerRef.current?.querySelectorAll('.scroll-reveal-section');
-        sections?.forEach((section) => {
-          gsap.fromTo(
-            section,
-            { y: 35, opacity: 0 },
-            {
-              y: 0,
-              opacity: 1,
-              duration: 0.8,
-              ease: 'power2.out',
-              scrollTrigger: {
-                trigger: section,
-                start: 'top 85%',
-                toggleActions: 'play none none none',
-                once: true
-              }
-            }
+          const heroElements = root.querySelectorAll(
+            '.home-identity-row, .home-intro-paragraph, .home-education-line, .home-cta-row'
           );
-        });
 
-        // 4. Staggered reveal for project cards
-        const projectCards = containerRef.current?.querySelectorAll('.project-card');
-        if (projectCards && projectCards.length > 0) {
+          if (heroElements.length > 0) {
+            gsap.fromTo(
+              heroElements,
+              { y: 12, opacity: 0 },
+              {
+                y: 0,
+                opacity: 1,
+                duration: 0.45,
+                stagger: 0.06,
+                ease: 'power2.out',
+                clearProps: 'transform',
+              }
+            );
+          }
+        }
+
+        // 2. Project Cards Staggered Reveal
+        const projectCards = root.querySelectorAll('.portfolio-project-card');
+        if (projectCards.length > 0) {
           gsap.fromTo(
             projectCards,
-            { y: 30, opacity: 0 },
+            { y: 14, opacity: 0 },
             {
               y: 0,
               opacity: 1,
-              duration: 0.7,
-              stagger: 0.15,
+              duration: 0.4,
+              stagger: 0.07,
               ease: 'power2.out',
-              scrollTrigger: {
-                trigger: '.projects-grid',
-                start: 'top 82%',
-                toggleActions: 'play none none none',
-                once: true
-              }
+              clearProps: 'transform',
+            }
+          );
+        }
+
+        // 3. Project Detail Page Continuity & Diagram Settling
+        const detailFigure = root.querySelector('.detail-illustration-figure');
+        if (detailFigure) {
+          gsap.fromTo(
+            detailFigure,
+            { scale: 0.98, opacity: 0.2, y: 8 },
+            {
+              scale: 1,
+              opacity: 1,
+              y: 0,
+              duration: 0.5,
+              ease: 'power2.out',
+              clearProps: 'transform,scale',
+            }
+          );
+        }
+
+        const detailHeroLeft = root.querySelector('.detail-hero-left');
+        if (detailHeroLeft) {
+          gsap.fromTo(
+            detailHeroLeft.children,
+            { y: 8, opacity: 0.2 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.4,
+              stagger: 0.04,
+              ease: 'power2.out',
+              clearProps: 'transform',
+            }
+          );
+        }
+
+        // 4. Content Sections / Narrative Blocks (About, Resume, Detail grids)
+        const contentSections = root.querySelectorAll(
+          '.about-block, .resume-card, .detail-block, .detail-metrics-col'
+        );
+        if (contentSections.length > 0 && !isHome) {
+          gsap.fromTo(
+            contentSections,
+            { y: 10, opacity: 0.2 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.35,
+              stagger: 0.05,
+              ease: 'power2.out',
+              clearProps: 'transform',
             }
           );
         }
       });
 
-      // Reduced motion overrides: show elements immediately
       mm.add('(prefers-reduced-motion: reduce)', () => {
-        const animatedElements = containerRef.current?.querySelectorAll(
-          '.hero-eyebrow, .hero-headline-1, .hero-headline-2, .hero-subhead, .hero-cta, .scroll-reveal-section, .project-card'
-        );
-        if (animatedElements) {
-          gsap.set(animatedElements, { opacity: 1, y: 0, clearProps: 'all' });
-        }
+        resetCameraTransition();
+        const all = root.querySelectorAll('*');
+        gsap.set(all, { clearProps: 'all', opacity: 1 });
       });
+    }, root);
 
-      return () => {
-        mm.revert();
-      };
-    },
-    { scope: containerRef, dependencies: [skipAnimation] }
-  );
+    // Subscribe to live reduced motion toggles
+    const unsubscribeReduced = subscribeReducedMotion((reduced) => {
+      if (reduced) {
+        ctx.revert();
+        resetCameraTransition();
+        const allAnimated = root.querySelectorAll('*');
+        gsap.set(allAnimated, { clearProps: 'all', opacity: 1 });
+      }
+    });
+
+    return () => {
+      unsubscribeReduced();
+      ctx.revert();
+      if (isHome) {
+        resetCameraTransition();
+      }
+    };
+  }, [containerRef, pageKey, isHome, skipAnimation]);
 }

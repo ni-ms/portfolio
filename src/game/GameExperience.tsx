@@ -160,7 +160,7 @@ export function GameExperience({
         if (cancelFocusRestoreRef.current) return;
         const btn =
           enterButtonRef.current ||
-          rootRef.current?.querySelector<HTMLElement>('[data-testid="enter-play-btn"]');
+          rootRef.current?.querySelector<HTMLElement>('[data-testid=\"enter-play-btn\"]');
         if (btn && typeof btn.focus === 'function') {
           btn.focus();
         }
@@ -185,7 +185,7 @@ export function GameExperience({
         if (!root) return;
 
         const focusableSelectors =
-          'button:not([disabled]), [href]:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+          'button:not([disabled]), [href]:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex=\"-1\"])';
         const focusableElements = Array.from(
           root.querySelectorAll<HTMLElement>(focusableSelectors)
         ).filter((el) => el.offsetParent !== null);
@@ -531,6 +531,7 @@ export function GameExperience({
               role="region"
               aria-label="Checkpoint reached"
               data-testid="checkpoint-action-banner"
+              className="checkpoint-acknowledge-active"
               style={{
                 alignSelf: 'center',
                 display: 'flex',
@@ -726,6 +727,7 @@ export function GameExperience({
               role="region"
               aria-label="Checkpoint reached"
               data-testid="checkpoint-action-banner"
+              className="checkpoint-acknowledge-active"
               style={{
                 position: 'relative',
                 zIndex: 10,

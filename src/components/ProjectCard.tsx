@@ -23,6 +23,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     return (
       <article
         className="portfolio-project-card is-compact"
+        data-project-slug={project.slug}
+        data-testid={`project-card-${project.slug}`}
         aria-labelledby={`project-card-heading-${project.slug}`}
       >
         <a
@@ -79,6 +81,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     return (
       <article
         className="portfolio-project-card is-featured-row"
+        data-project-slug={project.slug}
+        data-testid={`project-card-${project.slug}`}
         aria-labelledby={`project-card-heading-${project.slug}`}
       >
         <a
@@ -157,6 +161,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   return (
     <article
       className="portfolio-project-card is-standard"
+      data-project-slug={project.slug}
+      data-testid={`project-card-${project.slug}`}
       aria-labelledby={`project-card-heading-${project.slug}`}
     >
       <a

@@ -1,5 +1,6 @@
-import { ReactNode } from 'react';
+import { ReactNode, useRef, useEffect } from 'react';
 import '../styles/pages.css';
+import '../styles/motion.css';
 import { HomePage } from './HomePage';
 import { ProjectsPage } from './ProjectsPage';
 import { ProjectDetailPage } from './ProjectDetailPage';
@@ -7,6 +8,8 @@ import { ResumePage } from './ResumePage';
 import { AboutPage } from './AboutPage';
 import { NotFoundPage } from './NotFoundPage';
 import { getProjectBySlug, ProjectSlug } from '../content/realPortfolio';
+import { usePageMotion } from '../motion/usePageMotion';
+import { initThemeMotion } from '../motion/themeMotion';
 
 export interface PortfolioPagesProps {
   path: string;
@@ -14,9 +17,10 @@ export interface PortfolioPagesProps {
 }
 
 /**
- * PortfolioPages - Unified route view component conforming to T03 contract.
+ * PortfolioPages - Unified route view component conforming to T03 & T07 contracts.
  *
  * Owns route page markup including main#main-content tabIndex={-1}.
+ * Coordinates restrained, purposeful motion and cleans up timelines on route changes.
  * Renders the 7 approved routes + real 404:
  *   - / (Home, reserves gameSlot)
  *   - /projects (Projects index)
@@ -32,6 +36,20 @@ export interface PortfolioPagesProps {
 export default function PortfolioPages({ path, gameSlot }: PortfolioPagesProps) {
   // Normalize path (strip trailing slash if length > 1)
   const normalizedPath = path.length > 1 ? path.replace(/\/$/, '') : path;
+  const isHome = normalizedPath === '/';
+  const mainRef = useRef<HTMLElement>(null);
+
+  // Initialize theme transition listener (skips automatically when reduced-motion preferred)
+  useEffect(() => {
+    return initThemeMotion();
+  }, []);
+
+  // Coordinated route motion lifecycle: cleans up obsolete timelines and ScrollTriggers on route change
+  usePageMotion({
+    containerRef: mainRef,
+    pageKey: normalizedPath,
+    isHome,
+  });
 
   const renderContent = () => {
     if (normalizedPath === '/') {
@@ -63,7 +81,7 @@ export default function PortfolioPages({ path, gameSlot }: PortfolioPagesProps) 
   };
 
   return (
-    <main id="main-content" tabIndex={-1} className="portfolio-main">
+    <main id="main-content" tabIndex={-1} className="portfolio-main" ref={mainRef}>
       {renderContent()}
     </main>
   );

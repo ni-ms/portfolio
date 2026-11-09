@@ -1,7 +1,8 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useRef } from 'react';
 import { portfolioContent } from '../content/realPortfolio';
 import { PhotoPlaceholder } from '../components/PhotoPlaceholder';
 import { ProjectCard } from '../components/ProjectCard';
+import { usePageMotion } from '../motion/usePageMotion';
 
 interface HomePageProps {
   gameSlot?: ReactNode;
@@ -9,9 +10,17 @@ interface HomePageProps {
 
 export const HomePage: React.FC<HomePageProps> = ({ gameSlot }) => {
   const { identity, home, projects } = portfolioContent;
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Purposeful GSAP motion coordination: Home identity & copy entry + Camera settling
+  usePageMotion({
+    containerRef,
+    isHome: true,
+    pageKey: 'home',
+  });
 
   return (
-    <div className="home-page-container">
+    <div ref={containerRef} className="home-page-container">
       {/* 1. Desktop Side-by-Side Hero (Identity & Actions Left, Game Slot Right) */}
       <section className="home-hero-section" aria-labelledby="home-owner-heading">
         <div className="home-hero-grid">

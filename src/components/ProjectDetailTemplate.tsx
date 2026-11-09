@@ -4,28 +4,39 @@ import { PhotoPlaceholder } from './PhotoPlaceholder';
 import { BenchmarkComparison } from './BenchmarkComparison';
 import { ProjectMetrics } from './ProjectMetrics';
 
-interface ProjectDetailTemplateProps {  project: PortfolioProject;
+interface ProjectDetailTemplateProps {
+  project: PortfolioProject;
 }
 
-const illustrationMap: Record<string, { src: string; alt: string }> = {  fastcode: {    src: '/images/projects/fastcode-architecture.svg',
+const illustrationMap: Record<string, { src: string; alt: string }> = {
+  fastcode: {
+    src: '/images/projects/fastcode-architecture.svg',
     alt: 'FastCode CPU kernel architecture diagram showing input packing, AVX2 FMA registers, and benchmark outcome',
   },
-  scottypi: {    src: '/images/projects/scottypi-pipeline.svg',
+  scottypi: {
+    src: '/images/projects/scottypi-pipeline.svg',
     alt: 'ScottyPi hybrid retrieval architecture diagram showing CMU-SV corpus, BM25, dense retrieval, and RRF evaluation',
   },
-  langmetric: {    src: '/images/projects/langmetric-telemetry.svg',
+  langmetric: {
+    src: '/images/projects/langmetric-telemetry.svg',
     alt: 'Langmetric model trace telemetry pipeline diagram showing structured ingest, Rust service, and dashboard measures',
   },
 };
 
-export const ProjectDetailTemplate: React.FC<ProjectDetailTemplateProps> = ({ project }) => {  const allProjects = portfolioContent.projects;
+export const ProjectDetailTemplate: React.FC<ProjectDetailTemplateProps> = ({ project }) => {
+  const allProjects = portfolioContent.projects;
   const currentIndex = allProjects.findIndex((p) => p.slug === project.slug);
   const prevProject = currentIndex > 0 ? allProjects[currentIndex - 1] : allProjects[allProjects.length - 1];
   const nextProject = currentIndex < allProjects.length - 1 ? allProjects[currentIndex + 1] : allProjects[0];
 
   const illustration = illustrationMap[project.slug];
 
-  return (    <article className="project-detail-container" aria-labelledby="project-title">
+  return (
+    <article
+      className="project-detail-container"
+      data-project-slug={project.slug}
+      aria-labelledby="project-title"
+    >
       {/* Top Breadcrumb Nav */}
       <nav className="detail-breadcrumb-nav" aria-label="Breadcrumb">
         <a href="/projects" className="detail-back-link">
@@ -61,28 +72,35 @@ export const ProjectDetailTemplate: React.FC<ProjectDetailTemplateProps> = ({ pr
           <p className="detail-lead-summary">{project.details.fullSummary || project.description}</p>
 
           <div className="detail-tags-row" aria-label="Technologies used">
-            {project.tags.map((tag) => (              <span key={tag} className="detail-tag-pill">
+            {project.tags.map((tag) => (
+              <span key={tag} className="detail-tag-pill">
                 {tag}
               </span>
             ))}
           </div>
 
-          {project.url && (            <div className="detail-action-links">
+          {project.url && (
+            <div className="detail-action-links">
               <a
                 href={project.url}
                 target="_blank"
                 rel="noreferrer"
                 className="detail-cta-button"
               >
-                {project.urlLabel || 'Visit Project ↗' || 'Visit Project ↗'}
+                {project.urlLabel || 'Visit Project ↗'}
               </a>
             </div>
           )}
         </div>
 
         {/* Right Column: Technical Architecture Illustration */}
-        {illustration && (          <div className="detail-hero-right">
-            <figure className="detail-illustration-figure">
+        {illustration && (
+          <div className="detail-hero-right">
+            <figure
+              className="detail-illustration-figure"
+              data-testid="detail-illustration-figure"
+              data-project-slug={project.slug}
+            >
               <img
                 src={illustration.src}
                 alt={illustration.alt}
@@ -109,12 +127,13 @@ export const ProjectDetailTemplate: React.FC<ProjectDetailTemplateProps> = ({ pr
           <div className="detail-block">
             <h2 className="detail-section-heading">Approach &amp; Systems Architecture</h2>
             <ul className="detail-approach-list">
-              {project.details.approach.map((item, idx) => (                <li key={idx} className="detail-approach-item">
+              {project.details.approach.map((item, idx) => (
+                <li key={idx} className="detail-approach-item">
                   <span className="approach-bullet-mark" aria-hidden="true">■</span>
                   <span>{item}</span>
                 </li>
-              ))}
-            </ul>
+              ))
+            }</ul>
           </div>
         </section>
 
@@ -128,7 +147,8 @@ export const ProjectDetailTemplate: React.FC<ProjectDetailTemplateProps> = ({ pr
               theoreticalPeakPercent={project.details.theoreticalSingleCorePeakPercent}
               qualifier={project.details.qualifier}
             />
-          ) : (            <ProjectMetrics slug={project.slug} details={project.details} />
+          ) : (
+            <ProjectMetrics slug={project.slug} details={project.details} />
           )}
         </section>
       </div>

@@ -1,0 +1,60 @@
+{
+  "timestamp": "2026-11-09T18:51:11.745Z",
+  "checks": [
+    {
+      "check": "Home Dark Identity Visible",
+      "opacity": "1",
+      "pass": true
+    },
+    {
+      "check": "Theme Switch to Light",
+      "theme": "light",
+      "pass": true
+    },
+    {
+      "check": "FastCode Baseline Bar Width",
+      "width": "100%",
+      "pass": true
+    },
+    {
+      "check": "FastCode Optimized Bar Width",
+      "width": "78.8%",
+      "pass": true
+    },
+    {
+      "check": "FastCode 684 µs Text",
+      "pass": true
+    },
+    {
+      "check": "FastCode 539 µs Text",
+      "pass": true
+    },
+    {
+      "check": "FastCode 21% Latency Reduction",
+      "pass": true
+    },
+    {
+      "check": "FastCode Qualifier Text",
+      "pass": true
+    },
+    {
+      "check": "Initial Reduced Motion Immediate Opacity",
+      "opacity": "1",
+      "pass": true
+    },
+    {
+      "check": "Live Reduced Motion Switch Successful",
+      "pass": true
+    }
+  ],
+  "captures": [
+    "01-home-desktop-dark.png",
+    "02-home-desktop-light.png",
+    "03-fastcode-benchmark-dark.png",
+    "04-fastcode-benchmark-light.png",
+    "05-home-reduced-motion.png",
+    "06-fastcode-reduced-motion.png",
+    "07-home-live-reduced-motion.png",
+    "08-home-mobile-dark.png"
+  ]
+}

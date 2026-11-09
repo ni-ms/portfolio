@@ -5,6 +5,8 @@ import { GameMode } from '../types/game';
 import { CAMERA_PRESETS } from './courseConfig';
 import { isDeterministicReviewMode } from './quality';
 import { livePlayerTransform } from './playerTransform';
+import { useReducedMotion } from '../motion/reducedMotion';
+import { liveCameraTransition } from '../motion/cameraMotion';
 
 export interface CameraRigProps {
   mode?: GameMode;
@@ -43,11 +45,8 @@ export const CameraRig: React.FC<CameraRigProps> = ({
   const currentTarget = useRef(new THREE.Vector3().fromArray(RESPONSIVE_DESKTOP_OVERVIEW.target));
   const isReview = forceDeterministic || isDeterministicReviewMode();
 
-  // Detect system reduced motion preference
-  const prefersReducedMotion = useMemo(() => {
-    if (typeof window === 'undefined') return false;
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  }, []);
+  // Detect system reduced motion preference with live updates
+  const prefersReducedMotion = useReducedMotion();
 
   // Determine current preset based on mode, device, and measured canvas dimensions
   const targetPreset = useMemo(() => {
@@ -131,7 +130,18 @@ export const CameraRig: React.FC<CameraRigProps> = ({
       );
     }
 
-    // 3. Interpolate camera position & lookAt
+    // 3. Apply live GSAP transition target offsets (frame loop alone writes camera transforms)
+    if (!prefersReducedMotion && !isReview) {
+      tempCamPos.x += liveCameraTransition.posOffset.x;
+      tempCamPos.y += liveCameraTransition.posOffset.y;
+      tempCamPos.z += liveCameraTransition.posOffset.z;
+
+      tempTarget.x += liveCameraTransition.targetOffset.x;
+      tempTarget.y += liveCameraTransition.targetOffset.y;
+      tempTarget.z += liveCameraTransition.targetOffset.z;
+    }
+
+    // 4. Interpolate camera position & lookAt
     if (prefersReducedMotion || isReview) {
       // Snap instantly without drift
       currentTarget.current.copy(tempTarget);

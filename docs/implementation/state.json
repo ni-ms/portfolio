@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "phase": "executing",
-  "activeTicket": "T04",
+  "activeTicket": "T05",
   "tasks": {
     "T01": {
       "status": "done",
@@ -50,24 +50,20 @@
       ]
     },
     "T04": {
-      "status": "review",
+      "status": "done",
       "owner": "29765d14-774f-4a8c-842f-8cb907a20f84",
-      "resultCommit": null,
+      "resultCommit": "c6b9656",
       "report": "docs/implementation/reports/T04.md",
       "resultPatch": null,
       "branch": "codex/portfolio-T04-gameplay",
       "worktree": "/Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t04-gameplay",
       "baseCommit": "6211600b3f6030be422684d22d4908df5515b28b",
-      "candidateCommit": "e9c4ee38a7955721756b2069dc5ad593eb0293b9",
-      "reviewer": "fd6a9ad5-1fc8-499c-8080-16142de55261",
-      "reviewVerdict": "repair_review",
-      "repairCorrelation": "T04-repair2-30f6bdf",
-      "testsStatus": "candidate_review",
-      "testsCorrelation": "T04-tests-e9c4ee3",
-      "testsCandidateCommit": "6673ffbec13332d62413955b64e7fd49951ab223"
+      "reviewVerdict": "approved",
+      "integrationCommit": "c6b9656",
+      "sourceCommits": ["d62334d", "30f6bdf", "e9c4ee3", "6673ffb", "0cfb079", "eed0ed3", "36bd84e"]
     },
     "T05": {
-      "status": "pending",
+      "status": "active",
       "owner": null,
       "resultCommit": null,
       "report": "docs/implementation/reports/T05.md",

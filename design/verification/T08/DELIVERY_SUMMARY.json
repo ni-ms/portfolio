@@ -1,0 +1,92 @@
+{
+  "timestamp": "2026-11-09T19:44:52.589Z",
+  "layouts": [
+    {
+      "route": "/",
+      "theme": "dark",
+      "viewport": "1585x992",
+      "file": "home-dark-1585x992.png"
+    },
+    {
+      "route": "/projects",
+      "theme": "dark",
+      "viewport": "1585x992",
+      "file": "projects-dark-1585x992.png"
+    },
+    {
+      "route": "/projects/fastcode",
+      "theme": "dark",
+      "viewport": "1585x992",
+      "file": "fastcode-dark-1585x992.png"
+    },
+    {
+      "route": "/resume",
+      "theme": "dark",
+      "viewport": "1585x992",
+      "file": "resume-dark-1585x992.png"
+    },
+    {
+      "route": "/about",
+      "theme": "dark",
+      "viewport": "1585x992",
+      "file": "about-dark-1585x992.png"
+    },
+    {
+      "route": "/",
+      "theme": "light",
+      "viewport": "1585x992",
+      "file": "home-light-1585x992.png"
+    },
+    {
+      "route": "/projects",
+      "theme": "light",
+      "viewport": "1585x992",
+      "file": "projects-light-1585x992.png"
+    },
+    {
+      "route": "/projects/fastcode",
+      "theme": "light",
+      "viewport": "1585x992",
+      "file": "fastcode-light-1585x992.png"
+    },
+    {
+      "route": "/resume",
+      "theme": "light",
+      "viewport": "1585x992",
+      "file": "resume-light-1585x992.png"
+    },
+    {
+      "route": "/about",
+      "theme": "light",
+      "viewport": "1585x992",
+      "file": "about-light-1585x992.png"
+    }
+  ],
+  "viewports": [
+    {
+      "viewport": "desktop-1440",
+      "route": "/",
+      "file": "home-dark-desktop-1440.png"
+    },
+    {
+      "viewport": "phone-390",
+      "route": "/",
+      "file": "home-dark-phone-390.png"
+    },
+    {
+      "viewport": "phone-360",
+      "route": "/",
+      "file": "home-dark-phone-360.png"
+    },
+    {
+      "viewport": "tablet-768",
+      "route": "/",
+      "file": "home-dark-tablet-768.png"
+    },
+    {
+      "viewport": "landscape-844",
+      "route": "/",
+      "file": "home-dark-landscape-844.png"
+    }
+  ]
+}

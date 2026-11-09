@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "phase": "executing",
-  "activeTicket": "T08",
+  "phase": "completed",
+  "activeTicket": null,
   "tasks": {
     "T01": {
       "status": "done",
@@ -147,11 +147,12 @@
       "validation": "Root typecheck/88units/build PASS; motion e2e 28/28 PASS across 4 viewports; combined pages/foundation/game/gameplay 47pass 33explicit skips; single property ownership confirmed, benchmark reveals 100% and 78.8% factual, live reduced motion clears tweens and halts camera drift, restrained theme transition 220ms exempts 3D canvas."
     },
     "T08": {
-      "status": "pending",
-      "owner": null,
-      "resultCommit": null,
+      "status": "done",
+      "owner": "328379e6-9fdd-49e1-8842-9aeabbcf0abe",
+      "resultCommit": "HEAD",
       "report": "docs/implementation/reports/T08.md",
-      "resultPatch": null
+      "resultPatch": null,
+      "validation": "Root typecheck PASS (0 errors); Vitest 88/88 PASS; Vite build PASS (GameExperience lazy chunk 3.28 MB); Playwright full matrix 91 pass / 33 skips / 0 failures across all 4 viewports; 15 comprehensive delivery captures generated under design/verification/T08/."
     }
   }
 }

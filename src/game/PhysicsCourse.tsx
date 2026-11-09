@@ -176,7 +176,45 @@ export function PhysicsCourse({
         </RigidBody>
       ))}
 
-      {/* 6. CHECKPOINT SENSOR TRIGGERS */}
+      {/* 6. CANONICAL PERIMETER BALUSTRADES (Collision bounds derived from courseConfig) */}
+      {bounds.balustrades.map((b) => {
+        const dx = b.end[0] - b.start[0];
+        const dz = b.end[2] - b.start[2];
+        const len = Math.sqrt(dx * dx + dz * dz);
+        const midX = (b.start[0] + b.end[0]) / 2;
+        const midZ = (b.start[2] + b.end[2]) / 2;
+        const midY = b.start[1] + b.height / 2;
+        const angle = Math.atan2(dx, dz);
+
+        return (
+          <RigidBody
+            key={b.id}
+            type="fixed"
+            position={[midX, midY, midZ]}
+            rotation={[0, angle, 0]}
+            friction={0.2}
+            userData={{ type: 'barrier', name: b.name }}
+          >
+            {/* args in Rapier CuboidCollider: [halfWidth, halfHeight, halfLength] */}
+            <CuboidCollider args={[b.thickness / 2, b.height / 2, len / 2]} />
+          </RigidBody>
+        );
+      })}
+
+      {/* 7. CANONICAL ARCHITECTURAL OBSTACLES (Mast pedestal, hatch) */}
+      {bounds.architecturalObstacles.map((obs) => (
+        <RigidBody
+          key={obs.id}
+          type="fixed"
+          position={obs.position}
+          friction={0.5}
+          userData={{ type: 'obstacle', name: obs.name }}
+        >
+          <CuboidCollider args={[obs.size[0] / 2, obs.size[1] / 2, obs.size[2] / 2]} />
+        </RigidBody>
+      ))}
+
+      {/* 8. CHECKPOINT SENSOR TRIGGERS */}
       {CHECKPOINTS.map((cp) => (
         <RigidBody
           key={`sensor-${cp.id}`}
@@ -190,7 +228,7 @@ export function PhysicsCourse({
         </RigidBody>
       ))}
 
-      {/* 7. FALL KILL PLANE (Below entire diorama at Y = -4.0) */}
+      {/* 9. FALL KILL PLANE (Below entire diorama at Y = -4.0) */}
       <RigidBody
         type="fixed"
         position={[0, -4.0, 0]}

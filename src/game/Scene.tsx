@@ -54,7 +54,7 @@ const Lighting: React.FC<{
       <directionalLight
         position={[-14, 22, 12]}
         target={lightTarget}
-        intensity={isLight ? 1.65 : 1.85}
+        intensity={isLight ? 1.55 : 1.65}
         color={isLight ? '#FFFDF8' : '#EEF4F6'}
         castShadow={enableShadows}
         shadow-mapSize-width={shadowResolution}
@@ -69,24 +69,24 @@ const Lighting: React.FC<{
         shadow-normalBias={shadowNormalBias}
       />
 
-      {/* Soft Ambient Fill */}
+      {/* Soft Ambient Fill - prevents pitch-black shadow dropouts */}
       <ambientLight
-        color={isLight ? '#E6EAE7' : '#263133'}
-        intensity={isLight ? 0.75 : 0.55}
+        color={isLight ? '#DFE3E0' : '#323E40'}
+        intensity={isLight ? 0.70 : 0.80}
       />
 
       {/* Hemisphere Light (Sky tone to Ground tone) */}
       <hemisphereLight
-        color={isLight ? '#F4F8F5' : '#46585B'}
-        groundColor={isLight ? '#D0D6D1' : '#0E1212'}
-        intensity={isLight ? 0.55 : 0.45}
+        color={isLight ? '#F0F4F2' : '#52666A'}
+        groundColor={isLight ? '#CAD0CB' : '#1C2527'}
+        intensity={isLight ? 0.50 : 0.55}
       />
 
       {/* Subtle opposite rim fill light */}
       <directionalLight
         position={[14, 10, -12]}
-        intensity={isLight ? 0.25 : 0.35}
-        color={isLight ? '#C2C9C5' : '#29373A'}
+        intensity={isLight ? 0.30 : 0.40}
+        color={isLight ? '#BCC4C0' : '#35464A'}
       />
     </>
   );
@@ -212,7 +212,11 @@ export const Scene: React.FC<SceneProps> = ({
         {/* Soft atmospheric depth fog dissolving into portfolio theme background */}
         <fog
           attach="fog"
-          args={[theme === 'light' ? '#F2F1EA' : '#101414', 16, 48]}
+          args={[
+            theme === 'light' ? '#F2F1EA' : '#101414',
+            theme === 'light' ? 28 : 26,
+            theme === 'light' ? 68 : 64,
+          ]}
         />
 
         {/* Calibrated Lighting Rig */}

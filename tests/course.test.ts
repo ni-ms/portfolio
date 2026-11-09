@@ -253,3 +253,58 @@ describe('Ramp Configurations & Uphill Direction', () => {
     }
   });
 });
+
+describe("Balustrades, Obstacles & Material Isolation (R1 & R2)", () => {
+  it("defines 10 canonical perimeter balustrades in COURSE_BOUNDS", () => {
+    expect(COURSE_BOUNDS.balustrades).toHaveLength(10);
+    const ids = COURSE_BOUNDS.balustrades.map((b) => b.id);
+    expect(ids).toContain("balustrade-start-west");
+    expect(ids).toContain("balustrade-start-north");
+    expect(ids).toContain("balustrade-work-west");
+    expect(ids).toContain("balustrade-exp-north");
+    expect(ids).toContain("balustrade-resume-east");
+  });
+
+  it("Start Rooftop West balustrade blocks spawn fall-off at X=-5.6", () => {
+    const westBal = COURSE_BOUNDS.balustrades.find((b) => b.id === "balustrade-start-west");
+    expect(westBal).toBeDefined();
+    expect(westBal!.start[0]).toBe(-5.6);
+    expect(westBal!.end[0]).toBe(-5.6);
+    // Covers Z from 1.6 to 4.4, enclosing player spawn Z=3.5
+    expect(Math.min(westBal!.start[2], westBal!.end[2])).toBeLessThanOrEqual(3.5);
+    expect(Math.max(westBal!.start[2], westBal!.end[2])).toBeGreaterThanOrEqual(3.5);
+    expect(westBal!.height).toBeGreaterThanOrEqual(0.85);
+  });
+
+  it("Start Rooftop North balustrade preserves jump gap for stepping platform 1", () => {
+    const northBal = COURSE_BOUNDS.balustrades.find((b) => b.id === "balustrade-start-north");
+    expect(northBal).toBeDefined();
+    // Stops at X=-4.4, leaving [-4.4, -1.4] open for jumping to platform 1 at [-4.2, 1.8, 1.35]
+    expect(northBal!.end[0]).toBeLessThanOrEqual(-4.4);
+  });
+
+  it("defines solid architectural obstacles with physics bounds", () => {
+    expect(COURSE_BOUNDS.architecturalObstacles).toHaveLength(2);
+    const mastPedestal = COURSE_BOUNDS.architecturalObstacles.find((o) => o.id === "obstacle-mast-pedestal");
+    const hatch = COURSE_BOUNDS.architecturalObstacles.find((o) => o.id === "obstacle-roof-hatch");
+    expect(mastPedestal).toBeDefined();
+    expect(hatch).toBeDefined();
+    expect(mastPedestal!.size[0]).toBeGreaterThan(0.3);
+    expect(hatch!.size[0]).toBeGreaterThan(0.8);
+  });
+
+  it("limeMastBeacon material is strictly isolated from shared limeEmissive", () => {
+    expect(materials.limeMastBeacon).toBeDefined();
+    expect(materials.limeMastBeacon).not.toBe(materials.limeEmissive);
+
+    const initialSharedIntensity = materials.limeEmissive.emissiveIntensity;
+    materials.limeMastBeacon.emissiveIntensity = 0.2;
+    expect(materials.limeEmissive.emissiveIntensity).toBe(initialSharedIntensity);
+
+    materials.limeMastBeacon.emissiveIntensity = 1.8;
+    expect(materials.limeEmissive.emissiveIntensity).toBe(initialSharedIntensity);
+
+    // Reset beacon to 1.0
+    materials.limeMastBeacon.emissiveIntensity = 1.0;
+  });
+});

@@ -16,6 +16,22 @@ export interface SteppingPlatform {
   hasPillar?: boolean;
 }
 
+export interface BarrierDefinition {
+  id: string;
+  name: string;
+  start: [number, number, number];
+  end: [number, number, number];
+  height: number;
+  thickness: number;
+}
+
+export interface ArchitecturalObstacle {
+  id: string;
+  name: string;
+  position: [number, number, number];
+  size: [number, number, number];
+}
+
 export interface RampConfig {
   id: string;
   name: string;
@@ -136,8 +152,6 @@ export const RESUME_STAIRS_RAMP: RampConfig = {
   maxZ: 4.4,
   // Y-rotation = -0.7854 but full XYZ Euler gives world normal ≈ [0, 0.850, -0.527].
   // Actual uphill direction (from physics): +Z (walking toward higher Z goes up the ramp).
-  // The controller uses the live Rapier normal rather than this field; uphillDirXZ is
-  // documentation only and matches the verified live physics: uphill = +Z.
   uphillDirXZ: [0, 1],
 };
 
@@ -145,6 +159,128 @@ export const RAMP_DEFINITIONS: RampConfig[] = [
   START_STAIRS_RAMP,
   EXPLORATION_STAIRS_RAMP,
   RESUME_STAIRS_RAMP,
+];
+
+/**
+ * Canonical perimeter balustrades with real collision bounds.
+ * Traversal route gaps are deliberately kept open:
+ * - Start roof northwest corner open for first jump toward stepping platform 1 ([-4.2, 1.8, 1.35])
+ * - Start roof north-center open for stairs descent/ascent
+ * - Work roof east edge open for beam jump ([-1.8, 3.1, -3.2])
+ * - Explorations east terrace open for stepping stones jump ([3.6, 2.95, 0.0])
+ * - Résumé north edge open for landing
+ */
+export const BALUSTRADE_DEFINITIONS: BarrierDefinition[] = [
+  // 1. Start Rooftop West Balustrade (guards drop-off to the west, preventing fall on hold A)
+  {
+    id: 'balustrade-start-west',
+    name: 'start-rooftop-west-balustrade',
+    start: [-5.6, 1.2, 4.4],
+    end: [-5.6, 1.2, 1.6],
+    height: 0.88,
+    thickness: 0.08,
+  },
+  // 2. Start Rooftop North Corner (stops west-bound drift, leaves jump gap [-3.5.. -1.4] open)
+  {
+    id: 'balustrade-start-north',
+    name: 'start-rooftop-north-balustrade',
+    start: [-5.6, 1.2, 1.6],
+    end: [-4.4, 1.2, 1.6],
+    height: 0.88,
+    thickness: 0.08,
+  },
+  // 3. Start Lower Landing South Balustrade
+  {
+    id: 'balustrade-start-landing-south',
+    name: 'start-landing-south-balustrade',
+    start: [-4.7, 0.6, 6.4],
+    end: [-2.3, 0.6, 6.4],
+    height: 0.88,
+    thickness: 0.08,
+  },
+  // 4. Work Rooftop West Balustrade
+  {
+    id: 'balustrade-work-west',
+    name: 'work-rooftop-west-balustrade',
+    start: [-6.3, 3.8, -5.6],
+    end: [-6.3, 3.8, -1.4],
+    height: 0.88,
+    thickness: 0.08,
+  },
+  // 5. Work Rooftop North Balustrade
+  {
+    id: 'balustrade-work-north',
+    name: 'work-rooftop-north-balustrade',
+    start: [-6.3, 3.8, -5.6],
+    end: [-1.7, 3.8, -5.6],
+    height: 0.88,
+    thickness: 0.08,
+  },
+  // 6. Work Rooftop East Return (leaves jump gap open at z=-3.2)
+  {
+    id: 'balustrade-work-east',
+    name: 'work-rooftop-east-balustrade',
+    start: [-1.7, 3.8, -5.6],
+    end: [-1.7, 3.8, -3.8],
+    height: 0.88,
+    thickness: 0.08,
+  },
+  // 7. Exploration Upper Terrace North Balustrade
+  {
+    id: 'balustrade-exp-north',
+    name: 'explorations-north-balustrade',
+    start: [0.2, 2.6, -2.3],
+    end: [3.6, 2.6, -2.3],
+    height: 0.88,
+    thickness: 0.08,
+  },
+  // 8. Exploration Lower Terrace South Balustrade
+  {
+    id: 'balustrade-exp-south',
+    name: 'explorations-south-balustrade',
+    start: [-1.3, 1.8, 2.4],
+    end: [3.3, 1.8, 2.4],
+    height: 0.88,
+    thickness: 0.08,
+  },
+  // 9. Résumé Rooftop East Balustrade
+  {
+    id: 'balustrade-resume-east',
+    name: 'resume-rooftop-east-balustrade',
+    start: [8.5, 4.2, -0.7],
+    end: [8.5, 4.2, 3.7],
+    height: 0.88,
+    thickness: 0.08,
+  },
+  // 10. Résumé Rooftop North Return
+  {
+    id: 'balustrade-resume-north',
+    name: 'resume-rooftop-north-balustrade',
+    start: [5.3, 4.2, -0.7],
+    end: [8.5, 4.2, -0.7],
+    height: 0.88,
+    thickness: 0.08,
+  },
+];
+
+/**
+ * Solid architectural obstacles with matching Rapier collision colliders.
+ */
+export const ARCHITECTURAL_OBSTACLES: ArchitecturalObstacle[] = [
+  // Communications mast pedestal base on Work rooftop
+  {
+    id: 'obstacle-mast-pedestal',
+    name: 'mast-pedestal',
+    position: [-5.8, 3.9, -5.1],
+    size: [0.45, 0.2, 0.45],
+  },
+  // Roof access hatch on Work rooftop
+  {
+    id: 'obstacle-roof-hatch',
+    name: 'roof-access-hatch',
+    position: [-2.4, 3.88, -2.1],
+    size: [0.94, 0.16, 0.94],
+  },
 ];
 
 export const COURSE_BOUNDS = {
@@ -305,18 +441,31 @@ export const COURSE_BOUNDS = {
       hasPillar: true,
     },
   ] as SteppingPlatform[],
+
+  // Canonical balustrades
+  balustrades: BALUSTRADE_DEFINITIONS,
+
+  // Canonical architectural obstacles
+  architecturalObstacles: ARCHITECTURAL_OBSTACLES,
 };
 
+/**
+ * Calibrated camera presets:
+ * - desktopOverview: Architectural hero perspective framing the entire rooftop diorama
+ *   from Start (X=-5.6) through Résumé (X=8.5) and Résumé pergola roof (Y=6.6) without clipping.
+ * - mobilePreview: Centered over Start/Work exploration corridor with prominent player scale.
+ * - mobilePlay: Third-person chase cam angled behind runner.
+ */
 export const CAMERA_PRESETS: Record<'desktopOverview' | 'mobilePreview' | 'mobilePlay', CameraPreset> = {
   desktopOverview: {
-    position: [-3.0, 19.5, 20.0],
-    target: [-2.5, 2.2, 0.0],
+    position: [0.2, 14.5, 23.5],
+    target: [-0.2, 2.6, 0.2],
     zoom: 1.0,
   },
   mobilePreview: {
-    position: [0.5, 17.0, 17.5],
-    target: [0.5, 2.0, 0.0],
-    zoom: 0.85,
+    position: [-1.5, 17.5, 23.0],
+    target: [-1.5, 2.2, 0.5],
+    zoom: 0.95,
   },
   mobilePlay: {
     position: [-3.5, 11.5, 13.5],

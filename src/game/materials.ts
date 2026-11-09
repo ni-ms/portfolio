@@ -123,109 +123,109 @@ const skylineWindowMap = createSkylineWindowTexture();
 // 1. Concrete Materials
 const concreteMainMat = new THREE.MeshStandardMaterial({
   color: '#C2C5C1',
-  roughness: 0.90,
-  metalness: 0.02,
+  roughness: 0.88,
+  metalness: 0.04,
 });
 if (concreteNoise) concreteMainMat.roughnessMap = concreteNoise;
 
 const concreteLightMat = new THREE.MeshStandardMaterial({
-  color: '#D5D8D4',
-  roughness: 0.88,
-  metalness: 0.02,
+  color: '#CDD0CC',
+  roughness: 0.85,
+  metalness: 0.04,
 });
 if (concreteNoise) concreteLightMat.roughnessMap = concreteNoise;
 
 const concreteDarkMat = new THREE.MeshStandardMaterial({
-  color: '#9E9E9B',
-  roughness: 0.92,
-  metalness: 0.03,
+  color: '#8E928F',
+  roughness: 0.90,
+  metalness: 0.05,
 });
 if (concreteNoise) concreteDarkMat.roughnessMap = concreteNoise;
 
 const concretePillarMat = new THREE.MeshStandardMaterial({
-  color: '#B0B4B0',
-  roughness: 0.91,
-  metalness: 0.02,
+  color: '#A6AAA6',
+  roughness: 0.89,
+  metalness: 0.04,
 });
 if (concreteNoise) concretePillarMat.roughnessMap = concreteNoise;
 
 const concreteTrimMat = new THREE.MeshStandardMaterial({
-  color: '#A8ABA7',
-  roughness: 0.86,
-  metalness: 0.03,
+  color: '#9DA19D',
+  roughness: 0.82,
+  metalness: 0.06,
 });
 
 const concreteParapetMat = new THREE.MeshStandardMaterial({
   color: '#7D827F',
   roughness: 0.88,
-  metalness: 0.02,
+  metalness: 0.05,
 });
 
 const concretePaverMat = new THREE.MeshStandardMaterial({
-  color: '#B2B5B1',
-  roughness: 0.86,
-  metalness: 0.02,
+  color: '#A8ABA7',
+  roughness: 0.82,
+  metalness: 0.04,
 });
 if (paverTileMap) concretePaverMat.roughnessMap = paverTileMap;
 
 // 2. Glass & Balustrades
 const glassBalustradeMat = new THREE.MeshStandardMaterial({
-  color: '#223338',
-  roughness: 0.12,
-  metalness: 0.15,
+  color: '#2A3E45',
+  roughness: 0.08,
+  metalness: 0.25,
   transparent: true,
-  opacity: 0.38,
+  opacity: 0.42,
   side: THREE.DoubleSide,
   depthWrite: false,
 });
 
 // 3. Metals & Mechanical Equipment
 const metalRailsMat = new THREE.MeshStandardMaterial({
-  color: '#262E30',
-  roughness: 0.42,
-  metalness: 0.85,
+  color: '#2E383B',
+  roughness: 0.38,
+  metalness: 0.88,
 });
 
 const metalFrameMat = new THREE.MeshStandardMaterial({
-  color: '#343E40',
-  roughness: 0.48,
-  metalness: 0.78,
-});
-
-const hvacHousingMat = new THREE.MeshStandardMaterial({
-  color: '#434D50',
-  roughness: 0.52,
-  metalness: 0.65,
-});
-
-const hvacLouversMat = new THREE.MeshStandardMaterial({
-  color: '#1A1F21',
-  roughness: 0.72,
-  metalness: 0.50,
-});
-
-const hvacFanMat = new THREE.MeshStandardMaterial({
-  color: '#151819',
-  roughness: 0.58,
+  color: '#3A4649',
+  roughness: 0.42,
   metalness: 0.82,
 });
 
-const metalConduitMat = new THREE.MeshStandardMaterial({
-  color: '#384345',
-  roughness: 0.40,
+const hvacHousingMat = new THREE.MeshStandardMaterial({
+  color: '#4D595C',
+  roughness: 0.48,
+  metalness: 0.70,
+});
+
+const hvacLouversMat = new THREE.MeshStandardMaterial({
+  color: '#22292B',
+  roughness: 0.65,
+  metalness: 0.55,
+});
+
+const hvacFanMat = new THREE.MeshStandardMaterial({
+  color: '#1B2022',
+  roughness: 0.52,
   metalness: 0.85,
 });
 
+const metalConduitMat = new THREE.MeshStandardMaterial({
+  color: '#3E494C',
+  roughness: 0.38,
+  metalness: 0.86,
+});
+
 const metalHatchMat = new THREE.MeshStandardMaterial({
-  color: '#2D3538',
-  roughness: 0.46,
-  metalness: 0.75,
+  color: '#323B3E',
+  roughness: 0.44,
+  metalness: 0.76,
 });
 
 const metalMastMat = new THREE.MeshStandardMaterial({
-  color: '#2B3335',
-  roughness: 0.40,
-  metalness: 0.88,
+  color: '#30393C',
+  roughness: 0.38,
+  metalness: 0.90,
 });
 
 // 4. Acid-Lime (#D6FF64) Emissive Materials
@@ -233,6 +233,18 @@ const limeEmissiveMat = new THREE.MeshStandardMaterial({
   color: '#D6FF64',
   emissive: '#D6FF64',
   emissiveIntensity: 1.8,
+  roughness: 0.20,
+  metalness: 0.05,
+});
+
+/**
+ * Isolated material for Communications Mast obstruction beacon.
+ * Animating this material does NOT bleed into shared limeEmissive meshes (HVAC LEDs, pavilion).
+ */
+const limeMastBeaconMat = new THREE.MeshStandardMaterial({
+  color: '#D6FF64',
+  emissive: '#D6FF64',
+  emissiveIntensity: 1.0,
   roughness: 0.20,
   metalness: 0.05,
 });
@@ -320,14 +332,14 @@ const foliageAccentMat = new THREE.MeshStandardMaterial({
 // 7. Distant Futuristic Skyline
 const skylineTowerMat = new THREE.MeshStandardMaterial({
   color: '#141A1B',
-  roughness: 0.95,
-  metalness: 0.10,
+  roughness: 0.92,
+  metalness: 0.15,
 });
 
 const skylineTowerGlassMat = new THREE.MeshStandardMaterial({
-  color: '#1C2527',
-  roughness: 0.25,
-  metalness: 0.65,
+  color: '#1D272A',
+  roughness: 0.22,
+  metalness: 0.68,
 });
 if (skylineWindowMap) {
   skylineTowerGlassMat.map = skylineWindowMap;
@@ -368,6 +380,7 @@ export const materials = {
 
   // Acid-Lime (#D6FF64) Emissives
   limeEmissive: limeEmissiveMat,
+  limeMastBeacon: limeMastBeaconMat,
   limeFloorArrows: limeFloorArrowsMat,
   limeBeaconCore: limeBeaconCoreMat,
   limeBeaconRing: limeBeaconRingMat,
@@ -403,26 +416,30 @@ export function applyGameTheme(theme: 'dark' | 'light'): void {
 
     // Concrete architecture
     materials.concreteMain.color.set('#D5D8D4');
-    materials.concreteLight.color.set('#E2E5E1');
-    materials.concreteDark.color.set('#B8BCB7');
-    materials.concretePillar.color.set('#C4C8C3');
-    materials.concreteTrim.color.set('#B4B8B3');
-    materials.concreteParapet.color.set('#CCD0CB');
-    materials.concretePaver.color.set('#DCE0DC');
+    materials.concreteLight.color.set('#D8DBD7');
+    materials.concreteDark.color.set('#AAB0A9');
+    materials.concretePillar.color.set('#BAC0B9');
+    materials.concreteTrim.color.set('#A2A8A1');
+    materials.concreteParapet.color.set('#BCC2BB');
+    materials.concretePaver.color.set('#C2C6C1');
 
     // Metals
-    materials.metalRails.color.set('#586466');
-    materials.metalFrame.color.set('#505A5D');
-    materials.hvacHousing.color.set('#687476');
-    materials.hvacLouvers.color.set('#3E484A');
-    materials.hvacFan.color.set('#30383A');
-    materials.metalConduit.color.set('#6A7678');
-    materials.metalHatch.color.set('#4E585B');
-    materials.metalMast.color.set('#4A5659');
+    materials.metalRails.color.set('#4D5C5F');
+    materials.metalFrame.color.set('#556468');
+    materials.hvacHousing.color.set('#6C7B7E');
+    materials.hvacLouvers.color.set('#3A4548');
+    materials.hvacFan.color.set('#2C3638');
+    materials.metalConduit.color.set('#5E6D70');
+    materials.metalHatch.color.set('#526064');
+    materials.metalMast.color.set('#4E5C60');
 
     // Glass balustrades
-    materials.glassBalustrade.color.set('#9AB8C0');
-    materials.glassBalustrade.opacity = 0.32;
+    materials.glassBalustrade.color.set('#90B0BC');
+    materials.glassBalustrade.opacity = 0.38;
+
+    // Mast beacon
+    materials.limeMastBeacon.color.set('#D6FF64');
+    materials.limeMastBeacon.emissive.set('#D6FF64');
 
     // Foliage
     materials.foliageMain.color.set('#3D5438');
@@ -431,7 +448,7 @@ export function applyGameTheme(theme: 'dark' | 'light'): void {
 
     // Distant skyline
     materials.skylineTower.color.set('#D0D5D2');
-    materials.skylineTowerGlass.color.set('#B8C2BF');
+    materials.skylineTowerGlass.color.set('#BDC7C4');
   } else {
     // Ground & base
     materials.groundSlab.color.set('#121717');
@@ -441,26 +458,30 @@ export function applyGameTheme(theme: 'dark' | 'light'): void {
 
     // Concrete architecture
     materials.concreteMain.color.set('#C2C5C1');
-    materials.concreteLight.color.set('#D5D8D4');
-    materials.concreteDark.color.set('#9E9E9B');
-    materials.concretePillar.color.set('#B0B4B0');
-    materials.concreteTrim.color.set('#A8ABA7');
-    materials.concreteParapet.color.set('#7D827F');
-    materials.concretePaver.color.set('#B2B5B1');
+    materials.concreteLight.color.set('#CDD0CC');
+    materials.concreteDark.color.set('#8E928F');
+    materials.concretePillar.color.set('#A6AAA6');
+    materials.concreteTrim.color.set('#9DA19D');
+    materials.concreteParapet.color.set('#707572');
+    materials.concretePaver.color.set('#A8ABA7');
 
     // Metals
-    materials.metalRails.color.set('#262E30');
-    materials.metalFrame.color.set('#343E40');
-    materials.hvacHousing.color.set('#434D50');
-    materials.hvacLouvers.color.set('#1A1F21');
-    materials.hvacFan.color.set('#151819');
-    materials.metalConduit.color.set('#384345');
-    materials.metalHatch.color.set('#2D3538');
-    materials.metalMast.color.set('#2B3335');
+    materials.metalRails.color.set('#2E383B');
+    materials.metalFrame.color.set('#3A4649');
+    materials.hvacHousing.color.set('#4D595C');
+    materials.hvacLouvers.color.set('#22292B');
+    materials.hvacFan.color.set('#1B2022');
+    materials.metalConduit.color.set('#3E494C');
+    materials.metalHatch.color.set('#323B3E');
+    materials.metalMast.color.set('#30393C');
 
     // Glass balustrades
-    materials.glassBalustrade.color.set('#223338');
-    materials.glassBalustrade.opacity = 0.38;
+    materials.glassBalustrade.color.set('#2A3E45');
+    materials.glassBalustrade.opacity = 0.42;
+
+    // Mast beacon
+    materials.limeMastBeacon.color.set('#D6FF64');
+    materials.limeMastBeacon.emissive.set('#D6FF64');
 
     // Foliage
     materials.foliageMain.color.set('#2B3B28');
@@ -469,6 +490,6 @@ export function applyGameTheme(theme: 'dark' | 'light'): void {
 
     // Distant skyline
     materials.skylineTower.color.set('#141A1B');
-    materials.skylineTowerGlass.color.set('#1C2527');
+    materials.skylineTowerGlass.color.set('#1D272A');
   }
 }

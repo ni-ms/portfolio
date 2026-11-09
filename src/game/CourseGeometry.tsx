@@ -364,9 +364,16 @@ const HVACUnit: React.FC<{
 const CommunicationsMast: React.FC<{ position: [number, number, number] }> = ({ position }) => {
   const beaconRef = useRef<THREE.Mesh>(null);
   const isReview = isDeterministicReviewMode();
+  const prefersReducedMotion =
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   useFrame(({ clock }) => {
-    if (beaconRef.current && !isReview) {
+    if (beaconRef.current) {
+      if (isReview || prefersReducedMotion) {
+        (beaconRef.current.material as THREE.MeshStandardMaterial).emissiveIntensity = 1.0;
+        return;
+      }
       const t = clock.getElapsedTime();
       const pulse = Math.sin(t * 3.5) > 0.4 ? 1.8 : 0.2;
       (beaconRef.current.material as THREE.MeshStandardMaterial).emissiveIntensity = pulse;
@@ -399,7 +406,7 @@ const CommunicationsMast: React.FC<{ position: [number, number, number] }> = ({ 
       </mesh>
 
       {/* Top Obstruction Beacon */}
-      <mesh ref={beaconRef} position={[0, 2.75, 0]} material={materials.limeEmissive}>
+      <mesh ref={beaconRef} position={[0, 2.75, 0]} material={materials.limeMastBeacon}>
         <sphereGeometry args={[0.05, 12, 12]} />
       </mesh>
     </group>
@@ -719,6 +726,7 @@ export const CourseGeometry: React.FC<CourseGeometryProps> = ({
     resumeRooftop,
     groundSlab,
     steppingPlatforms,
+    balustrades,
   } = COURSE_BOUNDS;
 
   return (
@@ -783,19 +791,7 @@ export const CourseGeometry: React.FC<CourseGeometryProps> = ({
 
       <StartRooftopMarkings position={startRooftop.floorArrowsPosition} />
 
-      {/* Start Rooftop Glass & Steel Balustrades */}
-      <GlassBalustrade
-        start={[-5.6, 1.2, 4.4]}
-        end={[-5.6, 1.2, 1.6]}
-      />
-      <GlassBalustrade
-        start={[-5.6, 1.2, 1.6]}
-        end={[-3.5, 1.2, 1.6]}
-      />
-      <GlassBalustrade
-        start={[-4.7, 0.6, 6.4]}
-        end={[-2.3, 0.6, 6.4]}
-      />
+      
 
       {/* 2. BACK-LEFT ELEVATED WORK ROOFTOP (Checkpoint 01) */}
       <BeveledPlatform
@@ -822,19 +818,7 @@ export const CourseGeometry: React.FC<CourseGeometryProps> = ({
         id={CHECKPOINTS[1].id}
       />
 
-      {/* Work Rooftop Glass & Steel Balustrades */}
-      <GlassBalustrade
-        start={[-6.3, 3.8, -5.6]}
-        end={[-6.3, 3.8, -1.4]}
-      />
-      <GlassBalustrade
-        start={[-6.3, 3.8, -5.6]}
-        end={[-1.7, 3.8, -5.6]}
-      />
-      <GlassBalustrade
-        start={[-1.7, 3.8, -5.6]}
-        end={[-1.7, 3.8, -3.8]}
-      />
+      
 
       {/* 3. CENTRAL EXPLORATION ROOFTOP (Checkpoint 02) */}
       <BeveledPlatform
@@ -876,15 +860,7 @@ export const CourseGeometry: React.FC<CourseGeometryProps> = ({
         id={CHECKPOINTS[2].id}
       />
 
-      {/* Exploration Rooftop Glass & Steel Balustrades */}
-      <GlassBalustrade
-        start={[-1.6, 2.6, -2.3]}
-        end={[3.6, 2.6, -2.3]}
-      />
-      <GlassBalustrade
-        start={[-1.3, 1.8, 2.4]}
-        end={[3.3, 1.8, 2.4]}
-      />
+      
 
       {/* 4. FAR-RIGHT ELEVATED RÉSUMÉ ROOFTOP (Checkpoint 03) */}
       <BeveledPlatform
@@ -916,15 +892,7 @@ export const CourseGeometry: React.FC<CourseGeometryProps> = ({
         id={CHECKPOINTS[3].id}
       />
 
-      {/* Résumé Rooftop Glass & Steel Balustrades */}
-      <GlassBalustrade
-        start={[8.5, 4.2, -0.7]}
-        end={[8.5, 4.2, 3.7]}
-      />
-      <GlassBalustrade
-        start={[5.3, 4.2, -0.7]}
-        end={[8.5, 4.2, -0.7]}
-      />
+      
 
       {/* 5. STEPPING PLATFORMS & NARROW BEAMS */}
       {steppingPlatforms.map((plat) => (
@@ -937,6 +905,15 @@ export const CourseGeometry: React.FC<CourseGeometryProps> = ({
             surfacePavers={false}
           />
         </group>
+      ))}
+      {/* 6. CANONICAL PERIMETER BALUSTRADES (1:1 with physics colliders) */}
+      {balustrades.map((b) => (
+        <GlassBalustrade
+          key={b.id}
+          start={b.start}
+          end={b.end}
+          height={b.height}
+        />
       ))}
     </group>
   );

@@ -15,6 +15,14 @@ export interface CameraRigProps {
   forceDeterministic?: boolean;
 }
 
+// Responsive mobile preview preset: centers player/start and next landing (Work platform)
+// so that start launch cue, player, next landing, and 01/WORK label remain readable without clipping.
+const RESPONSIVE_MOBILE_PREVIEW = {
+  position: [-3.0, 10.5, 17.0] as [number, number, number],
+  target: [-3.2, 2.6, 0.5] as [number, number, number],
+  zoom: 1.0,
+};
+
 export const CameraRig: React.FC<CameraRigProps> = ({
   mode = 'preview',
   isMobile = false,
@@ -23,7 +31,7 @@ export const CameraRig: React.FC<CameraRigProps> = ({
   recenterSignal = 0,
   forceDeterministic = false,
 }) => {
-  const { camera } = useThree();
+  const { camera, size } = useThree();
   const currentTarget = useRef(new THREE.Vector3().fromArray(CAMERA_PRESETS.desktopOverview.target));
   const isReview = forceDeterministic || isDeterministicReviewMode();
 
@@ -33,23 +41,24 @@ export const CameraRig: React.FC<CameraRigProps> = ({
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }, []);
 
-  // Determine current preset based on mode and device
+  // Determine current preset based on mode, device, and measured canvas dimensions
   const targetPreset = useMemo(() => {
     if (mode === 'play-overlay' || mode === 'play-inline') {
       return CAMERA_PRESETS.mobilePlay;
     }
-    return isMobile ? CAMERA_PRESETS.mobilePreview : CAMERA_PRESETS.desktopOverview;
-  }, [mode, isMobile]);
+    const aspect = size.width / Math.max(1, size.height);
+    const isNarrow = isMobile || size.width < 640 || aspect < 1.55;
+    return isNarrow ? RESPONSIVE_MOBILE_PREVIEW : CAMERA_PRESETS.desktopOverview;
+  }, [mode, isMobile, size.width, size.height]);
 
-  // Recenter immediately when signal updates
+  // Recenter immediately when signal or targetPreset updates
   useEffect(() => {
-    const preset = isMobile ? CAMERA_PRESETS.mobilePreview : CAMERA_PRESETS.desktopOverview;
-    currentTarget.current.set(...preset.target);
+    currentTarget.current.set(...targetPreset.target);
     if (prefersReducedMotion || isReview) {
-      camera.position.set(...preset.position);
+      camera.position.set(...targetPreset.position);
       camera.lookAt(currentTarget.current);
     }
-  }, [recenterSignal, isMobile, camera, prefersReducedMotion, isReview]);
+  }, [recenterSignal, targetPreset, camera, prefersReducedMotion, isReview]);
 
   // Temp vectors for frame loop calculations
   const tempTarget = useMemo(() => new THREE.Vector3(), []);

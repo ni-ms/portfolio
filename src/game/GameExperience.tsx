@@ -283,7 +283,6 @@ export function GameExperience({
               position: 'relative',
               width: '100%',
               height: '100%',
-              minHeight: isTouchDevice ? '280px' : '420px',
               ...style,
             }
       }
@@ -473,6 +472,30 @@ export function GameExperience({
                 {String(unlockedCheckpointsCount).padStart(2, '0')} / 03
               </span>
 
+              <button
+                type="button"
+                data-testid="inline-expand-btn"
+                aria-label="Expand to full screen"
+                onClick={() => gameStore.getState().actions.setMode('play-overlay')}
+                style={{
+                  minWidth: '44px',
+                  minHeight: '44px',
+                  padding: '4px 10px',
+                  background: 'rgba(23, 29, 30, 0.85)',
+                  border: '1px solid rgba(242, 241, 234, 0.2)',
+                  borderRadius: '4px',
+                  fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  color: 'var(--color-text, #F2F1EA)',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                }}
+              >
+                EXPAND ↗
+              </button>
               <button
                 type="button"
                 data-testid="inline-exit-btn"

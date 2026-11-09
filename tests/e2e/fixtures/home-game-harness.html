@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>T06 HomeGame Integration Tracked Harness</title>
+  <link rel="stylesheet" href="/src/styles/tokens.css" />
+  <link rel="stylesheet" href="/src/styles/components.css" />
+  <link rel="stylesheet" href="/src/styles/pages.css" />
+  <link rel="stylesheet" href="/src/styles/home-game.css" />
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      max-width: 100vw;
+      overflow-x: hidden;
+      background: var(--color-bg, #101414);
+      color: var(--color-text, #F2F1EA);
+      font-family: var(--font-body, system-ui);
+    }
+    #harness-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      max-width: 100vw;
+      box-sizing: border-box;
+      background: rgba(23, 29, 30, 0.95);
+      border-bottom: 1px solid var(--color-border, #232C2D);
+      font-family: var(--font-mono, monospace);
+      font-size: 11px;
+    }
+    #harness-controls button {
+      padding: 4px 8px;
+      background: var(--color-surface, #171D1E);
+      border: 1px solid var(--color-border, #232C2D);
+      border-radius: 4px;
+      color: var(--color-text, #F2F1EA);
+      cursor: pointer;
+    }
+    #harness-controls button:hover {
+      border-color: var(--color-accent, #D6FF64);
+    }
+    #after-scroll {
+      height: 1200px;
+      padding: 32px;
+      background: var(--color-bg-subtle, #141919);
+      border-top: 1px solid var(--color-border, #232C2D);
+    }
+  </style>
+</head>
+<body>
+  <div id="home-game-harness-root"></div>
+  <script type="module" src="/tests/e2e/fixtures/home-game-harness.tsx"></script>
+</body>
+</html>

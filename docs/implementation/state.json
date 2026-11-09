@@ -131,10 +131,14 @@
     },
     "T07": {
       "status": "in_progress",
-      "owner": null,
+      "owner": "b0eb9dc6-fa65-4cab-b2e0-a779d01ddd66",
       "resultCommit": null,
       "report": "docs/implementation/reports/T07.md",
-      "resultPatch": null
+      "resultPatch": null,
+      "branch": "codex/portfolio-T07-motion",
+      "worktree": "/Users/nikms/.traycer/worktrees/ni-ms__portfolio/codex-portfolio-t07-motion",
+      "baseCommit": "24e5902b8637e5f714aad4129707302dd7232758",
+      "correlation": "T07-motion-24e5902"
     },
     "T08": {
       "status": "pending",

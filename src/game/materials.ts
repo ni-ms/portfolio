@@ -18,14 +18,13 @@ function createConcreteNoiseTexture(): THREE.CanvasTexture | null {
     const data = imgData.data;
 
     for (let i = 0; i < data.length; i += 4) {
-      // Multi-frequency noise for subtle architectural concrete grit
-      const n1 = Math.random() * 24;
+      const n1 = Math.random() * 28;
       const n2 = Math.sin((i / 4) * 0.05) * 8;
-      const val = Math.floor(128 + n1 + n2);
-      data[i] = val; // R
-      data[i + 1] = val; // G
-      data[i + 2] = val; // B
-      data[i + 3] = 255; // A
+      const val = Math.floor(124 + n1 + n2);
+      data[i] = val;
+      data[i + 1] = val;
+      data[i + 2] = val;
+      data[i + 3] = 255;
     }
     ctx.putImageData(imgData, 0, 0);
 
@@ -40,7 +39,8 @@ function createConcreteNoiseTexture(): THREE.CanvasTexture | null {
 }
 
 /**
- * Creates a subtle procedural height/bump texture for tactile concrete surface pores.
+ * Creates a procedural height/bump texture for tactile concrete surface pores and grain.
+ * Calibrated with visible pore contrast at hero camera distance.
  */
 function createConcreteBumpTexture(): THREE.CanvasTexture | null {
   if (typeof document === 'undefined') return null;
@@ -58,9 +58,11 @@ function createConcreteBumpTexture(): THREE.CanvasTexture | null {
     for (let i = 0; i < data.length; i += 4) {
       const px = (i / 4) % 256;
       const py = Math.floor((i / 4) / 256);
-      // High-frequency aggregate noise
-      const n = (Math.sin(px * 0.4) * Math.cos(py * 0.4) + Math.random() * 0.5) * 35;
-      const val = Math.max(0, Math.min(255, Math.floor(128 + n)));
+      // Multi-scale aggregate and pore noise
+      const n1 = (Math.sin(px * 0.35) * Math.cos(py * 0.35)) * 40;
+      const n2 = (Math.sin(px * 0.8) + Math.cos(py * 0.8)) * 20;
+      const n3 = (Math.random() - 0.5) * 45;
+      const val = Math.max(0, Math.min(255, Math.floor(128 + n1 + n2 + n3)));
       data[i] = val;
       data[i + 1] = val;
       data[i + 2] = val;
@@ -71,7 +73,7 @@ function createConcreteBumpTexture(): THREE.CanvasTexture | null {
     const texture = new THREE.CanvasTexture(canvas);
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(6, 6);
+    texture.repeat.set(4, 4);
     return texture;
   } catch {
     return null;
@@ -79,30 +81,88 @@ function createConcreteBumpTexture(): THREE.CanvasTexture | null {
 }
 
 /**
- * Creates a subtle architectural paver seam texture for rooftop walking surfaces.
+ * Creates an architectural precast concrete diffuse map with subtle tone variations and formwork grain.
+ */
+function createConcreteDiffuseTexture(): THREE.CanvasTexture | null {
+  if (typeof document === 'undefined') return null;
+
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = 256;
+    canvas.height = 256;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+
+    ctx.fillStyle = '#C8CBC7';
+    ctx.fillRect(0, 0, 256, 256);
+
+    const imgData = ctx.getImageData(0, 0, 256, 256);
+    const data = imgData.data;
+
+    for (let i = 0; i < data.length; i += 4) {
+      const px = (i / 4) % 256;
+      const py = Math.floor((i / 4) / 256);
+      const grain = (Math.random() - 0.5) * 14;
+      const broadWave = Math.sin(px * 0.05) * Math.cos(py * 0.05) * 6;
+      data[i] = Math.max(0, Math.min(255, data[i] + grain + broadWave));
+      data[i + 1] = Math.max(0, Math.min(255, data[i + 1] + grain + broadWave));
+      data[i + 2] = Math.max(0, Math.min(255, data[i + 2] + grain + broadWave));
+    }
+    ctx.putImageData(imgData, 0, 0);
+
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(2, 2);
+    return texture;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Creates a distinct architectural paver tile texture with visible mortar joints and stone speckling.
  */
 function createPaverTileTexture(): THREE.CanvasTexture | null {
   if (typeof document === 'undefined') return null;
 
   try {
     const canvas = document.createElement('canvas');
-    canvas.width = 128;
-    canvas.height = 128;
+    canvas.width = 256;
+    canvas.height = 256;
     const ctx = canvas.getContext('2d');
     if (!ctx) return null;
 
-    ctx.fillStyle = '#808080';
-    ctx.fillRect(0, 0, 128, 128);
+    // Paver block field
+    ctx.fillStyle = '#C2C5C1';
+    ctx.fillRect(0, 0, 256, 256);
 
-    // Subtle dark expansion joint seams
-    ctx.strokeStyle = '#555555';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(1, 1, 126, 126);
+    // Subtle stone aggregate noise
+    const imgData = ctx.getImageData(0, 0, 256, 256);
+    const data = imgData.data;
+    for (let i = 0; i < data.length; i += 4) {
+      const grain = (Math.random() - 0.5) * 18;
+      data[i] = Math.max(0, Math.min(255, data[i] + grain));
+      data[i + 1] = Math.max(0, Math.min(255, data[i + 1] + grain));
+      data[i + 2] = Math.max(0, Math.min(255, data[i + 2] + grain));
+    }
+    ctx.putImageData(imgData, 0, 0);
+
+    // Dark architectural expansion joint grid
+    ctx.strokeStyle = '#5E6663';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(2, 2, 252, 252);
+    ctx.beginPath();
+    ctx.moveTo(128, 2);
+    ctx.lineTo(128, 254);
+    ctx.moveTo(2, 128);
+    ctx.lineTo(254, 128);
+    ctx.stroke();
 
     const texture = new THREE.CanvasTexture(canvas);
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(2, 2);
+    texture.repeat.set(3, 3);
     return texture;
   } catch {
     return null;
@@ -134,7 +194,6 @@ function createSkylineWindowTexture(): THREE.CanvasTexture | null {
 
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
-        // Subtle lit windows pattern (faint amber/lime/cyan lit rooms)
         const lit = (r * 7 + c * 13) % 9 === 0;
         if (lit) {
           ctx.fillStyle = (r + c) % 2 === 0 ? 'rgba(214, 255, 100, 0.45)' : 'rgba(180, 220, 240, 0.35)';
@@ -157,142 +216,148 @@ function createSkylineWindowTexture(): THREE.CanvasTexture | null {
 
 const concreteNoise = createConcreteNoiseTexture();
 const concreteBump = createConcreteBumpTexture();
+const concreteDiffuse = createConcreteDiffuseTexture();
 const paverTileMap = createPaverTileTexture();
 const skylineWindowMap = createSkylineWindowTexture();
 
 // 1. Concrete Materials
 const concreteMainMat = new THREE.MeshStandardMaterial({
   color: '#C2C5C1',
-  roughness: 0.88,
+  roughness: 0.86,
   metalness: 0.04,
 });
 if (concreteNoise) concreteMainMat.roughnessMap = concreteNoise;
 if (concreteBump) {
   concreteMainMat.bumpMap = concreteBump;
-  concreteMainMat.bumpScale = 0.007;
+  concreteMainMat.bumpScale = 0.022;
 }
+if (concreteDiffuse) concreteMainMat.map = concreteDiffuse;
 
 const concreteLightMat = new THREE.MeshStandardMaterial({
-  color: '#D5D8D4',
+  color: '#D8DCD7',
   roughness: 0.86,
   metalness: 0.04,
 });
 if (concreteNoise) concreteLightMat.roughnessMap = concreteNoise;
 if (concreteBump) {
   concreteLightMat.bumpMap = concreteBump;
-  concreteLightMat.bumpScale = 0.006;
+  concreteLightMat.bumpScale = 0.020;
 }
+if (concreteDiffuse) concreteLightMat.map = concreteDiffuse;
 
 const concreteDarkMat = new THREE.MeshStandardMaterial({
-  color: '#9E9E9B',
-  roughness: 0.90,
+  color: '#A4A8A2',
+  roughness: 0.88,
   metalness: 0.05,
 });
 if (concreteNoise) concreteDarkMat.roughnessMap = concreteNoise;
 if (concreteBump) {
   concreteDarkMat.bumpMap = concreteBump;
-  concreteDarkMat.bumpScale = 0.008;
+  concreteDarkMat.bumpScale = 0.024;
 }
 
 const concretePillarMat = new THREE.MeshStandardMaterial({
-  color: '#B0B4B0',
-  roughness: 0.89,
+  color: '#B6BAB5',
+  roughness: 0.88,
   metalness: 0.04,
 });
 if (concreteNoise) concretePillarMat.roughnessMap = concreteNoise;
 
 const concreteTrimMat = new THREE.MeshStandardMaterial({
-  color: '#A8ABA7',
-  roughness: 0.82,
+  color: '#AFB3AE',
+  roughness: 0.78,
   metalness: 0.06,
 });
 
 const concreteParapetMat = new THREE.MeshStandardMaterial({
-  color: '#7D827F',
-  roughness: 0.88,
+  color: '#848986',
+  roughness: 0.86,
   metalness: 0.04,
 });
 
 const concretePaverMat = new THREE.MeshStandardMaterial({
-  color: '#B2B5B1',
-  roughness: 0.82,
+  color: '#B8BCB7',
+  roughness: 0.80,
   metalness: 0.04,
 });
-if (paverTileMap) concretePaverMat.roughnessMap = paverTileMap;
+if (paverTileMap) {
+  concretePaverMat.map = paverTileMap;
+  concretePaverMat.roughnessMap = paverTileMap;
+}
 if (concreteBump) {
   concretePaverMat.bumpMap = concreteBump;
-  concretePaverMat.bumpScale = 0.006;
+  concretePaverMat.bumpScale = 0.018;
 }
 
 // 2. Glass & Balustrades
 const glassBalustradeMat = new THREE.MeshStandardMaterial({
-  color: '#2A3E45',
-  roughness: 0.08,
-  metalness: 0.25,
+  color: '#3A525C',
+  roughness: 0.06,
+  metalness: 0.20,
   transparent: true,
-  opacity: 0.42,
+  opacity: 0.44,
   side: THREE.DoubleSide,
   depthWrite: false,
 });
 
-// 3. Metals & Mechanical Equipment
+// 3. Metals & Mechanical Equipment (Illuminated neutral tones preventing pitch-black shadows)
 const metalRailsMat = new THREE.MeshStandardMaterial({
-  color: '#343E41',
-  roughness: 0.38,
-  metalness: 0.88,
+  color: '#46565A',
+  roughness: 0.32,
+  metalness: 0.86,
 });
 
 const metalFrameMat = new THREE.MeshStandardMaterial({
-  color: '#3F4D50',
-  roughness: 0.42,
+  color: '#4E5F64',
+  roughness: 0.36,
   metalness: 0.82,
 });
 
 const hvacHousingMat = new THREE.MeshStandardMaterial({
-  color: '#556468',
-  roughness: 0.45,
+  color: '#68787C',
+  roughness: 0.38,
   metalness: 0.65,
 });
 
 const hvacLouversMat = new THREE.MeshStandardMaterial({
-  color: '#2F383A',
-  roughness: 0.55,
-  metalness: 0.50,
+  color: '#3A484C',
+  roughness: 0.48,
+  metalness: 0.52,
 });
 
 const hvacFanMat = new THREE.MeshStandardMaterial({
-  color: '#222A2D',
-  roughness: 0.52,
-  metalness: 0.85,
+  color: '#2C383C',
+  roughness: 0.46,
+  metalness: 0.82,
 });
 
 const metalConduitMat = new THREE.MeshStandardMaterial({
-  color: '#4E5C60',
-  roughness: 0.38,
+  color: '#5E7075',
+  roughness: 0.32,
   metalness: 0.86,
 });
 
 const metalHatchMat = new THREE.MeshStandardMaterial({
-  color: '#465356',
-  roughness: 0.44,
-  metalness: 0.76,
+  color: '#546468',
+  roughness: 0.38,
+  metalness: 0.74,
 });
 
 const metalMastMat = new THREE.MeshStandardMaterial({
-  color: '#3A4649',
-  roughness: 0.38,
-  metalness: 0.90,
+  color: '#4A5B60',
+  roughness: 0.32,
+  metalness: 0.88,
 });
 
 // Architectural Facade Details (Panel seams, service louvers)
 const facadeLouverMat = new THREE.MeshStandardMaterial({
-  color: '#283134',
-  roughness: 0.55,
-  metalness: 0.60,
+  color: '#364448',
+  roughness: 0.50,
+  metalness: 0.58,
 });
 
 const facadeSeamMat = new THREE.MeshBasicMaterial({
-  color: '#1D2426',
+  color: '#222B2E',
 });
 
 // 4. Acid-Lime (#D6FF64) Emissive Materials
@@ -499,29 +564,29 @@ export function applyGameTheme(theme: 'dark' | 'light'): void {
 
     // Concrete architecture
     materials.concreteMain.color.set('#D5D8D4');
-    materials.concreteLight.color.set('#E2E5E1');
-    materials.concreteDark.color.set('#B8BCB7');
-    materials.concretePillar.color.set('#C4C8C3');
-    materials.concreteTrim.color.set('#B4B8B3');
-    materials.concreteParapet.color.set('#CCD0CB');
-    materials.concretePaver.color.set('#DCE0DC');
+    materials.concreteLight.color.set('#E4E8E3');
+    materials.concreteDark.color.set('#BDC2BD');
+    materials.concretePillar.color.set('#C8CCC7');
+    materials.concreteTrim.color.set('#B8BCB7');
+    materials.concreteParapet.color.set('#D0D4CF');
+    materials.concretePaver.color.set('#DFE2DE');
 
     // Metals
-    materials.metalRails.color.set('#586466');
-    materials.metalFrame.color.set('#505A5D');
-    materials.hvacHousing.color.set('#768588');
-    materials.hvacLouvers.color.set('#4A5659');
-    materials.hvacFan.color.set('#364043');
-    materials.metalConduit.color.set('#6E7D80');
-    materials.metalHatch.color.set('#5E6D70');
-    materials.metalMast.color.set('#58676A');
+    materials.metalRails.color.set('#627276');
+    materials.metalFrame.color.set('#5A6A6E');
+    materials.hvacHousing.color.set('#7E8E92');
+    materials.hvacLouvers.color.set('#505E62');
+    materials.hvacFan.color.set('#3E4C50');
+    materials.metalConduit.color.set('#76878B');
+    materials.metalHatch.color.set('#6B7C80');
+    materials.metalMast.color.set('#647478');
 
     // Facade details
-    materials.facadeLouver.color.set('#5A686B');
-    materials.facadeSeam.color.set('#B0B5AF');
+    materials.facadeLouver.color.set('#607074');
+    materials.facadeSeam.color.set('#B4B9B3');
 
     // Glass balustrades
-    materials.glassBalustrade.color.set('#9AB8C0');
+    materials.glassBalustrade.color.set('#A2C0C8');
     materials.glassBalustrade.opacity = 0.38;
 
     // Mast beacon
@@ -545,30 +610,30 @@ export function applyGameTheme(theme: 'dark' | 'light'): void {
 
     // Concrete architecture
     materials.concreteMain.color.set('#C2C5C1');
-    materials.concreteLight.color.set('#D5D8D4');
-    materials.concreteDark.color.set('#9E9E9B');
-    materials.concretePillar.color.set('#B0B4B0');
-    materials.concreteTrim.color.set('#A8ABA7');
-    materials.concreteParapet.color.set('#7D827F');
-    materials.concretePaver.color.set('#B2B5B1');
+    materials.concreteLight.color.set('#D8DCD7');
+    materials.concreteDark.color.set('#A4A8A2');
+    materials.concretePillar.color.set('#B6BAB5');
+    materials.concreteTrim.color.set('#AFB3AE');
+    materials.concreteParapet.color.set('#848986');
+    materials.concretePaver.color.set('#B8BCB7');
 
     // Metals
-    materials.metalRails.color.set('#343E41');
-    materials.metalFrame.color.set('#3F4D50');
-    materials.hvacHousing.color.set('#556468');
-    materials.hvacLouvers.color.set('#2F383A');
-    materials.hvacFan.color.set('#222A2D');
-    materials.metalConduit.color.set('#4E5C60');
-    materials.metalHatch.color.set('#465356');
-    materials.metalMast.color.set('#3A4649');
+    materials.metalRails.color.set('#46565A');
+    materials.metalFrame.color.set('#4E5F64');
+    materials.hvacHousing.color.set('#68787C');
+    materials.hvacLouvers.color.set('#3A484C');
+    materials.hvacFan.color.set('#2C383C');
+    materials.metalConduit.color.set('#5E7075');
+    materials.metalHatch.color.set('#546468');
+    materials.metalMast.color.set('#4A5B60');
 
     // Facade details
-    materials.facadeLouver.color.set('#283134');
-    materials.facadeSeam.color.set('#1D2426');
+    materials.facadeLouver.color.set('#364448');
+    materials.facadeSeam.color.set('#222B2E');
 
     // Glass balustrades
-    materials.glassBalustrade.color.set('#2A3E45');
-    materials.glassBalustrade.opacity = 0.42;
+    materials.glassBalustrade.color.set('#3A525C');
+    materials.glassBalustrade.opacity = 0.44;
 
     // Mast beacon
     materials.limeMastBeacon.color.set('#D6FF64');

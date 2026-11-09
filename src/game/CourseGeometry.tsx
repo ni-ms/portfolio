@@ -13,9 +13,9 @@ export interface CourseGeometryProps {
 /**
  * Procedural beveled architectural platform.
  * Features:
- * - Solid concrete structural core
+ * - True 3D monolithic beveled concrete structural core with 45° specular highlights
  * - Surface paver deck with expansion joint texturing
- * - Perimeter beveled coping stone with physical 45° chamfered edge facets to catch specular light
+ * - Perimeter beveled coping stone with physical 45° chamfered edge facets
  * - Recessed underside reveal creating crisp contact shadow separation
  * - Vertical structural support pylons extending to the ground
  * - Facade panel reveal seams and recessed ventilation louvers breaking blank slab walls
@@ -47,7 +47,8 @@ const BeveledPlatform: React.FC<PlatformProps> = ({
   const halfH = h / 2;
   const trimThickness = 0.08;
   const trimOverhang = 0.04;
-  const chamfer = 0.025;
+  const chamfer = 0.035;
+
 
   // Support pillars beneath corners
   const pillarRadius = 0.16;
@@ -335,6 +336,8 @@ const GlassBalustrade: React.FC<BalustradeProps> = ({
 
 /**
  * Architectural concrete staircase with tread bevels and side stringers.
+ * Stringer beams are oriented with negative-X angle so they ascend in exact lockstep
+ * from the lowest step (z = -run/2, y = 0) to the highest step (z = +run/2, y = rise).
  */
 interface StairsProps {
   position: [number, number, number];
@@ -356,6 +359,9 @@ const Stairs: React.FC<StairsProps> = ({
   const stepRun = run / steps;
   const stepRise = rise / steps;
   const bullnose = 0.03;
+  const beamLength = Math.sqrt(run * run + rise * rise);
+  // Negative angle around X so y rises as z increases from -run/2 to +run/2
+  const stringerAngle = -Math.atan2(rise, run);
 
   return (
     <group position={position} rotation={[0, rotationY, 0]}>
@@ -387,24 +393,24 @@ const Stairs: React.FC<StairsProps> = ({
         );
       })}
 
-      {/* Left Stringer Beam */}
+      {/* Left Stringer Beam: ascends correctly with step coordinates */}
       <mesh
         position={[-width / 2 - 0.04, rise / 2, 0]}
-        rotation={[Math.atan2(rise, run), 0, 0]}
+        rotation={[stringerAngle, 0, 0]}
         material={materials.concreteTrim}
         castShadow
       >
-        <boxGeometry args={[0.08, 0.22, Math.sqrt(run * run + rise * rise)]} />
+        <boxGeometry args={[0.08, 0.22, beamLength]} />
       </mesh>
 
-      {/* Right Stringer Beam */}
+      {/* Right Stringer Beam: ascends correctly with step coordinates */}
       <mesh
         position={[width / 2 + 0.04, rise / 2, 0]}
-        rotation={[Math.atan2(rise, run), 0, 0]}
+        rotation={[stringerAngle, 0, 0]}
         material={materials.concreteTrim}
         castShadow
       >
-        <boxGeometry args={[0.08, 0.22, Math.sqrt(run * run + rise * rise)]} />
+        <boxGeometry args={[0.08, 0.22, beamLength]} />
       </mesh>
     </group>
   );
@@ -416,7 +422,7 @@ const Stairs: React.FC<StairsProps> = ({
  * - Heavy sheet metal casing with beveled edge chamfers
  * - Vibration isolator curb
  * - Recessed dark intake louvers on 2 sides with distinct horizontal blade planes
- * - Recessed top exhaust plenum with fan grille
+ * - Recessed top exhaust plenum with horizontal circular fan shroud ring and grille
  * - Electrical disconnect switch, piping manifold, and status LED
  */
 interface HVACUnitProps {
@@ -478,17 +484,16 @@ const HVACUnit: React.FC<HVACUnitProps> = ({ position, size }) => {
         <planeGeometry args={[d * 0.6, h * 0.65]} />
       </mesh>
 
-      {/* Top Exhaust Fan Shroud Ring */}
+      {/* Top Exhaust Fan Shroud Ring - upright cylinder on top casing (axis aligned along Y) */}
       <mesh
         position={[0, curbHeight + h + 0.04, 0]}
-        rotation={[-Math.PI / 2, 0, 0]}
         material={materials.metalRails}
         castShadow
       >
         <cylinderGeometry args={[fanRadius, fanRadius * 1.05, 0.08, 16]} />
       </mesh>
 
-      {/* Top Fan Center Hub & Recessed Grille */}
+      {/* Top Fan Center Hub & Recessed Grille (horizontal plane) */}
       <mesh
         position={[0, curbHeight + h + 0.02, 0]}
         rotation={[-Math.PI / 2, 0, 0]}

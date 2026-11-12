@@ -48,8 +48,8 @@ export const HomePage: React.FC<HomePageProps> = ({ gameSlot }) => {
               <a href="/resume" className="cta-btn cta-btn-primary">
                 {home.ctaResume}
               </a>
-              <a href="/about#contact" className="cta-btn cta-btn-secondary">
-                Get in Touch →
+              <a href="/about" className="cta-btn cta-btn-secondary">
+                About me →
               </a>
             </div>
           </div>
@@ -115,14 +115,9 @@ export const HomePage: React.FC<HomePageProps> = ({ gameSlot }) => {
 
       {/* 2. Selected Projects Section (Compact Image + Name + One Sentence Previews) */}
       <section className="home-projects-section" aria-labelledby="home-projects-heading">
-        <div className="section-divider-header">
-          <div className="divider-line" />
-          <div className="section-label-badge">
-            <span className="section-badge-dot" />
-            <h2 id="home-projects-heading" className="section-badge-title">
-              SELECTED PROJECTS
-            </h2>
-          </div>
+        <div className="home-projects-heading-row">
+          <h2 id="home-projects-heading">Selected projects</h2>
+          <a href="/projects" className="home-all-projects-link">All projects →</a>
         </div>
 
         <div className="home-projects-grid">
@@ -135,12 +130,6 @@ export const HomePage: React.FC<HomePageProps> = ({ gameSlot }) => {
           ))}
         </div>
 
-        <div className="home-projects-footer-action">
-          <a href="/projects" className="home-all-projects-link">
-            <span>View All Projects &amp; Technical Deep Dives</span>
-            <span className="link-arrow">→</span>
-          </a>
-        </div>
       </section>
     </div>
   );

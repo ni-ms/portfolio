@@ -164,7 +164,7 @@ export const RAMP_DEFINITIONS: RampConfig[] = [
 /**
  * Canonical perimeter balustrades with real collision bounds.
  * Traversal route gaps are deliberately kept open:
- * - Start roof northwest corner open for first jump toward stepping platform 1 ([-4.2, 1.8, 1.35])
+ * - Start roof northwest corner open for first jump toward stepping platform 1 ([-4.2, 1.8, 1.125])
  * - Start roof north-center open for stairs descent/ascent
  * - Work roof east edge open for beam jump ([-1.8, 3.1, -3.2])
  * - Explorations east terrace open for stepping stones jump ([3.6, 2.95, 0.0])
@@ -398,8 +398,8 @@ export const COURSE_BOUNDS = {
     // Start to Work route
     {
       id: 'step-start-work-1',
-      position: [-4.2, 1.8, 1.35] as [number, number, number],
-      size: [1.4, 0.3, 1.5] as [number, number, number],
+      position: [-4.2, 1.8, 1.125] as [number, number, number],
+      size: [1.4, 0.3, 1.05] as [number, number, number],
       surfaceY: 1.95,
       hasPillar: true,
     },

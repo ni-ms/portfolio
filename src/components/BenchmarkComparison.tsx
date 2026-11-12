@@ -93,7 +93,7 @@ export const BenchmarkComparison: React.FC<BenchmarkComparisonProps> = ({
       <div className="benchmark-header">
         <div className="benchmark-title-wrap">
           <span className="benchmark-badge-indicator" aria-hidden="true" />
-          <h3 className="benchmark-heading">Primary Workload Benchmark (Single Core)</h3>
+          <h3 className="benchmark-heading">Measured result</h3>
         </div>
         <span className="benchmark-target-pill">YOLOv8n FP32 1x1 Conv</span>
       </div>

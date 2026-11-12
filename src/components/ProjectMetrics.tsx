@@ -22,7 +22,7 @@ export const ProjectMetrics: React.FC<ProjectMetricsProps> = ({
         <div className="metrics-header">
           <div className="metrics-title-wrap">
             <span className="benchmark-badge-indicator" aria-hidden="true" />
-            <h3 className="metrics-heading">Campus Dataset &amp; Retrieval Evaluation</h3>
+            <h3 className="metrics-heading">Retrieval evaluation</h3>
           </div>
           <span className="metrics-target-pill">CMU-SV Official Pages</span>
         </div>
@@ -30,26 +30,25 @@ export const ProjectMetrics: React.FC<ProjectMetricsProps> = ({
         <div className="metrics-stat-grid">
           <div className="metric-box">
             <span className="metric-value">{details.officialCmuSvPages ?? 20}</span>
-            <span className="metric-label">Official Pages Ingested</span>
+            <span className="metric-label">Official CMU-SV pages</span>
           </div>
           <div className="metric-box">
             <span className="metric-value">{details.passages ?? 133}</span>
-            <span className="metric-label">Processed Passages</span>
+            <span className="metric-label">Passages indexed</span>
           </div>
           <div className="metric-box">
             <span className="metric-value">{details.evaluationQuestions ?? 160}</span>
-            <span className="metric-label">Evaluation Questions</span>
+            <span className="metric-label">Evaluation questions</span>
           </div>
         </div>
 
         <div className="metric-pills-row">
-          <span className="metric-pills-label">Evaluation Protocols:</span>
+          <span className="metric-pills-label">Ranking metrics</span>
           {details.metrics?.map((m) => (
             <span key={m} className="metric-pill">
               {m}
             </span>
           ))}
-          <span className="metric-pill split-pill">Train / Dev / Test Splits</span>
         </div>
 
         {details.qualifier && (
@@ -68,7 +67,7 @@ export const ProjectMetrics: React.FC<ProjectMetricsProps> = ({
       <div className="metrics-header">
         <div className="metrics-title-wrap">
           <span className="benchmark-badge-indicator" aria-hidden="true" />
-          <h3 className="metrics-heading">Operational Telemetry &amp; Dashboard Measures</h3>
+          <h3 className="metrics-heading">What the dashboard tracks</h3>
         </div>
         <span className="metrics-target-pill">Rust Ingestion Engine</span>
       </div>
@@ -97,12 +96,6 @@ export const ProjectMetrics: React.FC<ProjectMetricsProps> = ({
         ))}
       </div>
 
-      <p className="benchmark-qualifier">
-        <span className="qualifier-mark" aria-hidden="true">ℹ</span>
-        <span className="qualifier-text">
-          Aggregates structured model traces into operational dashboards for latency distributions, token usage, and cost metrics.
-        </span>
-      </p>
     </div>
   );
 };

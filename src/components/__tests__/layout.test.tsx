@@ -115,7 +115,7 @@ describe('Semantic UI and Responsive Layout Components (T03)', () => {
       expect(html).toContain('Recall@1');
       expect(html).toContain('Recall@3');
       expect(html).toContain('MRR');
-      expect(html).toContain('Train/dev/test splits; no numerical recall or MRR scores supplied.');
+      expect(html).toContain('The questions were split into training, development, and test sets.');
     });
 
     it('renders Langmetric telemetry measures without fabricated revenue numbers', () => {
@@ -147,9 +147,9 @@ describe('Semantic UI and Responsive Layout Components (T03)', () => {
       expect(html).toContain('M.S. Software Engineering · Carnegie Mellon · Expected 2027');
 
       // 3 project preview sentences
-      expect(html).toContain(portfolioContent.projects[0].description);
-      expect(html).toContain(portfolioContent.projects[1].description);
-      expect(html).toContain(portfolioContent.projects[2].description);
+      expect(html).toContain('Faster YOLOv8n convolution with AVX2/FMA.');
+      expect(html).toContain('Hybrid retrieval over official CMU-SV pages.');
+      expect(html).toContain('Latency, token usage, and cost from model traces.');
 
       // Game slot present on Home
       expect(html).toContain('custom-test-slot');
@@ -164,7 +164,7 @@ describe('Semantic UI and Responsive Layout Components (T03)', () => {
 
     it('renders Projects index (/projects) with all 3 project deep dives', () => {
       const html = renderToString(<PortfolioPages path="/projects" />);
-      expect(html).toContain('Technical Projects &amp; Systems');
+      expect(html).toContain('<h1 class="page-main-title">Projects</h1>');
       expect(html).toContain('/projects/fastcode');
       expect(html).toContain('/projects/scottypi');
       expect(html).toContain('/projects/langmetric');
@@ -174,18 +174,18 @@ describe('Semantic UI and Responsive Layout Components (T03)', () => {
 
     it('renders FastCode project detail (/projects/fastcode) with benchmarks and code link', () => {
       const html = renderToString(<PortfolioPages path="/projects/fastcode" />);
-      expect(html).toContain('FastCode CPU Kernel Optimization');
+      expect(html).toContain('CPU kernel optimization for YOLOv8n');
       expect(html).toContain('684 µs');
       expect(html).toContain('539 µs');
-      expect(html).toContain('Cut primary-workload latency 21% versus OpenCV');
-      expect(html).toContain('~91% of theoretical single-core peak');
+      expect(html).toContain('The problem');
+      expect(html).toContain('~91%');
       expect(html).toContain('https://github.com/ni-ms/18645-yolov8n-optimization');
       expect(html).not.toContain('home-experience-slot');
     });
 
     it('renders ScottyPi project detail (/projects/scottypi) with no invented repo link', () => {
       const html = renderToString(<PortfolioPages path="/projects/scottypi" />);
-      expect(html).toContain('ScottyPi Campus Assistant');
+      expect(html).toContain('Campus retrieval assistant');
       expect(html).toContain('133');
       expect(html).toContain('20');
       expect(html).toContain('160');
@@ -213,7 +213,7 @@ describe('Semantic UI and Responsive Layout Components (T03)', () => {
       expect(html).toContain('Exeevo');
       expect(html).toContain('Carnegie Mellon University');
       expect(html).toContain('BITS Pilani');
-      expect(html).toContain('Private Federated Aggregation of LLM-Agent Memory');
+      expect(html).toContain('Privacy-preserving shared memory for LLM agents');
       expect(html).toContain('In review');
       expect(html).toContain('/resume/Nikhil_Sharma_Resume.pdf');
       expect(html).toContain('/resume/Nikhil_Sharma_Resume.docx');
@@ -225,8 +225,8 @@ describe('Semantic UI and Responsive Layout Components (T03)', () => {
       expect(html).toContain('mailto:nikhilmsha@gmail.com');
       expect(html).toContain('https://github.com/ni-ms');
       expect(html).toContain('https://linkedin.com/in/nikhilmsha');
-      expect(html).toContain('San Jose, CA');
-      expect(html).toContain('408-480-6489');
+      expect(html).toContain('Areas of focus');
+      expect(html).toContain('Get in touch');
     });
 
     it('renders 404 page for unknown routes with navigation back links', () => {

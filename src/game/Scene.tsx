@@ -332,7 +332,9 @@ export const Scene: React.FC<SceneProps> = ({
         />
 
         {/* Procedural Local Reflection Environment (Bake-once per theme) */}
-        <StudioEnvironment theme={theme} />
+        {theme === 'dark' ? (
+          <Environment files="/rooftop/sunset.hdr" environmentIntensity={0.8} />
+        ) : <StudioEnvironment theme={theme} />}
 
         {/* Calibrated Lighting Rig */}
         <Lighting

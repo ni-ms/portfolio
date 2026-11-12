@@ -15,6 +15,5 @@ export * from './PlayerController';
 export * from './PhysicsCourse';
 export * from './KeyboardControls';
 export * from './TouchControls';
-export * from './GameOverlay';
 export * from './DioramaCanvas';
 export * from './GameExperience';

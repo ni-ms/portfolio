@@ -644,24 +644,9 @@ export function GameExperience({
                   boxShadow: '0 0 6px var(--color-accent, #D6FF64)',
                 }}
               />
-              <span>EXPLORATION / {String(currentCheckpoint?.index ?? 1).padStart(2, '0')}</span>
+              <span>Checkpoints {unlockedCheckpointsCount} / {checkpoints.length - 1}</span>
             </div>
 
-            {/* Center: ROOFTOPS badge */}
-            <div
-              style={{
-                fontFamily: 'var(--font-display, sans-serif)',
-                fontSize: '13px',
-                fontWeight: 700,
-                letterSpacing: '0.15em',
-                color: isLight ? '#565F60' : 'var(--color-text-muted, #8E9596)',
-                textTransform: 'uppercase',
-              }}
-            >
-              ROOFTOPS
-            </div>
-
-            {/* Right: Progress "01 / 03" and EXIT button */}
             <div
               style={{
                 display: 'flex',
@@ -670,18 +655,6 @@ export function GameExperience({
                 pointerEvents: 'auto',
               }}
             >
-              <div
-                style={{
-                  fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
-                  fontSize: '11px',
-                  fontWeight: 500,
-                  letterSpacing: '0.08em',
-                  color: isLight ? '#565F60' : 'var(--color-text-muted, #8E9596)',
-                }}
-              >
-                {String(unlockedCheckpointsCount).padStart(2, '0')} / 03
-              </div>
-
               <button
                 ref={exitButtonRef}
                 type="button"

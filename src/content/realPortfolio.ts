@@ -172,7 +172,7 @@ export const portfolioContent: PortfolioContent = {
     education: "M.S. Software Engineering · Carnegie Mellon · Expected 2027",
     experienceSignal: "Nearly 3 years of engineering experience",
     ctaProjects: "VIEW PROJECTS ↗",
-    ctaResume: "VIEW RÉSUMÉ ↗",
+    ctaResume: "View résumé ↗",
     routeCaption: "EXPLORE AT YOUR OWN PACE",
     droneControlLabel: "DRONE VIEW",
     playButtonLabel: "START EXPLORING ↗",
@@ -188,15 +188,15 @@ export const portfolioContent: PortfolioContent = {
       subtitle: "CPU kernel optimization",
       category: "Systems & Performance",
       dates: "Oct – Nov 2026",
-      description: "Optimized YOLOv8n convolution using vector instructions, register blocking, and cache-aware input packing.",
+      description: "Optimized YOLOv8n convolution using AVX2/FMA, register blocking, and cache-aware input packing.",
       result: "21% lower primary-workload latency vs OpenCV: 684 to 539 µs.",
       stack: "C++ · AVX2/FMA",
       tags: ["C++", "AVX2/FMA", "Kernel Optimization", "YOLOv8n", "Vectorization"],
       thumbnailType: "schematic",
       url: "https://github.com/ni-ms/18645-yolov8n-optimization",
-      urlLabel: "GitHub Repository ↗",
+      urlLabel: "View code ↗",
       details: {
-        problem: "Reduce latency of YOLOv8n FP32 1x1 convolution on a single CPU core.",
+        problem: "Make YOLOv8n’s 1×1 convolution run faster on a single CPU core.",
         approach: [
           "AVX2/FMA vectorization",
           "Register blocking",
@@ -218,7 +218,7 @@ export const portfolioContent: PortfolioContent = {
       subtitle: "Campus retrieval assistant",
       category: "Applied AI & Retrieval",
       dates: "Fall 2026",
-      description: "Combined keyword and dense retrieval with fine-tuned embeddings over official CMU-SV pages.",
+      description: "Combined keyword and dense retrieval with fine-tuned MiniLM embeddings over official CMU-SV pages.",
       result: "Evaluated on 160 questions using Recall@1, Recall@3, and MRR.",
       stack: "Python · MiniLM · QLoRA",
       tags: ["Python", "MiniLM", "QLoRA", "Hybrid Retrieval", "BM25", "Reciprocal-Rank Fusion"],
@@ -226,7 +226,7 @@ export const portfolioContent: PortfolioContent = {
       url: undefined, // Optional absent URL: no invented repository link
       urlLabel: undefined,
       details: {
-        problem: "Build an accurate campus retrieval assistant over official Carnegie Mellon Silicon Valley pages.",
+        problem: "Help people find answers to campus questions using official Carnegie Mellon Silicon Valley pages.",
         approach: [
           "BM25 keyword search",
           "Dense retrieval",
@@ -237,7 +237,7 @@ export const portfolioContent: PortfolioContent = {
         officialCmuSvPages: 20,
         evaluationQuestions: 160,
         metrics: ["Recall@1", "Recall@3", "MRR"],
-        qualifier: "Train/dev/test splits; no numerical recall or MRR scores supplied.",
+        qualifier: "The questions were split into training, development, and test sets.",
         fullSummary: "Built a campus assistant combining BM25 and dense retrieval, reciprocal-rank fusion, and fine-tuned MiniLM embeddings over 133 passages from 20 official CMU-SV pages. Evaluated using a 160-question dataset with train/dev/test splits and Recall@1, Recall@3, and MRR metrics."
       }
     },
@@ -249,17 +249,17 @@ export const portfolioContent: PortfolioContent = {
       subtitle: "Model trace analytics",
       category: "Distributed Systems & Telemetry",
       dates: "Jul 2024 – Present",
-      description: "Built dashboards that turn structured model traces into latency, token usage, and cost insights.",
+      description: "Built a Rust service that turns structured model traces into latency, token usage, and cost dashboards.",
       result: "Aggregates structured model traces into real-time operational dashboards for latency distributions, token usage, and cost.",
       stack: "Rust · Loco RS · SeaORM",
       tags: ["Rust", "Loco RS", "SeaORM", "Model Traces", "Chart.js", "Telemetry"],
       thumbnailType: "rooftop",
       url: "https://langmetric.com/",
-      urlLabel: "Live Platform ↗",
+      urlLabel: "Visit site ↗",
       details: {
         service: "Rust service aggregating structured model traces",
         // Factual trace & dashboard objective sourced from DOCX/JSON; avoids unsupported claims
-        problem: "Aggregate structured model traces into operational dashboards displaying latency distributions, token usage, and cost metrics.",
+        problem: "Give teams one place to see how long AI requests take, how many tokens they use, and what they cost.",
         approach: [
           "Loco RS web framework",
           "Asynchronous SeaORM queries",
@@ -401,8 +401,8 @@ export const portfolioContent: PortfolioContent = {
 
   about: {
     paragraphs: [
-      "I build production backend services and enterprise web applications. My experience spans healthcare platforms, fraud investigation tools, and production integrations.",
-      "Alongside that work, I explore applied AI and systems performance—from hybrid retrieval and model trace analytics to CPU kernel optimization."
+      "I build backend services and enterprise web applications. My experience spans healthcare platforms, fraud investigation tools, and production integrations.",
+      "Alongside that work, I explore applied AI and systems performance, from hybrid retrieval and model trace analytics to CPU kernel optimization."
     ],
     focus: [
       "Backend engineering",

@@ -1,6 +1,7 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
+import { useGLTF, useTexture } from '@react-three/drei';
 import { materials } from './materials';
 import { COURSE_BOUNDS, CHECKPOINTS, ArchitecturalObstacle } from './courseConfig';
 
@@ -29,6 +30,7 @@ interface PlatformProps {
   material?: THREE.Material;
   topTrim?: boolean;
   surfacePavers?: boolean;
+  paverMaterial?: THREE.Material;
   facadeDetails?: boolean;
   wayfindingEdge?: boolean;
   wayfindingCenterLine?: boolean;
@@ -41,6 +43,7 @@ const BeveledPlatform: React.FC<PlatformProps> = ({
   material = materials.concreteMain,
   topTrim = true,
   surfacePavers = true,
+  paverMaterial = materials.concretePaver,
   facadeDetails = true,
   wayfindingEdge = false,
   wayfindingCenterLine = false,
@@ -97,7 +100,7 @@ const BeveledPlatform: React.FC<PlatformProps> = ({
           position={[0, halfH + 0.002, 0]}
           rotation={[-Math.PI / 2, 0, 0]}
           receiveShadow
-          material={materials.concretePaver}
+          material={paverMaterial}
         >
           <planeGeometry args={[w - 0.06, d - 0.06]} />
         </mesh>
@@ -356,6 +359,7 @@ interface StairsProps {
   rise: number;
   steps: number;
   rotationY?: number;
+  treadMaterial?: THREE.Material;
 }
 
 const Stairs: React.FC<StairsProps> = ({
@@ -365,6 +369,7 @@ const Stairs: React.FC<StairsProps> = ({
   rise,
   steps,
   rotationY = 0,
+  treadMaterial = materials.concreteTrim,
 }) => {
   const stepRun = run / steps;
   const stepRise = rise / steps;
@@ -392,8 +397,8 @@ const Stairs: React.FC<StairsProps> = ({
             </mesh>
             {/* Tread coping bullnose overhang */}
             <mesh
-              position={[0, stepH + 0.015, stepZ + bullnose / 2]}
-              material={materials.concreteTrim}
+              position={[0, stepH + 0.015, stepZ - bullnose / 2]}
+              material={treadMaterial}
               castShadow
               receiveShadow
             >
@@ -401,7 +406,7 @@ const Stairs: React.FC<StairsProps> = ({
             </mesh>
             {/* Recessed warm linear toe-kick accent light under each tread bullnose */}
             <mesh
-              position={[0, stepH - 0.005, stepZ + stepRun / 2 + 0.01]}
+              position={[0, stepH - 0.005, stepZ - stepRun / 2 - 0.01]}
               material={materials.warmFixture}
             >
               <boxGeometry args={[width * 0.88, 0.01, 0.015]} />
@@ -433,210 +438,31 @@ const Stairs: React.FC<StairsProps> = ({
   );
 };
 
-/**
- * Realistic Industrial Rooftop HVAC Chiller Unit.
- * Features:
- * - Heavy sheet metal casing with beveled edge chamfers on all 4 upper perimeters
- * - Vibration isolator curb with corner isolation mounting plates
- * - Recessed dark intake louvers on 2 sides with distinct horizontal 3D blade planes
- * - Recessed top exhaust plenum with horizontal circular fan shroud ring and open collar (axis along Y)
- * - Center aerodynamic fan spinner dome and exposed radial spoke structure
- * - Copper/steel piping manifold with elbow flanges, disconnect switch, and status LED
- */
-interface HVACUnitProps {
-  position: [number, number, number];
-  size: [number, number, number];
-}
-
-const HVACUnit: React.FC<HVACUnitProps> = ({ position, size }) => {
-  const [w, h, d] = size;
-  const curbHeight = 0.14;
-  const fanRadius = Math.min(w, d) * 0.32;
-  const chamfer = 0.022;
-
+// Fit the visual asset inside the existing HVAC collider, preserving the clear path.
+function HVACUnit({ position, size }: { position: [number, number, number]; size: [number, number, number] }) {
+  const { scene } = useGLTF('/rooftop/aircon.glb');
+  const { model, offset, dimensions } = useMemo(() => {
+    const model = scene.clone();
+    model.traverse((object) => {
+      if (object instanceof THREE.Mesh) {
+        object.castShadow = true;
+        object.receiveShadow = true;
+      }
+    });
+    const bounds = new THREE.Box3().setFromObject(model);
+    const center = bounds.getCenter(new THREE.Vector3());
+    return {
+      model,
+      offset: new THREE.Vector3(-center.x, -bounds.min.y, -center.z),
+      dimensions: bounds.getSize(new THREE.Vector3()),
+    };
+  }, [scene]);
   return (
-    <group position={position}>
-      {/* Concrete Vibration Isolation Curb Base */}
-      <mesh position={[0, curbHeight / 2, 0]} material={materials.concreteTrim} castShadow receiveShadow>
-        <boxGeometry args={[w * 0.96, curbHeight, d * 0.96]} />
-      </mesh>
-
-      {/* Corner Neoprene/Steel Vibration Dampers */}
-      {[-w * 0.44, w * 0.44].map((vx, i) =>
-        [-d * 0.44, d * 0.44].map((vz, j) => (
-          <mesh
-            key={`damper-${i}-${j}`}
-            position={[vx, curbHeight + 0.015, vz]}
-            material={materials.metalBolt}
-          >
-            <cylinderGeometry args={[0.035, 0.04, 0.03, 8]} />
-          </mesh>
-        ))
-      )}
-
-      {/* Main Sheet Metal Housing */}
-      <mesh position={[0, curbHeight + h / 2, 0]} material={materials.hvacHousing} castShadow receiveShadow>
-        <boxGeometry args={[w, h, d]} />
-      </mesh>
-
-      {/* Physical 45° chamfered edge highlights on all 4 top casing edges */}
-      <mesh
-        position={[0, curbHeight + h, d / 2 - chamfer / 2]}
-        rotation={[Math.PI / 4, 0, 0]}
-        material={materials.metalFrame}
-        castShadow
-      >
-        <boxGeometry args={[w * 0.98, chamfer, chamfer]} />
-      </mesh>
-      <mesh
-        position={[0, curbHeight + h, -d / 2 + chamfer / 2]}
-        rotation={[Math.PI / 4, 0, 0]}
-        material={materials.metalFrame}
-        castShadow
-      >
-        <boxGeometry args={[w * 0.98, chamfer, chamfer]} />
-      </mesh>
-      <mesh
-        position={[-w / 2 + chamfer / 2, curbHeight + h, 0]}
-        rotation={[0, 0, Math.PI / 4]}
-        material={materials.metalFrame}
-        castShadow
-      >
-        <boxGeometry args={[chamfer, chamfer, d * 0.98]} />
-      </mesh>
-      <mesh
-        position={[w / 2 - chamfer / 2, curbHeight + h, 0]}
-        rotation={[0, 0, Math.PI / 4]}
-        material={materials.metalFrame}
-        castShadow
-      >
-        <boxGeometry args={[chamfer, chamfer, d * 0.98]} />
-      </mesh>
-
-      {/* Front Intake Louver Recess & Blades */}
-      <group position={[0, curbHeight + h * 0.5, d / 2 + 0.005]}>
-        <mesh material={materials.hvacLouvers}>
-          <planeGeometry args={[w * 0.78, h * 0.65]} />
-        </mesh>
-        {/* Horizontal blade slats */}
-        {[-h * 0.22, -h * 0.11, 0, h * 0.11, h * 0.22].map((by, idx) => (
-          <mesh
-            key={`louver-f-${idx}`}
-            position={[0, by, 0.012]}
-            rotation={[-Math.PI / 5, 0, 0]}
-            material={materials.metalFrame}
-          >
-            <boxGeometry args={[w * 0.76, 0.018, 0.035]} />
-          </mesh>
-        ))}
-      </group>
-
-      {/* Rear Intake Louver Recess & Blades */}
-      <group position={[0, curbHeight + h * 0.5, -d / 2 - 0.005]} rotation={[0, Math.PI, 0]}>
-        <mesh material={materials.hvacLouvers}>
-          <planeGeometry args={[w * 0.78, h * 0.65]} />
-        </mesh>
-        {[-h * 0.22, -h * 0.11, 0, h * 0.11, h * 0.22].map((by, idx) => (
-          <mesh
-            key={`louver-r-${idx}`}
-            position={[0, by, 0.012]}
-            rotation={[-Math.PI / 5, 0, 0]}
-            material={materials.metalFrame}
-          >
-            <boxGeometry args={[w * 0.76, 0.018, 0.035]} />
-          </mesh>
-        ))}
-      </group>
-
-      {/* Side Maintenance Access Panel with Hinges */}
-      <group position={[w / 2 + 0.003, curbHeight + h * 0.5, 0]} rotation={[0, Math.PI / 2, 0]}>
-        <mesh material={materials.metalFrame}>
-          <planeGeometry args={[d * 0.6, h * 0.65]} />
-        </mesh>
-        {/* Panel hinges */}
-        <mesh position={[-d * 0.26, h * 0.22, 0.008]} material={materials.metalBolt}>
-          <boxGeometry args={[0.02, 0.04, 0.015]} />
-        </mesh>
-        <mesh position={[-d * 0.26, -h * 0.22, 0.008]} material={materials.metalBolt}>
-          <boxGeometry args={[0.02, 0.04, 0.015]} />
-        </mesh>
-        {/* Recessed turn-handle */}
-        <mesh position={[d * 0.22, 0, 0.01]} material={materials.metalBolt}>
-          <boxGeometry args={[0.015, 0.05, 0.015]} />
-        </mesh>
-      </group>
-
-      {/* Top Exhaust Fan Shroud Ring - open collar (axis aligned along Y) exposing interior spokes and spinner */}
-      <mesh
-        position={[0, curbHeight + h + 0.04, 0]}
-        material={materials.metalRails}
-        castShadow
-      >
-        <cylinderGeometry args={[fanRadius, fanRadius * 1.05, 0.08, 16, 1, true]} />
-      </mesh>
-
-      {/* Aerodynamic Center Motor Dome / Spinner */}
-      <mesh
-        position={[0, curbHeight + h + 0.035, 0]}
-        material={materials.metalRails}
-        castShadow
-      >
-        <cylinderGeometry args={[fanRadius * 0.22, fanRadius * 0.26, 0.05, 16]} />
-      </mesh>
-
-      {/* Structural Fan Grille Spokes (Cross) */}
-      <mesh position={[0, curbHeight + h + 0.045, 0]} material={materials.metalFrame}>
-        <boxGeometry args={[fanRadius * 1.9, 0.012, 0.025]} />
-      </mesh>
-      <mesh position={[0, curbHeight + h + 0.045, 0]} material={materials.metalFrame}>
-        <boxGeometry args={[0.025, 0.012, fanRadius * 1.9]} />
-      </mesh>
-
-      {/* Top Fan Center Hub & Recessed Grille (horizontal rotor disc inside open collar) */}
-      <mesh
-        position={[0, curbHeight + h + 0.015, 0]}
-        rotation={[-Math.PI / 2, 0, 0]}
-        material={materials.hvacFan}
-      >
-        <circleGeometry args={[fanRadius * 0.95, 16]} />
-      </mesh>
-
-      {/* Copper/Steel Refrigerant Piping Manifold with Flanges */}
-      <group position={[w / 2 + 0.035, curbHeight + h * 0.35, -d * 0.2]}>
-        <mesh material={materials.metalConduit}>
-          <cylinderGeometry args={[0.025, 0.025, h * 0.65, 12]} />
-        </mesh>
-        <mesh position={[0, h * 0.25, 0]} material={materials.metalBolt}>
-          <cylinderGeometry args={[0.038, 0.038, 0.02, 8]} />
-        </mesh>
-      </group>
-      <group position={[w / 2 + 0.035, curbHeight + h * 0.35, d * 0.2]}>
-        <mesh material={materials.metalConduit}>
-          <cylinderGeometry args={[0.025, 0.025, h * 0.65, 12]} />
-        </mesh>
-        <mesh position={[0, h * 0.25, 0]} material={materials.metalBolt}>
-          <cylinderGeometry args={[0.038, 0.038, 0.02, 8]} />
-        </mesh>
-      </group>
-
-      {/* Electrical Disconnect Safety Switch Box with Lever */}
-      <group position={[w / 2 + 0.038, curbHeight + h * 0.72, 0]}>
-        <mesh material={materials.metalRails} castShadow>
-          <boxGeometry args={[0.06, 0.16, 0.14]} />
-        </mesh>
-        {/* Disconnect lever */}
-        <mesh position={[0.035, 0.02, 0.02]} rotation={[0, 0, Math.PI / 6]} material={materials.metalBolt}>
-          <boxGeometry args={[0.02, 0.07, 0.015]} />
-        </mesh>
-      </group>
-
-      {/* Lime Status LED indicator */}
-      <mesh position={[w / 2 + 0.07, curbHeight + h * 0.74, 0]} material={materials.limeEmissive}>
-        <boxGeometry args={[0.01, 0.02, 0.02]} />
-      </mesh>
+    <group position={position} scale={[size[0] / dimensions.x, size[1] / dimensions.y, size[2] / dimensions.z]}>
+      <primitive object={model} position={offset} />
     </group>
   );
-};
+}
 
 /**
  * Communications & Sensor Mast on Work Rooftop.
@@ -1072,10 +898,11 @@ const CheckpointBeacon: React.FC<CheckpointBeaconProps> = ({
  */
 const CourseWayfinding: React.FC = () => {
   // Canonical first route jump: from spawn [-3.5, 1.2, 3.5] toward northwest reachable launch edge [-4.2, 1.2, 2.65]
-  // aimed directly at Stepping Platform 1 at [-4.2, 1.8, 1.35].
+  // Aimed at the first landing.
   // Chevrons point along -Z and -X (positive yaw = +0.36 rad in Three.js coordinates).
   // Transforming local tip (0, 0, -1) by +0.36 rad gives (-sin(0.36), 0, -cos(0.36)) = (-0.352, 0, -0.936).
   const chevronAngle = 0.36;
+  const firstLanding = COURSE_BOUNDS.steppingPlatforms[0];
 
   return (
     <group name="course-wayfinding">
@@ -1125,7 +952,7 @@ const CourseWayfinding: React.FC = () => {
       </group>
 
       {/* 2. STEPPING PLATFORM 1 & 2: Safe landing registration marks */}
-      <group position={[-4.2, 1.954, 1.35]}>
+      <group position={[firstLanding.position[0], firstLanding.surfaceY + 0.004, firstLanding.position[2]]}>
         <mesh rotation={[-Math.PI / 2, 0, 0]} material={materials.wayfindingCharcoal}>
           <planeGeometry args={[0.9, 0.10]} />
         </mesh>
@@ -1320,8 +1147,30 @@ const DistantSkyline: React.FC<DistantSkylineProps> = ({ isMobile = false }) => 
  */
 export const CourseGeometry: React.FC<CourseGeometryProps> = ({
   isMobile = false,
+  theme = 'dark',
   isDeterministicReview = false,
 }) => {
+  const [concreteColor, concreteNormal] = useTexture(['/rooftop/concrete.jpg', '/rooftop/concrete-normal.jpg']);
+  const terraceMaterial = useMemo(() => {
+    concreteColor.colorSpace = THREE.SRGBColorSpace;
+    for (const map of [concreteColor, concreteNormal]) {
+      map.wrapS = map.wrapT = THREE.RepeatWrapping;
+      map.repeat.set(2, 2);
+      map.needsUpdate = true;
+    }
+    return new THREE.MeshStandardMaterial({
+      color: '#b5b8b1',
+      map: concreteColor,
+      normalMap: concreteNormal,
+      normalScale: new THREE.Vector2(0.16, 0.16),
+      roughness: 0.82,
+    });
+  }, [concreteColor, concreteNormal]);
+  useEffect(() => {
+    terraceMaterial.color.set(theme === 'light' ? '#e0e0d7' : '#b5b8b1');
+  }, [terraceMaterial, theme]);
+  useEffect(() => () => terraceMaterial.dispose(), [terraceMaterial]);
+
   const {
     startRooftop,
     workRooftop,
@@ -1377,6 +1226,7 @@ export const CourseGeometry: React.FC<CourseGeometryProps> = ({
       <BeveledPlatform
         position={startRooftop.mainSlab.position}
         size={startRooftop.mainSlab.size}
+        paverMaterial={terraceMaterial}
         hasPillars
         material={materials.concreteMain}
       />
@@ -1384,6 +1234,7 @@ export const CourseGeometry: React.FC<CourseGeometryProps> = ({
       <BeveledPlatform
         position={startRooftop.lowerLanding.position}
         size={startRooftop.lowerLanding.size}
+        paverMaterial={terraceMaterial}
         hasPillars
         material={materials.concreteLight}
       />
@@ -1394,6 +1245,7 @@ export const CourseGeometry: React.FC<CourseGeometryProps> = ({
         run={startRooftop.stairs.run}
         rise={startRooftop.stairs.rise}
         steps={startRooftop.stairs.steps}
+        treadMaterial={terraceMaterial}
         rotationY={Math.PI}
       />
 
@@ -1508,7 +1360,8 @@ export const CourseGeometry: React.FC<CourseGeometryProps> = ({
               size={plat.size}
               hasPillars={plat.hasPillar}
               material={materials.concreteLight}
-              surfacePavers={false}
+              surfacePavers={plat.id === 'step-start-work-1'}
+              paverMaterial={terraceMaterial}
               wayfindingEdge={!isBeam}
               wayfindingCenterLine={isBeam}
             />

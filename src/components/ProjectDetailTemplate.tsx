@@ -26,10 +26,15 @@ const illustrationMap: Record<string, { src: string; alt: string }> = {
 export const ProjectDetailTemplate: React.FC<ProjectDetailTemplateProps> = ({ project }) => {
   const allProjects = portfolioContent.projects;
   const currentIndex = allProjects.findIndex((p) => p.slug === project.slug);
-  const prevProject = currentIndex > 0 ? allProjects[currentIndex - 1] : allProjects[allProjects.length - 1];
   const nextProject = currentIndex < allProjects.length - 1 ? allProjects[currentIndex + 1] : allProjects[0];
 
   const illustration = illustrationMap[project.slug];
+  const isFastCode = project.slug === 'fastcode';
+  const fastCodeApproach = [
+    'Use AVX2 and FMA instructions to compute more values per cycle.',
+    'Keep partial results in registers to reduce memory accesses.',
+    'Rearrange inputs to improve cache locality during computation.',
+  ];
 
   return (
     <article
@@ -40,8 +45,10 @@ export const ProjectDetailTemplate: React.FC<ProjectDetailTemplateProps> = ({ pr
       {/* Top Breadcrumb Nav */}
       <nav className="detail-breadcrumb-nav" aria-label="Breadcrumb">
         <a href="/projects" className="detail-back-link">
-          ← Back to Projects
+          Projects
         </a>
+        <span aria-hidden="true"> / </span>
+        <span aria-current="page">{project.name}</span>
       </nav>
 
       {/* Split Hero Header: Left Copy + Right Illustration */}
@@ -51,33 +58,19 @@ export const ProjectDetailTemplate: React.FC<ProjectDetailTemplateProps> = ({ pr
             <PhotoPlaceholder className="detail-photo" />
             <div className="detail-identity-meta">
               <span className="detail-author-name">{portfolioContent.identity.name}</span>
-              <span className="detail-author-title">{portfolioContent.identity.title}</span>
             </div>
           </div>
 
-          <div className="detail-meta-eyebrow">
-            <span className="detail-project-number">{project.number}</span>
-            <span className="detail-meta-divider" aria-hidden="true">/</span>
-            <span className="detail-project-category">{project.category}</span>
-            <span className="detail-meta-divider" aria-hidden="true">·</span>
-            <span className="detail-project-dates">{project.dates}</span>
-          </div>
-
           <h1 id="project-title" className="detail-title">
-            {project.title}
+            {project.name}
           </h1>
 
-          <p className="detail-subtitle">{project.subtitle}</p>
+          <p className="detail-subtitle">{isFastCode ? 'CPU kernel optimization for YOLOv8n' : project.subtitle}</p>
 
-          <p className="detail-lead-summary">{project.details.fullSummary || project.description}</p>
-
-          <div className="detail-tags-row" aria-label="Technologies used">
-            {project.tags.map((tag) => (
-              <span key={tag} className="detail-tag-pill">
-                {tag}
-              </span>
-            ))}
-          </div>
+          <p className="detail-lead-summary">{isFastCode
+            ? 'Optimizing FP32 1×1 convolution with vector instructions, register blocking, and cache-aware input packing.'
+            : project.description}</p>
+          <p className="detail-project-facts">{project.dates} · {project.stack}</p>
 
           {project.url && (
             <div className="detail-action-links">
@@ -107,9 +100,6 @@ export const ProjectDetailTemplate: React.FC<ProjectDetailTemplateProps> = ({ pr
                 className="detail-illustration-img"
                 loading="eager"
               />
-              <figcaption className="detail-illustration-caption">
-                Figure {project.number}.1 — Architectural schematic and pipeline overview for {project.name}.
-              </figcaption>
             </figure>
           </div>
         )}
@@ -120,20 +110,23 @@ export const ProjectDetailTemplate: React.FC<ProjectDetailTemplateProps> = ({ pr
         {/* Left Column: Challenge & Systems Approach */}
         <section className="detail-narrative-col" aria-label="Technical Details">
           <div className="detail-block">
-            <h2 className="detail-section-heading">The Challenge</h2>
+            <h2 className="detail-section-heading">The problem</h2>
             <p className="detail-prose-text">{project.details.problem}</p>
           </div>
 
           <div className="detail-block">
-            <h2 className="detail-section-heading">Approach &amp; Systems Architecture</h2>
-            <ul className="detail-approach-list">
+            <h2 className="detail-section-heading">The approach</h2>
+            <ol className="detail-approach-list">
               {project.details.approach.map((item, idx) => (
                 <li key={idx} className="detail-approach-item">
-                  <span className="approach-bullet-mark" aria-hidden="true">■</span>
-                  <span>{item}</span>
+                  <span className="approach-bullet-mark" aria-hidden="true">{String(idx + 1).padStart(2, '0')}</span>
+                  <div>
+                    <strong>{item}</strong>
+                    {isFastCode && <p>{fastCodeApproach[idx]}</p>}
+                  </div>
                 </li>
               ))
-            }</ul>
+            }</ol>
           </div>
         </section>
 
@@ -153,22 +146,16 @@ export const ProjectDetailTemplate: React.FC<ProjectDetailTemplateProps> = ({ pr
         </section>
       </div>
 
-      {/* Prev / Next Project Navigation Bar */}
       <footer className="detail-pagination-footer" aria-label="Projects navigation">
-        <div className="pagination-inner">
-          <a href={`/projects/${prevProject.slug}`} className="pagination-link prev-link">
-            <span className="pagination-sub">← Previous Project</span>
-            <span className="pagination-name">{prevProject.name}</span>
-          </a>
-          <a href="/projects" className="pagination-link all-link">
-            <span className="pagination-sub">All Projects</span>
-            <span className="pagination-name">Index (3)</span>
-          </a>
-          <a href={`/projects/${nextProject.slug}`} className="pagination-link next-link">
-            <span className="pagination-sub">Next Project →</span>
-            <span className="pagination-name">{nextProject.name}</span>
-          </a>
-        </div>
+        {isFastCode && (
+          <div>
+            <h2 className="portfolio-section-heading">What this demonstrates</h2>
+            <p>Low-level performance work across vectorization, data layout, and CPU efficiency.</p>
+          </div>
+        )}
+        <a href={`/projects/${nextProject.slug}`} className="detail-next-link">
+          Next project · {nextProject.name} →
+        </a>
       </footer>
     </article>
   );

@@ -81,7 +81,8 @@ describe('T02: Factual Portfolio Content and Résumé Download', () => {
       expect(scottypi?.details.officialCmuSvPages).toBe(20);
       expect(scottypi?.details.evaluationQuestions).toBe(160);
       expect(scottypi?.details.metrics).toEqual(['Recall@1', 'Recall@3', 'MRR']);
-      expect(scottypi?.details.qualifier).toContain('no numerical recall or MRR scores supplied');
+      expect(scottypi?.details.qualifier).toBe('The questions were split into training, development, and test sets.');
+      expect(JSON.stringify(scottypi)).not.toMatch(/(?:recall|mrr)[^",.]*\d+(?:\.\d+)?\s*%/i);
     });
 
     it('asserts factual telemetry focus for Langmetric without exposing fictional metrics', () => {
@@ -89,7 +90,7 @@ describe('T02: Factual Portfolio Content and Résumé Download', () => {
       expect(langmetric).toBeDefined();
       expect(langmetric?.url).toBe('https://langmetric.com/');
       expect(langmetric?.details.service).toBe('Rust service aggregating structured model traces');
-      expect(langmetric?.details.problem).toBe('Aggregate structured model traces into operational dashboards displaying latency distributions, token usage, and cost metrics.');
+      expect(langmetric?.details.problem).toBe('Give teams one place to see how long AI requests take, how many tokens they use, and what they cost.');
       expect(langmetric?.details.implementation).toEqual([
         'Loco RS',
         'Asynchronous SeaORM queries',

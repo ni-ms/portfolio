@@ -9,74 +9,34 @@ export const ResumePage: React.FC = () => {
     <div className="resume-page-container">
       {/* Header with Prominent Page Heading, Name, Photo, Headline & Download Actions */}
       <header className="resume-header">
-        <div className="page-meta-eyebrow">
-          <span className="eyebrow-accent">PORTFOLIO</span>
-          <span className="eyebrow-sep" aria-hidden="true">/</span>
-          <span>RÉSUMÉ</span>
+        <div className="resume-heading-row">
+          <h1 className="page-main-heading">Résumé</h1>
+          <div className="resume-download-actions">
+            <a href={downloads.pdf.url} download={downloads.pdf.filename} className="download-btn download-btn-primary">
+              Download résumé ↓
+            </a>
+            <a href={downloads.docx.url} download={downloads.docx.filename} className="download-btn download-btn-secondary">
+              DOCX
+            </a>
+          </div>
         </div>
-
-        <h1 className="page-main-heading">Résumé</h1>
-
         <div className="resume-identity-row">
           <PhotoPlaceholder className="resume-photo" />
           <div className="resume-title-block">
-            <h1 className="resume-person-name">{identity.name}</h1>
+            <h2 className="resume-person-name">{identity.name}</h2>
             <p className="resume-role-sub">{identity.title}</p>
-            <p className="resume-headline-text">{identity.headline}</p>
-            <div className="resume-contact-inline">
-              <span className="resume-location">{identity.location}</span>
-              <span className="inline-sep" aria-hidden="true">·</span>
-              <a href={`mailto:${identity.email}`} className="resume-email-link">
-                {identity.email}
-              </a>
-            </div>
+            <p className="resume-location">{identity.location}</p>
           </div>
         </div>
-
-        {/* Real Downloadable Résumé Buttons */}
-        <div className="resume-download-actions" aria-label="Download Résumé">
-          <a
-            href={downloads.pdf.url}
-            download={downloads.pdf.filename}
-            className="download-btn download-btn-primary"
-            aria-label={`${downloads.pdf.label} (${downloads.pdf.sizeLabel})`}
-          >
-            <span className="download-icon" aria-hidden="true">↓</span>
-            <span className="download-text">{downloads.pdf.label}</span>
-            {downloads.pdf.sizeLabel && (
-              <span className="download-size">{downloads.pdf.sizeLabel}</span>
-            )}
-          </a>
-
-          <a
-            href={downloads.docx.url}
-            download={downloads.docx.filename}
-            className="download-btn download-btn-secondary"
-            aria-label={`${downloads.docx.label} (${downloads.docx.sizeLabel})`}
-          >
-            <span className="download-icon" aria-hidden="true">↓</span>
-            <span className="download-text">{downloads.docx.label}</span>
-            {downloads.docx.sizeLabel && (
-              <span className="download-size">{downloads.docx.sizeLabel}</span>
-            )}
-          </a>
-        </div>
+        <p className="resume-headline-text">Nearly 3 years building production backend services and enterprise web applications, with experience in applied AI and CPU optimization.</p>
       </header>
 
       {/* Two-Column Layout: Left = Experience; Right = Education, Grouped Text Skills, Research, Projects */}
       <div className="resume-content-grid">
-        {/* Left Column: Professional Experience */}
+        {/* Left Column: Experience */}
         <div className="resume-col-main">
           <section className="resume-section" aria-labelledby="experience-heading">
-            <div className="section-divider-header">
-              <div className="divider-line" />
-              <div className="section-label-badge">
-                <span className="section-badge-dot" />
-                <h2 id="experience-heading" className="section-badge-title">
-                  PROFESSIONAL EXPERIENCE
-                </h2>
-              </div>
-            </div>
+            <h2 id="experience-heading" className="portfolio-section-heading">Experience</h2>
 
             <div className="experience-timeline">
               {experience.map((exp, index) => (
@@ -88,7 +48,7 @@ export const ResumePage: React.FC = () => {
                         <span className="company-name">{exp.employer}</span>
                         {exp.isClientEngagement && exp.client && (
                           <span className="client-badge">
-                            Client Engagement: <strong>{exp.client}</strong>
+                            Client: <strong>{exp.client}</strong>
                           </span>
                         )}
                       </div>
@@ -120,15 +80,7 @@ export const ResumePage: React.FC = () => {
         <div className="resume-col-side">
           {/* Education */}
           <section className="resume-section" aria-labelledby="education-heading">
-            <div className="section-divider-header">
-              <div className="divider-line" />
-              <div className="section-label-badge">
-                <span className="section-badge-dot" />
-                <h2 id="education-heading" className="section-badge-title">
-                  EDUCATION
-                </h2>
-              </div>
-            </div>
+            <h2 id="education-heading" className="portfolio-section-heading">Education</h2>
 
             <div className="education-list">
               {education.map((edu, index) => (
@@ -138,12 +90,6 @@ export const ResumePage: React.FC = () => {
                     <span className="education-year">{edu.year}</span>
                   </div>
                   <p className="education-school">{edu.school}</p>
-                  {edu.location && <p className="education-location">{edu.location}</p>}
-                  {edu.coursework && (
-                    <p className="education-coursework">
-                      <span className="coursework-label">Coursework:</span> {edu.coursework}
-                    </p>
-                  )}
                 </article>
               ))}
             </div>
@@ -151,15 +97,7 @@ export const ResumePage: React.FC = () => {
 
           {/* Grouped Text Skills (Clean text list per category, NO 54 pills) */}
           <section className="resume-section" aria-labelledby="skills-heading">
-            <div className="section-divider-header">
-              <div className="divider-line" />
-              <div className="section-label-badge">
-                <span className="section-badge-dot" />
-                <h2 id="skills-heading" className="section-badge-title">
-                  TECHNICAL CAPABILITIES
-                </h2>
-              </div>
-            </div>
+            <h2 id="skills-heading" className="portfolio-section-heading">Core skills</h2>
 
             <div className="skills-text-list">
               {skills.categories.map((group) => (
@@ -173,54 +111,37 @@ export const ResumePage: React.FC = () => {
             </div>
           </section>
 
-          {/* Research */}
-          <section className="resume-section" aria-labelledby="research-heading">
-            <div className="section-divider-header">
-              <div className="divider-line" />
-              <div className="section-label-badge">
-                <span className="section-badge-dot" />
-                <h2 id="research-heading" className="section-badge-title">
-                  RESEARCH &amp; PUBLICATIONS
-                </h2>
-              </div>
-            </div>
-
-            <article className="research-entry-card">
-              <div className="research-status-row">
-                <span className="status-badge-pill in-review">{research.status}</span>
-                <span className="research-venue">{research.venue}</span>
-              </div>
-              <h3 className="research-paper-title">{research.fullTitle}</h3>
-              <p className="research-summary-text">{research.summary}</p>
-            </article>
-          </section>
-
-          {/* Selected Technical Projects Links */}
-          <section className="resume-section" aria-labelledby="resume-projects-heading">
-            <div className="section-divider-header">
-              <div className="divider-line" />
-              <div className="section-label-badge">
-                <span className="section-badge-dot" />
-                <h2 id="resume-projects-heading" className="section-badge-title">
-                  FEATURED PROJECTS
-                </h2>
-              </div>
-            </div>
-
-            <div className="resume-projects-list">
-              {projects.map((p) => (
-                <a key={p.slug} href={`/projects/${p.slug}`} className="resume-project-link-card">
-                  <div className="proj-link-top">
-                    <span className="proj-link-name">{p.name}</span>
-                    <span className="proj-link-arrow">→</span>
-                  </div>
-                  <span className="proj-link-sub">{p.subtitle} · {p.stack}</span>
-                </a>
-              ))}
-            </div>
-          </section>
         </div>
       </div>
+      {/* Selected Technical Projects Links */}
+      <section className="resume-section" aria-labelledby="resume-projects-heading">
+        <h2 id="resume-projects-heading" className="portfolio-section-heading">Selected projects</h2>
+
+        <div className="resume-projects-list">
+          {projects.map((p) => (
+            <a key={p.slug} href={`/projects/${p.slug}`} className="resume-project-link-card">
+              <div className="proj-link-top">
+                <span className="proj-link-name">{p.name}</span>
+                <span className="proj-link-arrow">→</span>
+              </div>
+              <span className="proj-link-sub">{p.subtitle}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+      {/* Research */}
+      <section className="resume-section" aria-labelledby="research-heading">
+        <h2 id="research-heading" className="portfolio-section-heading">Research</h2>
+
+        <article className="research-entry-card">
+          <div className="research-status-row">
+            <span className="status-badge-pill in-review">{research.status}</span>
+            <span className="research-venue">{research.venue}</span>
+          </div>
+          <h3 className="research-paper-title">{research.title}</h3>
+        </article>
+      </section>
+
     </div>
   );
 };

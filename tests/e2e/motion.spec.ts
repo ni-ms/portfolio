@@ -19,8 +19,9 @@ test.describe('T07 Purposeful Motion and Reduced Motion Suite', () => {
     const resumeCta = page.locator('.home-cta-row a[href="/resume"]');
     await expect(resumeCta).toBeVisible();
 
-    const contactCta = page.locator('.home-cta-row a[href="/about#contact"]');
-    await expect(contactCta).toBeVisible();
+    const aboutCta = page.getByRole('link', { name: 'About me →' });
+    await expect(aboutCta).toBeVisible();
+    await expect(aboutCta).toHaveAttribute('href', '/about');
 
     // Verify computed opacity is 1 and not trapped at 0
     const opacity = await nameHeading.evaluate((el) => window.getComputedStyle(el).opacity);
@@ -47,7 +48,7 @@ test.describe('T07 Purposeful Motion and Reduced Motion Suite', () => {
     await expect(card).toContainText('539 µs');
     await expect(card).toContainText('▼ 21%');
     await expect(card).toContainText('~91%');
-    await expect(card).toContainText('Primary Workload Benchmark (Single Core)');
+    await expect(card).toContainText('Measured result');
     await expect(card).toContainText('Results refer to the primary benchmark workload, not a universal speedup.');
 
     // Verify bar elements exist

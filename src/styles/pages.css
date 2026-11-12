@@ -2392,3 +2392,139 @@
 :root[data-theme="light"] .photo-body {
   fill: #8e9596;
 }
+
+/* Page headings and links follow the approved editorial layouts. */
+.home-projects-heading-row,
+.resume-heading-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.home-projects-heading-row h2,
+.portfolio-section-heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.45rem, 3vw, 2.1rem);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+
+.portfolio-section-heading {
+  margin-bottom: 1rem;
+}
+
+.home-projects-heading-row a,
+.detail-next-link,
+.about-contact-section a {
+  color: var(--color-accent-text, var(--color-text));
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.portfolio-project-card {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.portfolio-project-card .card-content-body {
+  padding-inline: 0;
+}
+
+.portfolio-project-card .card-result-callout {
+  display: grid;
+  gap: 0.25rem;
+  border-radius: 0;
+}
+
+.card-stack,
+.detail-project-facts,
+.about-previous-study {
+  color: var(--color-text-muted);
+}
+
+.detail-approach-item p {
+  margin-top: 0.25rem;
+  color: var(--color-text-muted);
+}
+
+.detail-pagination-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.resume-heading-row .page-main-heading,
+.resume-heading-row .resume-download-actions {
+  margin: 0;
+}
+
+.resume-header > .resume-headline-text,
+.about-study {
+  margin-block: 1.5rem;
+  border-inline-start: 3px solid var(--color-accent);
+  padding-inline-start: 1rem;
+}
+
+.about-page-container .about-two-col-layout {
+  margin-top: 1.5rem;
+}
+
+.about-page-container .about-identity-headline-row {
+  margin-bottom: 1.5rem;
+}
+
+.about-study h2 {
+  font-size: 1.35rem;
+  margin-block: 0.2rem;
+}
+
+.about-contact-section {
+  margin-top: 2rem;
+  border-top: 1px solid var(--color-border);
+  padding-top: 1.5rem;
+}
+
+.about-contact-section .contact-links-row {
+  gap: 0.75rem 1.5rem;
+}
+
+.projects-page-container .page-main-title {
+  border-inline-start: 5px solid var(--color-accent);
+  padding-inline-start: 1rem;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  line-height: 1;
+}
+
+.portfolio-project-card .card-title {
+  font-size: clamp(1.5rem, 2.25vw, 2.4rem);
+}
+
+.portfolio-project-card .featured-title {
+  font-size: clamp(2.1rem, 3.75vw, 3.6rem);
+}
+
+.portfolio-project-card .card-subtitle {
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--color-text-muted);
+}
+
+.portfolio-project-card .card-actions-row {
+  margin-top: 0.5rem;
+  padding-top: 0;
+  border-top: 0;
+  justify-content: flex-start;
+  gap: 1.25rem;
+}
+
+.portfolio-project-card .card-external-link {
+  color: var(--color-text);
+}

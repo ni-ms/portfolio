@@ -1,3 +1,4 @@
+import { HeadingWords } from './HeadingWords';
 import { sitePath } from '../routing/sitePath';
 import React from 'react';
 import { PortfolioProject, portfolioContent } from '../content/realPortfolio';
@@ -63,7 +64,7 @@ export const ProjectDetailTemplate: React.FC<ProjectDetailTemplateProps> = ({ pr
           </div>
 
           <h1 id="project-title" className="detail-title">
-            {project.name}
+            <HeadingWords>{project.name}</HeadingWords>
           </h1>
 
           <p className="detail-subtitle">{isFastCode ? 'CPU kernel optimization for YOLOv8n' : project.subtitle}</p>
@@ -111,12 +112,12 @@ export const ProjectDetailTemplate: React.FC<ProjectDetailTemplateProps> = ({ pr
         {/* Left Column: Challenge & Systems Approach */}
         <section className="detail-narrative-col" aria-label="Technical Details">
           <div className="portfolio-cell detail-block">
-            <h2 className="detail-section-heading">The problem</h2>
+            <h2 className="detail-section-heading"><HeadingWords>The problem</HeadingWords></h2>
             <p className="detail-prose-text">{project.details.problem}</p>
           </div>
 
           <div className="portfolio-cell detail-block">
-            <h2 className="detail-section-heading">The approach</h2>
+            <h2 className="detail-section-heading"><HeadingWords>The approach</HeadingWords></h2>
             <ol className="detail-approach-list">
               {project.details.approach.map((item, idx) => (
                 <li key={idx} className="detail-approach-item">
@@ -150,7 +151,7 @@ export const ProjectDetailTemplate: React.FC<ProjectDetailTemplateProps> = ({ pr
       <footer className="portfolio-row portfolio-cell detail-pagination-footer" aria-label="Projects navigation">
         {isFastCode && (
           <div>
-            <h2 className="portfolio-section-heading">What this demonstrates</h2>
+            <h2 className="portfolio-section-heading"><HeadingWords>What this demonstrates</HeadingWords></h2>
             <p>Low-level performance work across vectorization, data layout, and CPU efficiency.</p>
           </div>
         )}

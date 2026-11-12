@@ -106,8 +106,32 @@ The build, 87 unit tests, and 21 desktop/mobile browser checks passed. The two f
 
 The build and unit tests passed. The final focused desktop and mobile browser checks passed, including the initial card delay and the desktop heading's height, type size, and restored state. Next action is owner review of the comparison or the new clip, which is open in the in-app browser.
 
-## Button-only cursor outline
+## Earlier button-only cursor outline
 
 [Watch the cursor demo](recordings/cursor-buttons-only.webm). The outline fits buttons and links styled as buttons, including the résumé download. The cursor stays circular over body text, headings, and ordinary links. The reduced-motion preference still uses the native pointer.
 
-The production build, 87 unit tests, and the desktop cursor check passed. Next action is owner review of the demo or hovering the heading and download button on the local Résumé page.
+The production build, 87 unit tests, and the desktop cursor check passed for that version.
+
+## Cursor outline on navigation and hyperlinks
+
+[Watch the demo](recordings/cursor-nav-and-links.webm). The clip shows the circle over the Blog heading and the fitted outline on the Projects navigation link, a Blog article hyperlink, and the theme button. To record it again, run `node qa/record.mjs cursor-nav-and-links`.
+
+The production build, 87 unit tests, and the focused desktop Chrome check passed. The browser check also covers the native pointer under reduced motion. Next action is review of the recording or the local Blog preview.
+
+## Earlier sticky Selected projects heading
+
+[Watch the desktop scroll demo](recordings/home-projects-sticky-heading.webm). The hero lifts with the project heading and fades at the top edge. The heading shrinks to 68 px, holds below the navigation, and releases as the page moves toward Parkour. The same transition plays in reverse when scrolling back up. On phones, the heading sticks below the navigation in the stacked project list.
+
+The GitHub Pages production build and all 87 unit tests passed. Focused Chrome checks across desktop, two phone widths, and tablet covered the opening, scroll transition, and reduced motion, including the smooth Parkour shortcut. This recording documents the earlier hero fade version.
+
+## Page transitions
+
+[Watch the navigation demo](recordings/page-transitions.webm). The clip moves from Projects to Blog, opens an article, goes back, and returns Home. The page content settles with a 240 ms GSAP fade and small lift. Home uses the fade with its existing headline reveal. Reduced motion skips the transition.
+
+The Pages production build, 87 unit tests, and 24 focused Chrome checks across desktop, phones, and tablet passed. Checks covered the animation, stable navbar, back and forward, focus, arrow navigation, and the Parkour shortcut. Next action is to review the recording or navigate from `http://localhost:3176/projects`. This change is local.
+
+## Project cover and heading reveals
+
+[Watch the updated demo](recordings/home-projects-cover-and-headings.webm). GSAP keeps the hero in place while the Selected projects panel passes in front of it. The compact heading holds near the top, releases toward Parkour, and returns in reverse. Page titles and section headings use the landing headline's staggered word rise as they enter view. Reduced motion keeps headings immediately readable and uses the normal page flow.
+
+The production build, 87 unit tests, and 24 focused Chrome checks across desktop, tablet, and two phone widths passed. Next action is owner review of the recording or the local home page at `http://localhost:3176/`. This change is local.

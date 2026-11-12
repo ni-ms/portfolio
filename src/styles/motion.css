@@ -22,3 +22,12 @@
     animation: none !important;
   }
 }
+
+.heading-word-mask,
+.heading-word {
+  display: inline-block;
+}
+
+.heading-words[data-revealing] .heading-word-mask {
+  clip-path: inset(-0.1em -0.11em -0.1em);
+}

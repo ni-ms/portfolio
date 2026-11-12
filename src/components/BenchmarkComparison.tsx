@@ -1,3 +1,4 @@
+import { HeadingWords } from './HeadingWords';
 import React from 'react';
 
 interface BenchmarkComparisonProps {
@@ -31,7 +32,7 @@ export const BenchmarkComparison: React.FC<BenchmarkComparisonProps> = ({
       <div className="benchmark-header">
         <div className="benchmark-title-wrap">
           <span className="benchmark-badge-indicator" aria-hidden="true" />
-          <h3 className="benchmark-heading">Measured result</h3>
+          <h3 className="benchmark-heading"><HeadingWords>Measured result</HeadingWords></h3>
         </div>
         <span className="benchmark-target-pill">YOLOv8n FP32 1x1 Conv</span>
       </div>

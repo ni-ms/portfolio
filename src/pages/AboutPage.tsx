@@ -1,3 +1,4 @@
+import { HeadingWords } from '../components/HeadingWords';
 import { sitePath } from '../routing/sitePath';
 import { portfolioContent } from '../content/realPortfolio';
 import { PhotoPlaceholder } from '../components/PhotoPlaceholder';
@@ -8,13 +9,13 @@ export function AboutPage() {
 
   return (
     <div className="portfolio-page portfolio-frame about-page-container">
-      <h1 className="portfolio-cell page-main-heading">About</h1>
+      <h1 className="portfolio-cell page-main-heading"><HeadingWords>About</HeadingWords></h1>
       <div className="portfolio-row portfolio-split about-two-col-layout">
         <div className="portfolio-cell about-col-left">
           <div className="about-identity-headline-row">
             <PhotoPlaceholder className="about-photo" />
             <div className="about-title-group">
-              <h2 className="about-main-title">{identity.name}</h2>
+              <h2 className="about-main-title"><HeadingWords>{identity.name}</HeadingWords></h2>
               <p className="about-role-subtitle">{identity.title}</p>
             </div>
           </div>
@@ -34,20 +35,20 @@ export function AboutPage() {
       </div>
       <div className="portfolio-row portfolio-split">
         <section aria-labelledby="about-edu-heading" className="portfolio-cell about-study">
-          <h2 id="about-edu-heading" className="portfolio-section-heading">Education</h2>
+          <h2 id="about-edu-heading" className="portfolio-section-heading"><HeadingWords>Education</HeadingWords></h2>
           <p className="about-current-degree">{current.degree}</p>
           <p>{current.school} · {current.year}</p>
           <p className="about-previous-study">Previously {previous.degree}, {previous.school} · {previous.year}</p>
         </section>
         <section className="portfolio-cell about-focus-section" aria-labelledby="focus-heading">
-          <h2 id="focus-heading" className="portfolio-section-heading">Areas of focus</h2>
+          <h2 id="focus-heading" className="portfolio-section-heading"><HeadingWords>Areas of focus</HeadingWords></h2>
           <ul className="focus-list">
             {about.focus.map((item) => <li key={item} className="focus-list-item">{item}</li>)}
           </ul>
         </section>
       </div>
       <section id="contact" className="portfolio-row portfolio-cell about-contact-section" aria-labelledby="contact-heading" tabIndex={-1}>
-        <h2 id="contact-heading" className="portfolio-section-heading">Get in touch</h2>
+        <h2 id="contact-heading" className="portfolio-section-heading"><HeadingWords>Get in touch</HeadingWords></h2>
         <div className="contact-links-row">
           <a href={links.email}>{identity.email}</a>
           <a href={links.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a>

@@ -1,3 +1,4 @@
+import { HeadingWords } from '../components/HeadingWords';
 import { sitePath } from '../routing/sitePath';
 import React from 'react';
 
@@ -11,7 +12,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({ path }) => {
       <div className="portfolio-frame portfolio-split not-found-card">
         <div className="portfolio-cell not-found-code" aria-hidden="true">404</div>
         <div className="portfolio-cell not-found-copy">
-          <h1 className="not-found-title">Page Not Found</h1>
+          <h1 className="not-found-title"><HeadingWords>Page Not Found</HeadingWords></h1>
 
           <p className="not-found-prose">
             The requested address{path ? ` "${path}"` : ''} does not correspond to an existing portfolio page or project deep dive.

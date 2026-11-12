@@ -1,3 +1,4 @@
+import { HeadingWords } from '../components/HeadingWords';
 import { sitePath } from '../routing/sitePath';
 import React from 'react';
 import { portfolioContent } from '../content/realPortfolio';
@@ -11,7 +12,7 @@ export const ResumePage: React.FC = () => {
       {/* Header with Prominent Page Heading, Name, Photo, Headline & Download Actions */}
       <header className="portfolio-split resume-header">
         <div className="portfolio-cell resume-heading-row">
-          <h1 className="page-main-heading">Résumé</h1>
+          <h1 className="page-main-heading"><HeadingWords>Résumé</HeadingWords></h1>
           <div className="resume-download-actions">
             <a href={sitePath(downloads.pdf.url)} download={downloads.pdf.filename} className="download-btn download-btn-primary">
               Download résumé ↓
@@ -25,7 +26,7 @@ export const ResumePage: React.FC = () => {
           <div className="resume-identity-row">
             <PhotoPlaceholder className="resume-photo" />
             <div className="resume-title-block">
-              <h2 className="resume-person-name">{identity.name}</h2>
+              <h2 className="resume-person-name"><HeadingWords>{identity.name}</HeadingWords></h2>
               <p className="resume-role-sub">{identity.title}</p>
               <p className="resume-location">{identity.location}</p>
             </div>
@@ -38,14 +39,14 @@ export const ResumePage: React.FC = () => {
         {/* Left Column: Experience */}
         <div className="resume-col-main">
           <section className="resume-section" aria-labelledby="experience-heading">
-            <h2 id="experience-heading" className="portfolio-section-heading">Experience</h2>
+            <h2 id="experience-heading" className="portfolio-section-heading"><HeadingWords>Experience</HeadingWords></h2>
 
             <div className="experience-timeline">
               {experience.map((exp, index) => (
                 <article key={index} className="experience-entry">
                   <div className="experience-header-row">
                     <div className="experience-role-group">
-                      <h3 className="experience-role">{exp.role}</h3>
+                      <h3 className="experience-role"><HeadingWords>{exp.role}</HeadingWords></h3>
                       <div className="experience-company-line">
                         <span className="company-name">{exp.employer}</span>
                         {exp.isClientEngagement && exp.client && (
@@ -82,12 +83,12 @@ export const ResumePage: React.FC = () => {
         <div className="resume-col-side">
           {/* Grouped Text Skills (Clean text list per category, NO 54 pills) */}
           <section className="resume-section" aria-labelledby="skills-heading">
-            <h2 id="skills-heading" className="portfolio-section-heading">Core skills</h2>
+            <h2 id="skills-heading" className="portfolio-section-heading"><HeadingWords>Core skills</HeadingWords></h2>
 
             <div className="skills-text-list">
               {skills.categories.map((group) => (
                 <div key={group.category} className="skill-text-category">
-                  <h3 className="skill-category-label">{group.category}</h3>
+                  <h3 className="skill-category-label"><HeadingWords>{group.category}</HeadingWords></h3>
                   <p className="skill-category-items">
                     {group.items.join(' · ')}
                   </p>
@@ -98,13 +99,13 @@ export const ResumePage: React.FC = () => {
 
           {/* Education */}
           <section className="resume-section" aria-labelledby="education-heading">
-            <h2 id="education-heading" className="portfolio-section-heading">Education</h2>
+            <h2 id="education-heading" className="portfolio-section-heading"><HeadingWords>Education</HeadingWords></h2>
 
             <div className="education-list">
               {education.map((edu, index) => (
                 <article key={index} className="education-entry-compact">
                   <div className="education-header">
-                    <h3 className="education-degree">{edu.degree}</h3>
+                    <h3 className="education-degree"><HeadingWords>{edu.degree}</HeadingWords></h3>
                     <span className="education-year">{edu.year}</span>
                   </div>
                   <p className="education-school">{edu.school}</p>
@@ -117,7 +118,7 @@ export const ResumePage: React.FC = () => {
       </div>
       {/* Selected Technical Projects Links */}
       <section className="portfolio-row resume-section resume-projects-section" aria-labelledby="resume-projects-heading">
-        <h2 id="resume-projects-heading" className="portfolio-cell portfolio-section-heading">Selected projects</h2>
+        <h2 id="resume-projects-heading" className="portfolio-cell portfolio-section-heading"><HeadingWords>Selected projects</HeadingWords></h2>
 
         <div className="resume-projects-list">
           {projects.map((p) => (
@@ -133,14 +134,14 @@ export const ResumePage: React.FC = () => {
       </section>
       {/* Research */}
       <section className="portfolio-row portfolio-cell resume-section" aria-labelledby="research-heading">
-        <h2 id="research-heading" className="portfolio-section-heading">Research</h2>
+        <h2 id="research-heading" className="portfolio-section-heading"><HeadingWords>Research</HeadingWords></h2>
 
         <article className="research-entry-card">
           <div className="research-status-row">
             <span className="status-badge-pill in-review">{research.status}</span>
             <span className="research-venue">{research.venue}</span>
           </div>
-          <h3 className="research-paper-title">{research.title}</h3>
+          <h3 className="research-paper-title"><HeadingWords>{research.title}</HeadingWords></h3>
         </article>
       </section>
 

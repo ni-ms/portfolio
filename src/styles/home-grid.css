@@ -6,9 +6,16 @@
 }
 
 .home-projects-heading {
+  position: relative;
   flex: 1 0 auto;
   min-height: clamp(82px, 12svh, 132px);
   background: var(--color-surface);
+}
+
+.home-scene:not([data-pinned]) .home-opening {
+  position: sticky;
+  top: calc(var(--header-height) - var(--home-intro-height));
+  z-index: 3;
 }
 
 .home-scene[data-pinned] {
@@ -17,9 +24,18 @@
   --project-heading-height: var(--project-heading-start);
 }
 
+.home-projects-heading::before {
+  content: '';
+  position: absolute;
+  inset: auto 0 100%;
+  height: clamp(22px, 5svh, 50px);
+  background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--color-surface) 70%, transparent));
+  opacity: var(--home-fold-opacity, 0);
+  pointer-events: none;
+}
+
 .home-scene[data-pinned] .home-projects-heading {
-  position: relative;
-  z-index: 1;
+  z-index: 3;
   flex: 0 0 auto;
   height: var(--project-heading-height);
   min-height: 0;
@@ -297,7 +313,7 @@
   gap: 8px;
 }
 
-.home-projects-grid .card-title-link span {
+.home-projects-grid .card-title-link > [aria-hidden='true'] {
   font-size: 0.75em;
   color: var(--color-text-muted);
 }
@@ -315,6 +331,16 @@
 }
 
 @media (max-width: 790px) {
+  .home-intro {
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+  }
+
+  .home-hero-grid {
+    flex: 1;
+  }
+
   .home-role-panel,
   .home-profile-panel {
     padding-block: clamp(15px, 3svh, 24px);
@@ -341,6 +367,7 @@
   }
 
   .home-projects-heading {
+    flex: 0 0 auto;
     padding-block: 12px;
     gap: 0 12px;
   }

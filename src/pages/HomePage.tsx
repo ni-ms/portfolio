@@ -1,3 +1,4 @@
+import { HeadingWords } from '../components/HeadingWords';
 import { sitePath } from '../routing/sitePath';
 import { Fragment, useRef, type ReactNode } from 'react';
 import { useHomeMotion } from '../motion/useHomeMotion';
@@ -55,7 +56,7 @@ export function HomePage({ gameSlot }: HomePageProps) {
                     <div className="home-identity-row">
                       <PhotoPlaceholder className="home-photo" />
                       <div>
-                        <h1 id="home-owner-heading">{identity.name}</h1>
+                        <h1 id="home-owner-heading"><HeadingWords>{identity.name}</HeadingWords></h1>
                         <p className="home-location">{identity.location}</p>
                       </div>
                     </div>
@@ -75,7 +76,7 @@ export function HomePage({ gameSlot }: HomePageProps) {
             </div>
 
             <div className="home-section-heading home-projects-heading">
-              <h2 id="home-projects-heading">Selected projects</h2>
+              <h2 id="home-projects-heading"><HeadingWords>Selected projects</HeadingWords></h2>
               <a href={sitePath('/projects')}>All projects <span aria-hidden="true">↗</span></a>
             </div>
           </div>
@@ -90,7 +91,7 @@ export function HomePage({ gameSlot }: HomePageProps) {
 
         <section className="home-rooftops" id="parkour-game" aria-labelledby="home-rooftops-heading">
           <div className="home-section-heading">
-            <h2 id="home-rooftops-heading">Parkour Game</h2>
+            <h2 id="home-rooftops-heading"><HeadingWords>Parkour Game</HeadingWords></h2>
           </div>
           <div className="home-game-slot-container">
             {gameSlot ? (

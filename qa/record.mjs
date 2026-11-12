@@ -282,22 +282,97 @@ const tickets = [
     await expect(grid).not.toBeInViewport();
     await expect(page.locator('.home-role-title')).toBeInViewport();
   }],
-  ['cursor-buttons-only', desktop, async (page) => {
-    await page.goto('/resume');
+  ['home-projects-cover-and-headings', desktop, async (page) => {
+    await page.goto('/');
+    await expect(page.locator('.home-scene[data-pinned]')).toBeAttached();
     await page.evaluate(() => document.fonts.ready);
-    const heading = page.getByRole('heading', { name: 'Résumé', exact: true });
-    const bounds = await heading.boundingBox();
-    await page.mouse.move(bounds.x + 25, bounds.y + bounds.height / 2);
-    await caption(page, 'The cursor stays circular over text.');
+    const heading = page.locator('.home-projects-heading');
+    const scene = page.locator('.home-scene');
+    const dockTop = (await scene.boundingBox()).y;
+    await page.mouse.move(5, 600);
+
+    let scrollFraction = 0;
+    const scrollToFraction = async (next) => {
+      const total = Math.round(desktop.height * next) - Math.round(desktop.height * scrollFraction);
+      for (let index = 0; index < 14; index++) {
+        const step = Math.round(total * (index + 1) / 14) - Math.round(total * index / 14);
+        await page.mouse.wheel(0, step);
+        await pause(page, 52);
+      }
+      scrollFraction = next;
+    };
+
+    await caption(page, 'The opening screen leaves a full-width project heading at the bottom.');
     await pause(page, 900);
-    await page.getByRole('link', { name: 'Download résumé ↓' }).hover();
-    await caption(page, 'The ring fits the download button.');
+    await caption(page, 'Scroll down · the projects slide in front of the pinned headline.');
+    await scrollToFraction(0.44);
     await pause(page, 950);
-    await name(page).hover();
-    await caption(page, 'It returns to a circle over a regular link.');
+    await scrollToFraction(0.78);
+    await expect.poll(async () => (await heading.boundingBox()).y).toBeCloseTo(dockTop, 0);
+    await pause(page, 650);
+    await caption(page, 'Scroll a little more · the compact heading stays in place.');
+    await scrollToFraction(0.98);
+    await expect.poll(async () => (await heading.boundingBox()).y).toBeCloseTo(dockTop, 0);
+    await pause(page, 800);
+    await caption(page, 'Keep scrolling · the project heading releases.');
+    await scrollToFraction(1.26);
+    await expect(heading).not.toBeInViewport();
+    await pause(page, 800);
+    await caption(page, 'Scroll back up · the transition reverses.');
+    await scrollToFraction(0.78);
+    await scrollToFraction(0);
+    await expect(page.locator('.home-role-title')).toBeInViewport();
+
+    await caption(page, 'The same word reveal carries through to other pages.');
+    await page.getByRole('navigation', { name: 'Primary navigation' }).getByRole('link', { name: 'Blog' }).click();
+    await expect(page.getByRole('heading', { name: 'Blog', exact: true })).toBeVisible();
+    await pause(page, 650);
+    await caption(page, 'Open an article · watch its title rise word by word.');
+    await page.getByRole('link', { name: 'Optimizing 1×1 convolution on a CPU' }).click();
+    await expect(page.getByRole('heading', { name: 'Optimizing 1×1 convolution on a CPU' })).toBeVisible();
+  }],
+  ['page-transitions', desktop, async (page) => {
+    await page.goto('/projects');
+    const nav = page.getByRole('navigation', { name: 'Primary navigation' });
+    await caption(page, 'Projects to Blog · the content lifts and fades in.');
+    await pause(page, 800);
+    await nav.getByRole('link', { name: 'Blog' }).click();
+    await expect(page.getByRole('heading', { name: 'Blog', exact: true })).toBeVisible();
+    await pause(page, 1000);
+    await caption(page, 'The same motion carries into the article.');
+    await page.getByRole('link', { name: 'Optimizing 1×1 convolution on a CPU' }).click();
+    await expect(page.getByRole('heading', { name: 'Optimizing 1×1 convolution on a CPU' })).toBeVisible();
+    await pause(page, 1050);
+    await caption(page, 'Back returns to Blog. The navbar stays in place.');
+    await page.goBack();
+    await expect(page.getByRole('heading', { name: 'Blog', exact: true })).toBeVisible();
     await pause(page, 950);
+    await caption(page, 'Home fades in with its existing headline reveal.');
+    await name(page).click();
+    await expect(page.getByRole('heading', { name: 'Nikhil Sharma', exact: true })).toBeVisible();
+  }],
+  ['cursor-nav-and-links', desktop, async (page) => {
+    await page.goto('/blog');
+    await page.evaluate(() => document.fonts.ready);
+    const cursor = page.locator('.portfolio-cursor');
+    const heading = page.getByRole('heading', { name: 'Blog', exact: true });
+    await heading.hover();
+    await expect(cursor).toBeVisible();
+    await expect(cursor).not.toHaveAttribute('data-active', 'true');
+    await caption(page, 'Plain text · circular cursor');
+    await pause(page, 1050);
+    const navLink = page.getByRole('navigation', { name: 'Primary navigation' }).getByRole('link', { name: 'Projects' });
+    await navLink.hover();
+    await expect(cursor).toHaveAttribute('data-active', 'true');
+    await caption(page, 'Navigation link · fitted outline');
+    await pause(page, 1050);
+    await page.getByRole('link', { name: 'Optimizing 1×1 convolution on a CPU' }).hover();
+    await expect(cursor).toHaveAttribute('data-active', 'true');
+    await caption(page, 'Article hyperlink · fitted outline');
+    await pause(page, 1050);
     await theme(page, 'light').hover();
-    await caption(page, 'The theme button gets its own fitted outline.');
+    await expect(cursor).toHaveAttribute('data-active', 'true');
+    await caption(page, 'Theme button · fitted outline');
   }],
 ];
 

@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap/dist/gsap';
 
-const buttonSelector = [
+const interactiveSelector = [
   'button:not(:disabled):not([aria-disabled="true"])',
   '[role="button"]:not([aria-disabled="true"])',
-  'a[href]:is(.home-primary-link, .download-btn, .cta-btn, .card-primary-cta, .detail-cta-button)',
+  'a[href]:not([aria-disabled="true"])',
 ].join(', ');
 
 export function PortfolioCursor() {
@@ -41,7 +41,7 @@ export function PortfolioCursor() {
           return;
         }
 
-        const bounds = target.closest(buttonSelector)?.getBoundingClientRect();
+        const bounds = target.closest(interactiveSelector)?.getBoundingClientRect();
         const centerX = bounds ? bounds.left + bounds.width / 2 : x;
         const centerY = bounds ? bounds.top + bounds.height / 2 : y;
         dot.style.transform = `translate3d(${x}px, ${y}px, 0)`;

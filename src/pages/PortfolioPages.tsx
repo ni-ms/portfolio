@@ -1,4 +1,7 @@
-import type { ReactNode } from 'react';
+import { useLayoutEffect, useRef, type ReactNode } from 'react';
+import { gsap } from 'gsap/dist/gsap';
+import { useHeadingReveals } from '../motion/useHeadingReveals';
+import { useReducedMotion } from '../motion/reducedMotion';
 import '../styles/pages.css';
 import '../styles/motion.css';
 import '../styles/portfolio-grid.css';
@@ -39,6 +42,35 @@ export default function PortfolioPages({ path, gameSlot }: PortfolioPagesProps) 
   // Normalize path (strip trailing slash if length > 1)
   const normalizedPath = path.length > 1 ? path.replace(/\/$/, '') : path;
 
+  const mainRef = useRef<HTMLElement>(null);
+  useHeadingReveals(mainRef, normalizedPath);
+  const previousPath = useRef(normalizedPath);
+  const reducedMotion = useReducedMotion();
+
+  useLayoutEffect(() => {
+    const changedPage = previousPath.current !== normalizedPath;
+    previousPath.current = normalizedPath;
+    const main = mainRef.current;
+    if (!changedPage || reducedMotion || !main) return;
+
+    // Keep Home's pinned scene and fragment targets in their original coordinates.
+    const slide = normalizedPath !== '/' && !window.location.hash;
+    const motion = gsap.context(() => {
+      gsap.fromTo(main, {
+        opacity: 0.58,
+        ...(slide ? { y: 8 } : {}),
+      }, {
+        opacity: 1,
+        ...(slide ? { y: 0 } : {}),
+        duration: 0.24,
+        ease: 'power2.out',
+        clearProps: slide ? 'opacity,transform' : 'opacity',
+      });
+    }, main);
+
+    return () => motion.revert();
+  }, [normalizedPath, reducedMotion]);
+
   const renderContent = () => {
     if (normalizedPath === '/') {
       return <HomePage gameSlot={gameSlot} />;
@@ -78,7 +110,7 @@ export default function PortfolioPages({ path, gameSlot }: PortfolioPagesProps) 
   };
 
   return (
-    <main id="main-content" tabIndex={-1} className="portfolio-main">
+    <main ref={mainRef} id="main-content" tabIndex={-1} className="portfolio-main">
       {renderContent()}
     </main>
   );

@@ -1,3 +1,4 @@
+import { HeadingWords } from '../components/HeadingWords';
 import { sitePath } from '../routing/sitePath';
 import { blogPosts, type BlogPost } from '../content/blogPosts';
 
@@ -9,12 +10,12 @@ export function BlogPage({ post }: { post?: BlogPost }) {
           <a href={sitePath('/blog')}>← All posts</a>
         </nav>
         <header className="portfolio-row portfolio-cell blog-article-header">
-          <h1 id="blog-title" className="page-main-heading">{post.title}</h1>
+          <h1 id="blog-title" className="page-main-heading"><HeadingWords>{post.title}</HeadingWords></h1>
           <p>{post.summary}</p>
         </header>
         {post.sections.map(({ heading, text }) => (
           <section className="portfolio-row portfolio-cell blog-prose" key={heading}>
-            <h2 className="portfolio-section-heading">{heading}</h2>
+            <h2 className="portfolio-section-heading"><HeadingWords>{heading}</HeadingWords></h2>
             <p>{text}</p>
           </section>
         ))}
@@ -28,13 +29,13 @@ export function BlogPage({ post }: { post?: BlogPost }) {
   return (
     <div className="portfolio-page portfolio-frame blog-page">
       <header className="portfolio-cell">
-        <h1 className="page-main-heading">Blog</h1>
+        <h1 className="page-main-heading"><HeadingWords>Blog</HeadingWords></h1>
       </header>
       {blogPosts.map((entry) => (
         <article className="portfolio-row portfolio-cell blog-entry" key={entry.slug}>
           <p className="blog-category">{entry.project.category}</p>
           <h2 className="portfolio-section-heading">
-            <a href={sitePath(`/blog/${entry.slug}`)}>{entry.title} <span aria-hidden="true">↗</span></a>
+            <a href={sitePath(`/blog/${entry.slug}`)}><HeadingWords>{entry.title}</HeadingWords> <span aria-hidden="true">↗</span></a>
           </h2>
           <p>{entry.summary}</p>
         </article>

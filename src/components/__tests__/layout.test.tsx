@@ -10,6 +10,8 @@ import { BenchmarkComparison } from '../BenchmarkComparison';
 import { ProjectMetrics } from '../ProjectMetrics';
 import { portfolioContent, projectsBySlug } from '../../content/realPortfolio';
 
+const renderedText = (html: string) => html.replace(/<[^>]+>/g, '');
+
 describe('Semantic UI and Responsive Layout Components (T03)', () => {
   describe('Header Component', () => {
     it('renders owner name, navigation links, and mobile menu button', () => {
@@ -18,7 +20,7 @@ describe('Semantic UI and Responsive Layout Components (T03)', () => {
       );
 
       expect(html).not.toContain('header-emblem');
-      expect(html).toContain('Nikhil Sharma');
+      expect(renderedText(html)).toContain('Nikhil Sharma');
 
       // Navigation links
       expect(html).toContain('Home');
@@ -140,7 +142,7 @@ describe('Semantic UI and Responsive Layout Components (T03)', () => {
       expect(html).toContain('tabindex="-1"');
 
       // Identity & Intro
-      expect(html).toContain('Nikhil Sharma');
+      expect(renderedText(html)).toContain('Nikhil Sharma');
       expect(html).toContain('Photo placeholder (no portrait supplied)');
       expect(html).toContain(portfolioContent.home.intro);
       expect(html).toContain('M.S. Software Engineering · Carnegie Mellon · Expected 2027');
@@ -163,7 +165,7 @@ describe('Semantic UI and Responsive Layout Components (T03)', () => {
 
     it('renders Projects index (/projects) with all 3 project deep dives', () => {
       const html = renderToString(<PortfolioPages path="/projects" />);
-      expect(html).toContain('<h1 class="page-main-title">Projects</h1>');
+      expect(html).toMatch(/<h1 class="page-main-title">.*<span class="heading-word">Projects<\/span>.*<\/h1>/);
       expect(html).toContain('/projects/fastcode');
       expect(html).toContain('/projects/scottypi');
       expect(html).toContain('/projects/langmetric');
@@ -176,7 +178,7 @@ describe('Semantic UI and Responsive Layout Components (T03)', () => {
       expect(html).toContain('CPU kernel optimization for YOLOv8n');
       expect(html).toContain('684 µs');
       expect(html).toContain('539 µs');
-      expect(html).toContain('The problem');
+      expect(renderedText(html)).toContain('The problem');
       expect(html).toContain('~91%');
       expect(html).toContain('https://github.com/ni-ms/18645-yolov8n-optimization');
       expect(html).not.toContain('home-experience-slot');
@@ -212,7 +214,7 @@ describe('Semantic UI and Responsive Layout Components (T03)', () => {
       expect(html).toContain('Exeevo');
       expect(html).toContain('Carnegie Mellon University');
       expect(html).toContain('BITS Pilani');
-      expect(html).toContain('Privacy-preserving shared memory for LLM agents');
+      expect(renderedText(html)).toContain('Privacy-preserving shared memory for LLM agents');
       expect(html).toContain('In review');
       expect(html).toContain('/resume/Nikhil_Sharma_Resume.pdf');
       expect(html).toContain('/resume/Nikhil_Sharma_Resume.docx');
@@ -224,13 +226,13 @@ describe('Semantic UI and Responsive Layout Components (T03)', () => {
       expect(html).toContain('mailto:nikhilmsha@gmail.com');
       expect(html).toContain('https://github.com/ni-ms');
       expect(html).toContain('https://linkedin.com/in/nikhilmsha');
-      expect(html).toContain('Areas of focus');
-      expect(html).toContain('Get in touch');
+      expect(renderedText(html)).toContain('Areas of focus');
+      expect(renderedText(html)).toContain('Get in touch');
     });
 
     it('renders 404 page for unknown routes with navigation back links', () => {
       const html = renderToString(<PortfolioPages path="/nonexistent-path" />);
-      expect(html).toContain('Page Not Found');
+      expect(renderedText(html)).toContain('Page Not Found');
       expect(html).toContain('aria-hidden="true">404</div>');
       expect(html).toContain('Return to Home →');
       expect(html).toContain('Explore Selected Projects →');
@@ -243,7 +245,7 @@ describe('Semantic UI and Responsive Layout Components (T03)', () => {
       expect((html.match(/<main /g) || []).length).toBe(1);
       expect(html).toContain('id="main-content"');
       expect(html).toContain('Skip to main content');
-      expect(html).toContain('Nikhil Sharma');
+      expect(renderedText(html)).toContain('Nikhil Sharma');
       expect(html).toContain('FastCode');
       expect(html).not.toContain('YOUR NAME');
       expect(html).not.toContain('PROJECT ONE');

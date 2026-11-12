@@ -1,3 +1,4 @@
+import { HeadingWords } from './HeadingWords';
 import React from 'react';
 import { ProjectDetails } from '../content/realPortfolio';
 
@@ -22,7 +23,7 @@ export const ProjectMetrics: React.FC<ProjectMetricsProps> = ({
         <div className="metrics-header">
           <div className="metrics-title-wrap">
             <span className="benchmark-badge-indicator" aria-hidden="true" />
-            <h3 className="metrics-heading">Retrieval evaluation</h3>
+            <h3 className="metrics-heading"><HeadingWords>Retrieval evaluation</HeadingWords></h3>
           </div>
           <span className="metrics-target-pill">CMU-SV Official Pages</span>
         </div>
@@ -67,7 +68,7 @@ export const ProjectMetrics: React.FC<ProjectMetricsProps> = ({
       <div className="metrics-header">
         <div className="metrics-title-wrap">
           <span className="benchmark-badge-indicator" aria-hidden="true" />
-          <h3 className="metrics-heading">What the dashboard tracks</h3>
+          <h3 className="metrics-heading"><HeadingWords>What the dashboard tracks</HeadingWords></h3>
         </div>
         <span className="metrics-target-pill">Rust Ingestion Engine</span>
       </div>

@@ -1,3 +1,4 @@
+import { HeadingWords } from '../components/HeadingWords';
 import { portfolioContent } from '../content/realPortfolio';
 import { ProjectCard } from '../components/ProjectCard';
 
@@ -8,7 +9,7 @@ export function ProjectsPage() {
   return (
     <div className="portfolio-page portfolio-frame projects-page-container">
       <header className="portfolio-cell page-intro-header">
-        <h1 className="page-main-title">Projects</h1>
+        <h1 className="page-main-title"><HeadingWords>Projects</HeadingWords></h1>
       </header>
 
       <section className="portfolio-row projects-featured-section" aria-label="Featured project">

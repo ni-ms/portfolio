@@ -12,6 +12,20 @@ export function useHomeMotion(pageRef: RefObject<HTMLDivElement | null>) {
     const grid = projects?.querySelector<HTMLElement>('.home-projects-grid');
     if (!page || !scene || !opening || !intro || !heading || !projects || !grid) return;
 
+    // In the unpinned layout, let the intro pass behind the navbar before the heading sticks.
+    let introHeight = 0;
+    let refreshIntroCover: (() => void) | undefined;
+    const measureIntro = () => {
+      const height = intro.offsetHeight;
+      if (height === introHeight) return;
+      introHeight = height;
+      scene.style.setProperty('--home-intro-height', `${height}px`);
+      refreshIntroCover?.();
+    };
+    const introSize = new ResizeObserver(measureIntro);
+    measureIntro();
+    introSize.observe(intro);
+
     const motion = gsap.matchMedia(page);
     motion.add('(prefers-reduced-motion: no-preference)', () => {
       if (!window.location.hash) {
@@ -35,12 +49,45 @@ export function useHomeMotion(pageRef: RefObject<HTMLDivElement | null>) {
       }, ({ conditions }) => {
         if (!conditions?.animate) return;
         if (!conditions.pin) {
+          // Counter the page's travel until the stacked project list has covered the intro.
+          const cover = gsap.timeline({
+            defaults: { ease: 'none' },
+            scrollTrigger: {
+              trigger: scene,
+              start: 0,
+              end: () => intro.offsetHeight,
+              scrub: true,
+              invalidateOnRefresh: true,
+            },
+          });
+          cover
+            .fromTo(intro, { y: 0, clipPath: 'inset(0px 0px 0px 0px)' }, {
+              y: () => intro.offsetHeight,
+              clipPath: () => `inset(0px 0px ${intro.offsetHeight}px 0px)`,
+              duration: 1,
+            }, 0)
+            .fromTo(scene, { '--home-fold-opacity': 0 }, { '--home-fold-opacity': 1, duration: 0.22 }, 0)
+            .to(scene, { '--home-fold-opacity': 0, duration: 0.18 }, 0.82);
+
+          refreshIntroCover = () => cover.scrollTrigger?.refresh();
+
+          const revealFocusedIntro = (event: FocusEvent) => {
+            const target = event.target as HTMLElement;
+            if (target.getBoundingClientRect().bottom > heading.getBoundingClientRect().top) {
+              window.scrollTo({ top: 0, behavior: 'instant' });
+              cover.scrollTrigger?.update();
+            }
+          };
+          intro.addEventListener('focusin', revealFocusedIntro);
           gsap.fromTo(grid, { y: 64 }, {
             y: 0,
             ease: 'none',
             scrollTrigger: { trigger: projects, start: 'top bottom', end: 'top 72%', scrub: true },
           });
-          return;
+          return () => {
+            refreshIntroCover = undefined;
+            intro.removeEventListener('focusin', revealFocusedIntro);
+          };
         }
 
         // Pin spacing changes the location of the game anchor below this scene.
@@ -72,12 +119,15 @@ export function useHomeMotion(pageRef: RefObject<HTMLDivElement | null>) {
             onRefreshInit: sizeProjects,
           },
         });
-        // Counter part of the opening's travel so the project box sweeps over the hero.
+        const dockAt = 0.70;
+        const dockMotion = { duration: dockAt, ease: 'power1.inOut' };
+        // Keep the intro in the pinned scene and move the project panel in front of it.
         timeline
-          .fromTo(opening, { y: 0 }, { y: () => -projectRoom() }, 0)
-          .fromTo(intro, { y: 0 }, { y: () => projectRoom() * 0.72 }, 0)
-          .fromTo(projects, { y: projectRoom }, { y: 0 }, 0)
-          .fromTo(grid, { y: 84 }, { y: 0, duration: 0.44, ease: 'power2.out' }, 0.14)
+          .fromTo(heading, { y: 0 }, { y: () => -projectRoom(), ...dockMotion }, 0)
+          .fromTo(projects, { y: projectRoom }, { y: 0, ...dockMotion }, 0)
+          .fromTo(scene, { '--home-fold-opacity': 0 }, { '--home-fold-opacity': 1, duration: 0.16 }, 0)
+          .to(scene, { '--home-fold-opacity': 0, duration: 0.18 }, 0.50)
+          .fromTo(grid, { y: 36 }, { y: 0, duration: 0.36, ease: 'power2.out' }, 0.10)
           .fromTo(scene, {
             '--project-heading-height': () => `${openingHeadingHeight()}px`,
             '--project-title-scale': 1,
@@ -129,6 +179,8 @@ export function useHomeMotion(pageRef: RefObject<HTMLDivElement | null>) {
     return () => {
       disposed = true;
       motion.revert();
+      introSize.disconnect();
+      scene.style.removeProperty('--home-intro-height');
     };
   }, [pageRef]);
 }

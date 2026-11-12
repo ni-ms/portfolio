@@ -1,3 +1,4 @@
+import { HeadingWords } from './HeadingWords';
 import { sitePath } from '../routing/sitePath';
 import type { PortfolioProject } from '../content/realPortfolio';
 import { useTheme } from '../theme/ThemeProvider';
@@ -53,7 +54,7 @@ export function ProjectCard({ project, variant = 'full' }: ProjectCardProps) {
       <div className="card-content-body">
         {featured && <p className="card-meta-row">Systems / {dates.replace(' – ', '–')}</p>}
         <h3 id={headingId} className={`card-title${featured ? ' featured-title' : ''}`}>
-          <a href={sitePath(href)} className="card-title-link">{name}{landing && <span aria-hidden="true">↗</span>}</a>
+          <a href={sitePath(href)} className="card-title-link"><HeadingWords>{name}</HeadingWords>{landing && <span aria-hidden="true">↗</span>}</a>
         </h3>
         {!compact && <p className="card-subtitle">{subtitle}</p>}
         <p className="card-description">{compact ? previews[slug] : description}</p>

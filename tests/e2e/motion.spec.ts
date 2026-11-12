@@ -33,7 +33,7 @@ test.describe('T07 Purposeful Motion and Reduced Motion Suite', () => {
     expect(pageErrors).toEqual([]);
   });
 
-  test('FastCode benchmark reveals: accurate bars, factual 684/539 µs, 21% reduction, and qualifier', async ({ page }) => {
+  test('FastCode benchmark: accurate bars, factual 684/539 µs, 21% reduction, and qualifier', async ({ page }) => {
     const pageErrors: string[] = [];
     page.on('pageerror', (err) => pageErrors.push(err.message));
 
@@ -66,7 +66,7 @@ test.describe('T07 Purposeful Motion and Reduced Motion Suite', () => {
     expect(pageErrors).toEqual([]);
   });
 
-  test('Project card and detail continuity: hover interaction, diagram settling, and back navigation', async ({ page }) => {
+  test('Project and detail navigation: artwork, links, and back navigation', async ({ page }) => {
     const pageErrors: string[] = [];
     page.on('pageerror', (err) => pageErrors.push(err.message));
 
@@ -75,10 +75,6 @@ test.describe('T07 Purposeful Motion and Reduced Motion Suite', () => {
 
     const fastcodeCard = page.getByTestId('project-card-fastcode');
     await expect(fastcodeCard).toBeVisible();
-
-    // Hover card
-    await fastcodeCard.hover();
-    await page.waitForTimeout(100);
 
     // Navigate to detail
     await fastcodeCard.locator('a.card-title-link').click();
@@ -97,7 +93,7 @@ test.describe('T07 Purposeful Motion and Reduced Motion Suite', () => {
     expect(pageErrors).toEqual([]);
   });
 
-  test('Theme transition: switches cleanly between dark and light without scene corruption', async ({ page }) => {
+  test('Theme switches cleanly between dark and light', async ({ page }) => {
     const pageErrors: string[] = [];
     page.on('pageerror', (err) => pageErrors.push(err.message));
 
@@ -151,29 +147,15 @@ test.describe('T07 Purposeful Motion and Reduced Motion Suite', () => {
     expect(pageErrors).toEqual([]);
   });
 
-  test('Live reduced motion: toggling preference dynamically stops drift and clears animation states', async ({ page }) => {
-    const pageErrors: string[] = [];
-    page.on('pageerror', (err) => pageErrors.push(err.message));
-
-    // Start with normal motion
+  test('Live reduced motion clears the scroll-linked project offset', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'no-preference' });
-    await page.goto('/projects/fastcode');
-    await page.waitForLoadState('domcontentloaded');
+    await page.goto('/');
+    const projects = page.locator('.home-projects-grid');
+    await expect(projects).not.toHaveCSS('transform', 'none');
 
-    const baseBar = page.getByTestId('benchmark-bar-baseline');
-    await expect(baseBar).toBeVisible();
-
-    // Toggle live to reduced motion
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.waitForTimeout(100);
-
-    // Content remains fully visible
-    await expect(baseBar).toBeVisible();
-    const optBar = page.getByTestId('benchmark-bar-optimized');
-    await expect(optBar).toBeVisible();
-    await expect(page.getByTestId('benchmark-comparison-card')).toContainText('539 µs');
-
-    expect(pageErrors).toEqual([]);
+    await expect(projects).toHaveCSS('transform', 'none');
+    await expect(page.locator('.home-title-word').first()).toHaveCSS('transform', 'none');
   });
 
   test('Route cycling: repeated navigation does not leak ScrollTriggers or cause horizontal overflow', async ({ page }) => {

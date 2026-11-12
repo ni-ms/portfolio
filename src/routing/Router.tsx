@@ -1,7 +1,9 @@
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 
-export const routes = ['/', '/projects', '/projects/fastcode', '/projects/scottypi', '/projects/langmetric', '/resume', '/about'];
-const titles: Record<string, string> = { '/': 'Home', '/projects': 'Projects', '/projects/fastcode': 'FastCode', '/projects/scottypi': 'ScottyPi', '/projects/langmetric': 'Langmetric', '/resume': 'Résumé', '/about': 'About' };
+import { blogPosts } from '../content/blogPosts';
+
+export const routes = ['/', '/projects', '/projects/fastcode', '/projects/scottypi', '/projects/langmetric', '/blog', ...blogPosts.map(({ slug }) => `/blog/${slug}`), '/resume', '/about'];
+const titles: Record<string, string> = { '/': 'Home', '/projects': 'Projects', '/projects/fastcode': 'FastCode', '/projects/scottypi': 'ScottyPi', '/projects/langmetric': 'Langmetric', '/blog': 'Blog', '/resume': 'Résumé', '/about': 'About' };
 const RouterContext = createContext({ path: '/', navigate: (_href: string) => {} });
 const pathname = () => window.location.pathname.replace(/\/$/, '') || '/';
 const newKey = () => `portfolio-${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -12,6 +14,7 @@ export function RouterProvider({ children }: { children: ReactNode }) {
   const historyKey = useRef('');
   const positions = useRef(new Map<string, [number, number]>());
   const restorePosition = useRef<[number, number] | null>(null);
+  const smoothFragment = useRef(false);
   const commitNavigation = () => {
     setPath(pathname());
     setRevision(value => value + 1);
@@ -20,6 +23,8 @@ export function RouterProvider({ children }: { children: ReactNode }) {
   const navigate = (href: string) => {
     positions.current.set(historyKey.current, [window.scrollX, window.scrollY]);
     historyKey.current = newKey();
+    const url = new URL(href, location.href);
+    smoothFragment.current = url.pathname === location.pathname && Boolean(url.hash);
     history.pushState({ ...history.state, portfolioKey: historyKey.current }, '', href);
     restorePosition.current = null;
     commitNavigation();
@@ -34,6 +39,7 @@ export function RouterProvider({ children }: { children: ReactNode }) {
     const sync = () => {
       historyKey.current = history.state?.portfolioKey || newKey();
       restorePosition.current = positions.current.get(historyKey.current) || [0, 0];
+      smoothFragment.current = false;
       commitNavigation();
     };
     const click = (event: MouseEvent) => {
@@ -57,7 +63,8 @@ export function RouterProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    document.title = `${titles[path] || 'Page not found'} — Nikhil Sharma`;
+    const post = blogPosts.find(({ slug }) => path === `/blog/${slug}`);
+    document.title = `${titles[path] || post?.title || 'Page not found'} — Nikhil Sharma`;
     const frame = requestAnimationFrame(() => {
       let target: HTMLElement | null = null;
       if (location.hash) {
@@ -67,9 +74,13 @@ export function RouterProvider({ children }: { children: ReactNode }) {
       }
       const saved = restorePosition.current;
       if (saved) window.scrollTo({ left: saved[0], top: saved[1], behavior: 'instant' });
-      else if (target) target.scrollIntoView({ behavior: 'instant' });
+      else if (target) {
+        const smooth = smoothFragment.current && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        target.scrollIntoView({ behavior: smooth ? 'smooth' : 'instant' });
+      }
       else window.scrollTo({ left: 0, top: 0, behavior: 'instant' });
       restorePosition.current = null;
+      smoothFragment.current = false;
       const focusTarget = target || document.querySelector<HTMLElement>('#main-content');
       if (focusTarget) {
         if (!focusTarget.hasAttribute('tabindex')) {
@@ -85,4 +96,8 @@ export function RouterProvider({ children }: { children: ReactNode }) {
   return <RouterContext.Provider value={{ path, navigate }}>{children}</RouterContext.Provider>;
 }
 export const useNavigation = () => useContext(RouterContext);
-export const navigation = [{ href: '/', label: 'Home' }, { href: '/projects', label: 'Projects' }, { href: '/resume', label: 'Résumé' }, { href: '/about', label: 'About' }];
+export const navigation = [{ href: '/', label: 'Home' }, { href: '/projects', label: 'Projects' }, { href: '/blog', label: 'Blog' }, { href: '/resume', label: 'Résumé' }, { href: '/about', label: 'About' }];
+
+export function isNavigationCurrent(path: string, href: string) {
+  return path === href || (href !== '/' && path.startsWith(href + '/'));
+}

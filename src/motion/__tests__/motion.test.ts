@@ -8,7 +8,6 @@ import {
   triggerHomeCameraSettling,
   resetCameraTransition,
 } from '../cameraMotion';
-import { initThemeMotion } from '../themeMotion';
 
 describe('Motion Subsystem Units', () => {
   beforeEach(() => {
@@ -59,14 +58,6 @@ describe('Motion Subsystem Units', () => {
       expect(liveCameraTransition.posOffset).toEqual({ x: 0, y: 0, z: 0 });
       expect(liveCameraTransition.targetOffset).toEqual({ x: 0, y: 0, z: 0 });
       expect(liveCameraTransition.isSettling).toBe(false);
-    });
-  });
-
-  describe('themeMotion', () => {
-    it('initializes and returns a cleanup function', () => {
-      const cleanup = initThemeMotion();
-      expect(typeof cleanup).toBe('function');
-      cleanup();
     });
   });
 });

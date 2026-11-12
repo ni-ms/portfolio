@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
-import { navigation } from '../routing/Router';
-import { RouteEmblem } from './RouteEmblem';
+import { isNavigationCurrent, navigation, useNavigation } from '../routing/Router';
+import { portfolioContent } from '../content/realPortfolio';
 import { useFocusTrap } from '../hooks/useFocusTrap';
 
 interface MobileMenuProps {
@@ -14,6 +14,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
   onClose,
   triggerButtonRef,
 }) => {
+  const { path } = useNavigation();
   const menuRef = useRef<HTMLDivElement>(null);
 
   useFocusTrap(menuRef, {
@@ -44,7 +45,6 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
       >
         <div className="mobile-menu-header">
           <div className="mobile-menu-brand">
-            <RouteEmblem size={20} />
             <span className="brand-name">Navigation</span>
           </div>
           <button
@@ -62,34 +62,23 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
 
         <nav className="mobile-menu-nav" aria-label="Mobile primary navigation">
           <ul className="mobile-menu-list">
-            {navigation.map((item, index) => (
+            {navigation.map((item) => (
               <li key={item.href} className="mobile-menu-item">
                 <a
                   href={item.href}
                   className="mobile-menu-link"
+                  aria-current={isNavigationCurrent(path, item.href) ? 'page' : undefined}
                   onClick={() => {
                     onClose();
                   }}
-                  
                 >
-                  <span className="mobile-menu-index" aria-hidden="true">0{index + 1}</span>
-                  <span className="mobile-menu-label">{item.label}</span>
+                  <span className="mobile-menu-label">{item.href === '/' ? portfolioContent.identity.name : item.label}</span>
                 </a>
               </li>
             ))}
           </ul>
         </nav>
 
-        <div className="mobile-menu-footer">
-          <div className="mobile-menu-meta">
-            <p className="mobile-menu-headline">Software & Applied AI Engineer</p>
-            <p className="mobile-menu-location">Carnegie Mellon · Expected 2027</p>
-          </div>
-          <div className="mobile-menu-pace">
-            <RouteEmblem size={14} />
-            <span>EXPLORE AT YOUR OWN PACE</span>
-          </div>
-        </div>
       </div>
     </div>
   );

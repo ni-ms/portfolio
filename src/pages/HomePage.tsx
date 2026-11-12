@@ -1,4 +1,5 @@
-import type { ReactNode } from 'react';
+import { Fragment, useRef, type ReactNode } from 'react';
+import { useHomeMotion } from '../motion/useHomeMotion';
 import { portfolioContent } from '../content/realPortfolio';
 import { PhotoPlaceholder } from '../components/PhotoPlaceholder';
 import { ProjectCard } from '../components/ProjectCard';
@@ -9,68 +10,82 @@ interface HomePageProps {
 }
 
 export function HomePage({ gameSlot }: HomePageProps) {
+  const pageRef = useRef<HTMLDivElement>(null);
+  useHomeMotion(pageRef);
   const { identity, home, projects, about } = portfolioContent;
   const roleLines = identity.title.match(/^(.+? &) (.+) (\S+)$/)?.slice(1) ?? [identity.title];
 
   return (
-    <div className="portfolio-page home-page-container">
+    <div className="portfolio-page home-page-container" ref={pageRef}>
       <div className="portfolio-frame">
-        <section className="portfolio-split home-hero-grid" aria-labelledby="home-owner-heading">
-          <div className="portfolio-cell home-role-panel">
-            <p className="home-role-title">
-              {roleLines.map((line, index) => (
-                <span key={line} className={index === 1 ? 'home-title-line home-title-accent' : 'home-title-line'}>
-                  <span>{line}{index < roleLines.length - 1 ? ' ' : ''}</span>
-                </span>
-              ))}
-            </p>
-            <div className="home-hero-actions">
-              <a href="/projects" className="home-primary-link">
-                View projects <span aria-hidden="true">↗</span>
-              </a>
-              <a href="/#parkour-game" className="home-game-link">
-                Parkour Game <span aria-hidden="true">↓</span>
-              </a>
-            </div>
-          </div>
-
-          <div className="portfolio-cell home-profile-panel">
-            <div className="home-profile-grid" aria-hidden="true">
-              <span /><span /><span /><span />
-            </div>
-            <div className="home-profile-copy">
-              <div className="home-identity-row">
-                <PhotoPlaceholder className="home-photo" />
-                <div>
-                  <h1 id="home-owner-heading">{identity.name}</h1>
-                  <p className="home-location">{identity.location}</p>
+        <div className="home-scene">
+          <div className="home-opening">
+            <div className="home-intro">
+              <section className="portfolio-split home-hero-grid" aria-labelledby="home-owner-heading">
+                <div className="portfolio-cell home-role-panel">
+                  <p className="home-role-title">
+                    {roleLines.map((line, index) => (
+                      <span key={line} className={index === 1 ? 'home-title-line home-title-accent' : 'home-title-line'}>
+                        {line.split(' ').map((word, wordIndex) => (
+                          <Fragment key={wordIndex}>
+                            {wordIndex > 0 && ' '}
+                            <span className="home-title-word">{word}</span>
+                          </Fragment>
+                        ))}
+                        {index < roleLines.length - 1 && ' '}
+                      </span>
+                    ))}
+                  </p>
+                  <div className="home-hero-actions">
+                    <a href="/projects" className="home-primary-link">
+                      View projects <span aria-hidden="true">↗</span>
+                    </a>
+                    <a href="/#parkour-game" className="home-game-link">
+                      Parkour Game <span aria-hidden="true">↓</span>
+                    </a>
+                  </div>
                 </div>
-              </div>
-              <p className="home-intro-paragraph">{home.intro}</p>
-              <p className="home-education-line">{home.education}</p>
-              <div className="home-cta-row">
-                <a href="/resume">{home.ctaResume}</a>
-                <a href="/about">About me →</a>
-              </div>
+
+                <div className="portfolio-cell home-profile-panel">
+                  <div className="home-profile-grid" aria-hidden="true">
+                    <span /><span /><span /><span />
+                  </div>
+                  <div className="home-profile-copy">
+                    <div className="home-identity-row">
+                      <PhotoPlaceholder className="home-photo" />
+                      <div>
+                        <h1 id="home-owner-heading">{identity.name}</h1>
+                        <p className="home-location">{identity.location}</p>
+                      </div>
+                    </div>
+                    <p className="home-intro-paragraph">{home.intro}</p>
+                    <p className="home-education-line">{home.education}</p>
+                    <div className="home-cta-row">
+                      <a href="/resume">{home.ctaResume}</a>
+                      <a href="/about">About me →</a>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <ul className="home-focus-grid" aria-label="Areas of focus">
+                {about.focus.map((area) => <li key={area}>{area}</li>)}
+              </ul>
+            </div>
+
+            <div className="home-section-heading home-projects-heading">
+              <h2 id="home-projects-heading">Selected projects</h2>
+              <a href="/projects">All projects <span aria-hidden="true">↗</span></a>
             </div>
           </div>
-        </section>
-
-        <ul className="home-focus-grid" aria-label="Areas of focus">
-          {about.focus.map((area) => <li key={area}>{area}</li>)}
-        </ul>
-
-        <section className="home-projects-section" aria-labelledby="home-projects-heading">
-          <div className="home-section-heading">
-            <h2 id="home-projects-heading">Selected projects</h2>
-            <a href="/projects">All projects <span aria-hidden="true">↗</span></a>
-          </div>
-          <div className="home-projects-grid">
-            {projects.map((project) => (
-              <ProjectCard key={project.slug} project={project} variant="landing" />
-            ))}
-          </div>
-        </section>
+          <section className="home-projects-reveal" aria-labelledby="home-projects-heading">
+            <div className="home-projects-grid">
+              {projects.map((project) => (
+                <ProjectCard key={project.slug} project={project} variant="landing" />
+              ))}
+            </div>
+          </section>
+        </div>
 
         <section className="home-rooftops" id="parkour-game" aria-labelledby="home-rooftops-heading">
           <div className="home-section-heading">

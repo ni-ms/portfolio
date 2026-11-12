@@ -71,22 +71,12 @@
   padding: 0;
 }
 
-.projects-page-container .page-intro-description {
-  max-width: 45ch;
-  font-size: clamp(1rem, 1.45vw, 1.3rem);
-  color: var(--color-text-muted);
-}
-
 .projects-page-container .portfolio-project-card {
   overflow: visible;
   border: 0;
   border-radius: 0;
   box-shadow: none;
   background: var(--color-bg);
-}
-
-.projects-page-container .portfolio-project-card:hover {
-  transform: none;
 }
 
 .projects-page-container .portfolio-project-card.is-featured-row {
@@ -186,7 +176,12 @@
   gap: 0;
 }
 
-.projects-folder-item + .projects-folder-item {
+.project-grid-panel {
+  display: grid;
+  min-width: 0;
+}
+
+.project-grid-panel + .project-grid-panel {
   border-inline-start: 1px solid var(--grid-rule);
 }
 
@@ -274,6 +269,19 @@
 }
 
 /* Résumé */
+.resume-page-container {
+  margin-block-end: 0;
+}
+
+.resume-page-container .resume-section:not(.portfolio-cell) {
+  padding-block-end: 0;
+}
+
+.portfolio-app:has(.resume-page-container) > .site-footer {
+  border-block-start: 0;
+  background: var(--color-bg);
+}
+
 .resume-heading-row {
   display: flex;
   flex-direction: column;
@@ -456,7 +464,7 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .projects-folder-item + .projects-folder-item {
+  .project-grid-panel + .project-grid-panel {
     border-inline-start: 0;
     border-block-start: 1px solid var(--grid-rule);
   }
@@ -493,4 +501,44 @@
     flex-wrap: wrap;
     gap: 2px 12px;
   }
+}
+
+.blog-page .blog-article-header h1 {
+  max-width: 17ch;
+  font-size: clamp(2.2rem, 6.1vw, 6rem);
+}
+
+.blog-article-header p,
+.blog-entry > p:last-child {
+  max-width: 65ch;
+  color: var(--color-text-muted);
+}
+
+.blog-article-header p {
+  margin-top: 1rem;
+}
+
+.blog-entry .portfolio-section-heading {
+  margin: 0.45rem 0 0.6rem;
+}
+
+.blog-entry a:hover,
+.blog-back a,
+.blog-project-link a {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.blog-category {
+  color: var(--color-text-muted);
+  font: 500 0.8rem/1.5 var(--font-mono);
+}
+
+.blog-back {
+  padding-block: 13px;
+}
+
+.blog-prose p {
+  max-width: 70ch;
+  line-height: 1.65;
 }

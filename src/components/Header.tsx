@@ -1,7 +1,7 @@
 import React from 'react';
-import { navigation, useNavigation } from '../routing/Router';
+import { isNavigationCurrent, navigation, useNavigation } from '../routing/Router';
+import { portfolioContent } from '../content/realPortfolio';
 import { useTheme } from '../theme/ThemeProvider';
-import { useNavIndicator } from '../motion/useNavIndicator';
 
 interface HeaderProps {
   isMenuOpen: boolean;
@@ -16,33 +16,45 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const { path } = useNavigation();
   const { theme, toggleTheme } = useTheme();
-  const { navRef, indicatorRef } = useNavIndicator(path);
+  const { name } = portfolioContent.identity;
   return (
     <header className="site-header" role="banner">
       <div className="header-container">
-        <a href="/" className="header-brand" aria-label="Nikhil Sharma — Home">
-          <span className="route-emblem header-emblem" aria-hidden="true" />
+        <a href="/" className="header-brand" aria-label={`${name} — Home`} aria-current={path === '/' ? 'page' : undefined}>
+          <span>{name}</span>
         </a>
 
         {/* Desktop Navigation */}
-        <nav ref={navRef} className="desktop-nav" aria-label="Primary navigation">
+        <nav className="desktop-nav" aria-label="Primary navigation">
           <ul className="nav-list">
-            {navigation.map((item) => (
+            {navigation.slice(1).map((item) => (
               <li key={item.href} className="nav-item">
                 <a
                   href={item.href}
                   className="nav-link"
-                  aria-current={(path === item.href || (item.href !== '/' && path.startsWith(item.href + '/'))) ? 'page' : undefined}
+                  aria-current={isNavigationCurrent(path, item.href) ? 'page' : undefined}
                 >
                   {item.label}
                 </a>
               </li>
             ))}
           </ul>
-          <span ref={indicatorRef} className="nav-active-indicator" aria-hidden="true" />
         </nav>
 
-        <button className="theme-toggle" type="button" onClick={toggleTheme} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`} title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>{theme === 'dark' ? '☾' : '☼'}</button>
+        <button
+          className="theme-toggle"
+          type="button"
+          onClick={toggleTheme}
+          aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+        >
+          <svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            {theme === 'dark' ? (
+              <path d="M20.7 14.7A8.8 8.8 0 0 1 9.3 3.3 9 9 0 1 0 20.7 14.7Z" />
+            ) : (
+              <><circle cx="12" cy="12" r="4" /><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4m0-14.2-1.4 1.4M6.3 17.7l-1.4 1.4" /></>
+            )}
+          </svg>
+        </button>
         {/* Mobile Menu Button */}
         <button
           ref={menuButtonRef}

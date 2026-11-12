@@ -1,4 +1,4 @@
-import { ReactNode, useRef, useEffect } from 'react';
+import type { ReactNode } from 'react';
 import '../styles/pages.css';
 import '../styles/motion.css';
 import '../styles/portfolio-grid.css';
@@ -6,11 +6,11 @@ import { HomePage } from './HomePage';
 import { ProjectsPage } from './ProjectsPage';
 import { ProjectDetailPage } from './ProjectDetailPage';
 import { ResumePage } from './ResumePage';
+import { BlogPage } from './BlogPage';
+import { blogPosts } from '../content/blogPosts';
 import { AboutPage } from './AboutPage';
 import { NotFoundPage } from './NotFoundPage';
 import { getProjectBySlug, ProjectSlug } from '../content/realPortfolio';
-import { usePageMotion } from '../motion/usePageMotion';
-import { initThemeMotion } from '../motion/themeMotion';
 
 export interface PortfolioPagesProps {
   path: string;
@@ -22,12 +22,13 @@ export interface PortfolioPagesProps {
  *
  * Owns route page markup including main#main-content tabIndex={-1}.
  * Coordinates restrained, purposeful motion and cleans up timelines on route changes.
- * Renders the 7 approved routes + real 404:
+ * Renders the portfolio, blog, and accessible 404:
  *   - / (Home, reserves gameSlot)
  *   - /projects (Projects index)
  *   - /projects/fastcode (FastCode detail)
  *   - /projects/scottypi (ScottyPi detail)
  *   - /projects/langmetric (Langmetric detail)
+ *   - /blog and /blog/:slug
  *   - /resume (Résumé & Background)
  *   - /about (About & Contact)
  *   - [unknown] (Accessible 404 page)
@@ -37,21 +38,6 @@ export interface PortfolioPagesProps {
 export default function PortfolioPages({ path, gameSlot }: PortfolioPagesProps) {
   // Normalize path (strip trailing slash if length > 1)
   const normalizedPath = path.length > 1 ? path.replace(/\/$/, '') : path;
-  const isHome = normalizedPath === '/';
-  const mainRef = useRef<HTMLElement>(null);
-
-  // Initialize theme transition listener (skips automatically when reduced-motion preferred)
-  useEffect(() => {
-    return initThemeMotion();
-  }, []);
-
-  // Coordinated route motion lifecycle: cleans up obsolete timelines and ScrollTriggers on route change
-  usePageMotion({
-    containerRef: mainRef,
-    pageKey: normalizedPath,
-    isHome,
-    skipAnimation: normalizedPath === '/projects',
-  });
 
   const renderContent = () => {
     if (normalizedPath === '/') {
@@ -71,6 +57,15 @@ export default function PortfolioPages({ path, gameSlot }: PortfolioPagesProps) 
       return <NotFoundPage path={normalizedPath} />;
     }
 
+    if (normalizedPath === '/blog') {
+      return <BlogPage />;
+    }
+
+    if (normalizedPath.startsWith('/blog/')) {
+      const post = blogPosts.find((entry) => normalizedPath === `/blog/${entry.slug}`);
+      return post ? <BlogPage post={post} /> : <NotFoundPage path={normalizedPath} />;
+    }
+
     if (normalizedPath === '/resume') {
       return <ResumePage />;
     }
@@ -83,7 +78,7 @@ export default function PortfolioPages({ path, gameSlot }: PortfolioPagesProps) 
   };
 
   return (
-    <main id="main-content" tabIndex={-1} className="portfolio-main" ref={mainRef}>
+    <main id="main-content" tabIndex={-1} className="portfolio-main">
       {renderContent()}
     </main>
   );

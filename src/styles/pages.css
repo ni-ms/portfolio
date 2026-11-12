@@ -47,11 +47,7 @@
   border-radius: 4px;
   text-decoration: none;
   cursor: pointer;
-  transition: background-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), border-color var(--transition-fast);
-}
-
-.cta-btn:hover {
-  transform: translateY(-1px);
+  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .cta-btn-primary {
@@ -200,13 +196,6 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
-}
-
-.portfolio-project-card:hover {
-  border-color: var(--color-border-accent);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
 }
 
 .card-media-wrapper {
@@ -223,11 +212,28 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform var(--transition-normal);
 }
 
-.portfolio-project-card:hover .card-media-img {
-  transform: scale(1.02);
+.portfolio-project-card:focus-within .card-title-link {
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .portfolio-project-card:hover .card-title-link {
+    text-decoration: underline;
+    text-underline-offset: 0.16em;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .portfolio-project-card .card-media-img {
+    transition: transform 0.2s ease-out;
+  }
+
+  .portfolio-project-card:hover .card-media-img {
+    transform: scale(1.035);
+  }
 }
 
 .card-media-overlay {
@@ -475,12 +481,6 @@
   color: var(--color-text);
 }
 
-.page-intro-description {
-  font-size: 1.05rem;
-  line-height: 1.55;
-  color: var(--color-text);
-}
-
 .projects-supporting-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -556,11 +556,9 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  transition: transform var(--transition-fast);
 }
 
 .detail-back-link:hover {
-  transform: translateX(-3px);
   color: var(--color-accent-hover);
 }
 
@@ -697,12 +695,11 @@
   letter-spacing: 0.05em;
   border-radius: 4px;
   text-decoration: none;
-  transition: background-color var(--transition-fast), transform var(--transition-fast);
+  transition: background-color var(--transition-fast);
 }
 
 .detail-cta-button:hover {
   background-color: var(--color-accent-hover);
-  transform: translateY(-1px);
 }
 
 /* Illustration Right Column */
@@ -967,7 +964,6 @@
 
 .benchmark-bar-fill {
   height: 100%;
-  transition: width 0.6s ease-out;
 }
 
 .benchmark-bar-fill.baseline-bar {
@@ -1196,13 +1192,6 @@
   letter-spacing: 0.04em;
 }
 
-.resume-headline-text {
-  font-size: 1.05rem;
-  line-height: 1.5;
-  color: var(--color-text-muted);
-  max-width: 860px;
-}
-
 .resume-contact-inline {
   display: flex;
   align-items: center;
@@ -1238,11 +1227,7 @@
   letter-spacing: 0.05em;
   text-decoration: none;
   cursor: pointer;
-  transition: transform var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
-}
-
-.download-btn:hover {
-  transform: translateY(-1px);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
 }
 
 .download-btn-primary {
@@ -1846,12 +1831,6 @@
   }
 }
 
-.contact-lead-text {
-  font-size: 0.98rem;
-  line-height: 1.55;
-  color: var(--color-text);
-}
-
 .contact-links-row {
   display: flex;
   align-items: center;
@@ -2051,7 +2030,6 @@
 :root[data-theme="light"] .metric-pills-label,
 :root[data-theme="light"] .metric-pill.split-pill,
 :root[data-theme="light"] .home-education-line,
-:root[data-theme="light"] .resume-headline-text,
 :root[data-theme="light"] .resume-contact-inline,
 :root[data-theme="light"] .experience-date-group,
 :root[data-theme="light"] .education-school,
@@ -2323,7 +2301,6 @@
   margin: 0;
 }
 
-.resume-header > .resume-headline-text,
 .about-study {
   margin-block: 1.5rem;
   border-inline-start: 3px solid var(--color-accent);

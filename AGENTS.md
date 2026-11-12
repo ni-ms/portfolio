@@ -14,4 +14,5 @@ For implementation work, start with TRAYCER_HANDOFF.md, docs/implementation/AGEN
 - At every ticket boundary and before compaction or handoff, save evidence and the exact next action. Do not rely on the chat transcript as the only record.
 - Preserve unrelated user changes and local editor settings. No force resets, bulk git clean, deployment, pushing, or external messages.
 - Run relevant checks and browser verification before claiming implementation complete. Do not weaken assertions simply to make tests pass.
+- For each requested feature change, include a quick recording in `qa/recordings/` and link it in the handoff. Keep the ticket index in `qa/README.md` current.
 - This preparation handoff does not itself implement the redesigned site; execution begins when the owner submits TRAYCER_PROMPT.txt.

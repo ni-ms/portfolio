@@ -47,7 +47,6 @@ export function AboutPage() {
       </div>
       <section id="contact" className="portfolio-row portfolio-cell about-contact-section" aria-labelledby="contact-heading" tabIndex={-1}>
         <h2 id="contact-heading" className="portfolio-section-heading">Get in touch</h2>
-        <p className="contact-lead-text">For engineering roles or project conversations.</p>
         <div className="contact-links-row">
           <a href={links.email}>{identity.email}</a>
           <a href={links.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a>

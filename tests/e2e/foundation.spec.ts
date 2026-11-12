@@ -64,11 +64,16 @@ test('fragment focus follows its section and Back restores the reading position'
   if (viewport && viewport.height > 900) await page.setViewportSize({ ...viewport, height: 900 });
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/about#contact');
+  await page.evaluate(() => document.fonts.ready);
   await expect(page.locator('#contact')).toBeFocused();
   await page.keyboard.press('Tab');
   expect(await page.evaluate(() => document.activeElement?.closest('#contact') !== null)).toBe(true);
   await page.locator('footer').scrollIntoViewIfNeeded();
-  const before = await page.evaluate(() => window.scrollY);
+  const before = await page.evaluate(() => {
+    // Use an interior position so the browser's end-of-document rounding cannot affect restoration.
+    window.scrollTo({ top: Math.round(window.scrollY) - 40, behavior: 'instant' });
+    return window.scrollY;
+  });
   expect(before).toBeGreaterThan(100);
   await page.evaluate(() => document.querySelector<HTMLAnchorElement>('.desktop-nav a[href="/resume"]')?.click());
   await expect(page).toHaveURL(/\/resume$/);
@@ -76,4 +81,27 @@ test('fragment focus follows its section and Back restores the reading position'
   await expect(page).toHaveURL(/\/about#contact$/);
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeCloseTo(before, 0);
   await expect(page.locator('#contact')).toBeFocused();
+});
+
+test('Left and Right navigate the portfolio and the name links home', async ({ page }) => {
+  await page.goto('/');
+  const home = page.getByRole('link', { name: 'Nikhil Sharma — Home', exact: true });
+  await expect(home).toHaveText('Nikhil Sharma');
+  await expect(home).toHaveAttribute('aria-current', 'page');
+  await page.keyboard.press('ArrowRight');
+  await expect(page).toHaveURL(/\/projects$/);
+  await expect(page.locator('#main-content')).toBeFocused();
+  await page.keyboard.press('ArrowRight');
+  await expect(page).toHaveURL(/\/blog$/);
+  await page.keyboard.press('ArrowRight');
+  await expect(page).toHaveURL(/\/resume$/);
+  await page.keyboard.press('ArrowLeft');
+  await expect(page).toHaveURL(/\/blog$/);
+  await page.goto('/projects/fastcode');
+  await expect(page.locator('#main-content')).toBeFocused();
+  await page.keyboard.press('ArrowLeft');
+  await expect(page).toHaveURL(/\/projects$/);
+  await home.click();
+  await expect(home).toHaveAttribute('aria-current', 'page');
+  await expect(page).toHaveURL(/\/$/);
 });

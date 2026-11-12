@@ -1,3 +1,68 @@
+/* Keep the project heading at the bottom of the opening screen. */
+.home-opening {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100svh - var(--header-height) - var(--grid-top) - 1px);
+}
+
+.home-projects-heading {
+  flex: 1 0 auto;
+  min-height: clamp(82px, 12svh, 132px);
+  background: var(--color-surface);
+}
+
+.home-scene[data-pinned] {
+  position: relative;
+  overflow: clip;
+  --project-heading-height: var(--project-heading-start);
+}
+
+.home-scene[data-pinned] .home-projects-heading {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+  height: var(--project-heading-height);
+  min-height: 0;
+  padding-block: 8px;
+}
+
+.home-scene[data-pinned] .home-projects-heading h2 {
+  font-size: calc(clamp(35px, 5vw, 78px) * var(--project-title-scale, 1));
+}
+
+.home-scene[data-pinned] .home-projects-reveal {
+  position: absolute;
+  inset: var(--project-heading-height) 0 0;
+  z-index: 2;
+  background: var(--color-surface);
+}
+
+.home-scene[data-pinned] .home-projects-grid {
+  height: calc(var(--project-room) + var(--project-heading-start) - var(--project-heading-height));
+  grid-template-rows: min(70%, 38vw, 520px) 1fr;
+}
+
+.home-scene[data-pinned] .portfolio-project-card {
+  display: grid;
+  grid-row: span 2;
+  grid-template-rows: subgrid;
+}
+
+.home-scene[data-pinned] .card-media-wrapper {
+  height: 100%;
+  aspect-ratio: auto;
+}
+
+.home-scene[data-pinned] .card-media-img {
+  translate: 0 var(--home-art-shift, 0%);
+  scale: var(--home-art-scale, 1);
+}
+
+.home-projects-reveal {
+  overflow: clip;
+  overflow-clip-margin: 4px;
+}
+
 .home-role-panel {
   display: flex;
   flex-direction: column;
@@ -21,7 +86,7 @@
   margin-bottom: -0.08em;
 }
 
-.home-title-line > span {
+.home-title-word {
   display: inline-block;
 }
 
@@ -202,11 +267,6 @@
   background: var(--color-bg);
 }
 
-.home-projects-grid .portfolio-project-card:hover {
-  transform: none;
-  box-shadow: none;
-}
-
 .home-projects-grid .portfolio-project-card + .portfolio-project-card {
   border-left: 1px solid var(--grid-rule);
 }
@@ -218,7 +278,7 @@
 }
 
 .home-projects-grid .card-media-img {
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .home-projects-grid .card-content-body {
@@ -255,8 +315,38 @@
 }
 
 @media (max-width: 790px) {
+  .home-role-panel,
+  .home-profile-panel {
+    padding-block: clamp(15px, 3svh, 24px);
+  }
+
   .home-role-title {
-    font-size: clamp(42px, 12vw, 96px);
+    font-size: clamp(37px, 11.5vw, 86px);
+  }
+
+  .home-role-panel {
+    gap: 15px;
+  }
+
+  .home-intro-paragraph {
+    margin-top: 11px;
+  }
+
+  .home-education-line {
+    margin-block: 8px 0;
+  }
+
+  .home-focus-grid li {
+    padding-block: 11px;
+  }
+
+  .home-projects-heading {
+    padding-block: 12px;
+    gap: 0 12px;
+  }
+
+  .home-projects-heading h2 {
+    font-size: clamp(30px, 7.5vw, 54px);
   }
 
   .home-profile-panel {
@@ -288,5 +378,87 @@
   .home-projects-grid .portfolio-project-card + .portfolio-project-card {
     border-left: 0;
     border-top: 1px solid var(--grid-rule);
+  }
+}
+
+@media (min-width: 791px) and (max-height: 800px) {
+  .home-role-title {
+    font-size: clamp(54px, min(8vw, 13.5svh), 112px);
+  }
+
+  .home-role-panel,
+  .home-profile-panel {
+    padding-block: 24px;
+  }
+
+  .home-profile-panel {
+    gap: 16px;
+  }
+
+  .home-profile-grid {
+    width: clamp(72px, 13svh, 128px);
+  }
+}
+
+@media (max-width: 380px) and (max-height: 780px) {
+  .home-role-panel,
+  .home-profile-panel {
+    padding-block: 12px;
+  }
+
+  .home-role-title {
+    font-size: clamp(32px, 10.4vw, 39px);
+  }
+
+  .home-profile-grid {
+    top: 13px;
+    width: 34px;
+  }
+
+  .home-identity-row {
+    gap: 9px;
+    padding-right: 38px;
+  }
+
+  .home-identity-row .home-photo {
+    width: 36px;
+    height: 48px;
+  }
+
+  .home-focus-grid li {
+    padding-block: 8px;
+  }
+
+  .home-projects-heading {
+    gap: 0 9px;
+    padding-inline: 16px;
+  }
+
+  .home-projects-heading h2 {
+    font-size: 25px;
+  }
+
+  .home-projects-heading a {
+    gap: 4px;
+    font-size: 0.78rem;
+  }
+}
+
+@media (min-width: 791px) and (max-height: 690px) {
+  .home-role-panel,
+  .home-profile-panel {
+    padding-block: 16px;
+  }
+
+  .home-profile-panel {
+    gap: 12px;
+  }
+
+  .home-profile-grid {
+    width: clamp(58px, 10svh, 84px);
+  }
+
+  .home-projects-heading {
+    padding-block: 18px;
   }
 }

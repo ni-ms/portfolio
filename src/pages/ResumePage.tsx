@@ -29,7 +29,6 @@ export const ResumePage: React.FC = () => {
               <p className="resume-location">{identity.location}</p>
             </div>
           </div>
-          <p className="resume-headline-text">Nearly 3 years building production backend services and enterprise web applications, with experience in applied AI and CPU optimization.</p>
         </div>
       </header>
 
@@ -78,8 +77,24 @@ export const ResumePage: React.FC = () => {
           </section>
         </div>
 
-        {/* Right Column: Education, Grouped Text Skills, Research, Selected Projects */}
+        {/* Right Column: Core Skills and Education */}
         <div className="resume-col-side">
+          {/* Grouped Text Skills (Clean text list per category, NO 54 pills) */}
+          <section className="resume-section" aria-labelledby="skills-heading">
+            <h2 id="skills-heading" className="portfolio-section-heading">Core skills</h2>
+
+            <div className="skills-text-list">
+              {skills.categories.map((group) => (
+                <div key={group.category} className="skill-text-category">
+                  <h3 className="skill-category-label">{group.category}</h3>
+                  <p className="skill-category-items">
+                    {group.items.join(' · ')}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+
           {/* Education */}
           <section className="resume-section" aria-labelledby="education-heading">
             <h2 id="education-heading" className="portfolio-section-heading">Education</h2>
@@ -93,22 +108,6 @@ export const ResumePage: React.FC = () => {
                   </div>
                   <p className="education-school">{edu.school}</p>
                 </article>
-              ))}
-            </div>
-          </section>
-
-          {/* Grouped Text Skills (Clean text list per category, NO 54 pills) */}
-          <section className="resume-section" aria-labelledby="skills-heading">
-            <h2 id="skills-heading" className="portfolio-section-heading">Core skills</h2>
-
-            <div className="skills-text-list">
-              {skills.categories.map((group) => (
-                <div key={group.category} className="skill-text-category">
-                  <h3 className="skill-category-label">{group.category}</h3>
-                  <p className="skill-category-items">
-                    {group.items.join(' · ')}
-                  </p>
-                </div>
               ))}
             </div>
           </section>

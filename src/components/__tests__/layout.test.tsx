@@ -12,13 +12,12 @@ import { portfolioContent, projectsBySlug } from '../../content/realPortfolio';
 
 describe('Semantic UI and Responsive Layout Components (T03)', () => {
   describe('Header Component', () => {
-    it('renders logo emblem, owner name, navigation links, and mobile menu button', () => {
+    it('renders owner name, navigation links, and mobile menu button', () => {
       const html = renderToString(
         <Header isMenuOpen={false} onToggleMenu={() => {}} />
       );
 
-      // Emblem & Name
-      expect(html).toContain('route-emblem');
+      expect(html).not.toContain('header-emblem');
       expect(html).toContain('Nikhil Sharma');
 
       // Navigation links
@@ -54,13 +53,13 @@ describe('Semantic UI and Responsive Layout Components (T03)', () => {
       expect(html).toContain('aria-label="Mobile navigation menu"');
 
       // Destinations
-      expect(html).toContain('Home');
+      expect(html).toContain('>Nikhil Sharma</span>');
       expect(html).toContain('Projects');
       expect(html).toContain('Résumé');
       expect(html).toContain('About');
 
-      // Pace caption
-      expect(html).toContain('EXPLORE AT YOUR OWN PACE');
+      expect(html).toContain('href="/blog"');
+      expect(html).not.toContain('EXPLORE AT YOUR OWN PACE');
     });
 
     it('renders null when closed', () => {

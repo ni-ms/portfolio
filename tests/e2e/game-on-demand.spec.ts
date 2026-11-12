@@ -38,11 +38,19 @@ test('Home requests the game only after Play, then releases it on exit', async (
     const exit = page.getByTestId(mobile ? 'overlay-exit-btn' : 'inline-exit-btn');
     await expect(exit).toBeVisible({ timeout: 20000 });
     await expect(page.locator('canvas')).toHaveCount(1);
+    await page.keyboard.press('ArrowRight');
+    await expect(page).toHaveURL(/#parkour-game$/);
     await expect.poll(() => gameRequests.some((url) => url.startsWith('/rooftop/'))).toBe(true);
     await exit.click();
     await expect(page.locator('canvas')).toHaveCount(0);
     await expect(play).toBeFocused();
     await expect(page.locator('body')).not.toHaveClass(/scroll-locked/);
+
+    await page.reload();
+    if (!mobile && (page.viewportSize()?.width ?? 0) >= 791) {
+      await expect(page.locator('.home-scene')).toHaveAttribute('data-pinned', 'true');
+    }
+    await expect(page.getByRole('heading', { name: 'Parkour Game', exact: true })).toBeInViewport();
   } finally {
     releaseGame();
   }
@@ -72,4 +80,32 @@ test('leaving Home while the game is loading keeps the next page canvas-free', a
   } finally {
     releaseGame();
   }
+});
+
+test('the Parkour shortcut scrolls smoothly and honors reduced motion', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.goto('/');
+  const shortcut = page.getByRole('link', { name: 'Parkour Game', exact: true });
+  const section = page.locator('#parkour-game');
+  const positions = await shortcut.evaluate(async (link) => {
+    (link as HTMLAnchorElement).click();
+    const samples: number[] = [];
+    const start = performance.now();
+    do {
+      await new Promise(requestAnimationFrame);
+      samples.push(scrollY);
+    } while (performance.now() - start < 950);
+    return samples;
+  });
+  const end = positions.at(-1)!;
+  expect(end).toBeGreaterThan(250);
+  expect(positions.filter(y => y > 0 && y < end - 20).length).toBeGreaterThan(2);
+  await expect(section).toBeFocused();
+  await expect(page.getByRole('heading', { name: 'Parkour Game', exact: true })).toBeInViewport();
+
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  await shortcut.click();
+  await expect(section).toBeFocused();
+  await expect(page.getByRole('heading', { name: 'Parkour Game', exact: true })).toBeInViewport();
 });

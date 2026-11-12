@@ -94,3 +94,13 @@ button {
   --color-surface: #e4e6df; --color-surface-hover: #daddd5; --color-border: #c8cdc4;
   --color-border-light: rgba(16,20,20,.16); --color-text: #101414; --color-text-muted: #565f60; --color-text-dim: #565f60;
 }
+
+::view-transition {
+  pointer-events: none;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.3s;
+  animation-timing-function: ease-in-out;
+}

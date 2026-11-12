@@ -8,7 +8,7 @@ interface ProjectDetailPageProps {
 
 export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project }) => {
   return (
-    <div className="project-detail-page-container">
+    <div className="portfolio-page project-detail-page-container">
       <ProjectDetailTemplate project={project} />
     </div>
   );

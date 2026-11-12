@@ -232,7 +232,7 @@ describe('Semantic UI and Responsive Layout Components (T03)', () => {
     it('renders 404 page for unknown routes with navigation back links', () => {
       const html = renderToString(<PortfolioPages path="/nonexistent-path" />);
       expect(html).toContain('Page Not Found');
-      expect(html).toContain('404 ERROR / ROUTE UNKNOWN');
+      expect(html).toContain('aria-hidden="true">404</div>');
       expect(html).toContain('Return to Home →');
       expect(html).toContain('Explore Selected Projects →');
     });

@@ -138,144 +138,63 @@
   overflow: hidden;
 }
 
-/* --------------------------------------------------------------------------
- * Static Fallback & Loading UI (No Fake Game / Content-First)
- * Displayed during WebGL unavailability, context errors, or initial lazy load.
- * -------------------------------------------------------------------------- */
-
-.home-game-fallback {
+/* A static poster holds the hero's dimensions while the game is off. */
+.home-game-poster {
   position: relative;
+  display: grid;
+  align-items: end;
+  justify-items: end;
   width: 100%;
   height: 100%;
-  min-height: 280px;
-  background: var(--color-surface, #171D1E);
-  border: 1px solid var(--color-border, #232C2D);
-  border-radius: 6px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-sizing: border-box;
+  isolation: isolate;
 }
 
-.theme-light .home-game-fallback {
-  background: var(--color-surface, #E4E6DF);
-  border-color: var(--color-border, #C8CDC4);
-}
-
-.home-game-fallback-graphic {
+.home-game-poster > img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-}
-
-.home-game-fallback-svg {
-  width: 100%;
-  height: 100%;
   object-fit: cover;
-  display: block;
+  object-position: 56% center;
+  mask-image: radial-gradient(ellipse 73% 73% at 53% 43%, #000 60%, transparent 100%);
+  z-index: -1;
 }
 
-.home-game-fallback-header {
-  position: relative;
-  z-index: 3;
-  padding: 12px 16px;
+.home-game-poster-actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
+  justify-content: end;
+  gap: 8px 14px;
+  margin: 16px;
+  color: var(--color-text);
 }
 
-.home-game-fallback-tag {
+.home-game-poster-actions p,
+.home-game-poster-actions a,
+.home-game-cancel {
+  padding: 0.5rem 0.75rem;
+  background: var(--color-bg);
+  border-radius: 4px;
+}
+
+.home-game-poster-actions a {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.home-game-play {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-family: var(--font-mono, monospace);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  color: var(--color-accent, #D6FF64);
-  background: rgba(16, 20, 20, 0.75);
-  padding: 4px 8px;
-  border-radius: 3px;
-  border: 1px solid rgba(214, 255, 100, 0.25);
-  backdrop-filter: blur(4px);
-}
-
-.theme-light .home-game-fallback-tag {
-  background: rgba(242, 241, 234, 0.85);
+  gap: 0.6em;
+  min-height: 44px;
+  padding: 0.55rem 1rem;
+  border-radius: 5px;
+  background: var(--color-accent);
   color: #101414;
-  border-color: rgba(16, 20, 20, 0.2);
+  font-weight: 700;
 }
 
-.fallback-tag-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--color-accent, #D6FF64);
-  box-shadow: 0 0 6px var(--color-accent, #D6FF64);
-}
-
-.fallback-tag-dot.is-pulsing {
-  animation: fallback-dot-pulse 1.5s ease-in-out infinite;
-}
-
-@keyframes fallback-dot-pulse {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.35;
-    transform: scale(0.75);
-  }
-}
-
-.home-game-fallback-footer {
-  position: relative;
-  z-index: 3;
-  padding: 12px 16px;
-  background: linear-gradient(180deg, transparent 0%, rgba(var(--home-game-bg-rgb), 0.95) 70%);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.home-game-fallback-links {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.home-game-fallback-link {
-  font-family: var(--font-mono, monospace);
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--home-game-text);
-  background: rgba(var(--home-game-bg-rgb), 0.7);
-  padding: 4px 8px;
-  border-radius: 3px;
-  border: 1px solid var(--color-border-light, rgba(242, 241, 234, 0.12));
-  text-decoration: none;
-  transition: border-color var(--transition-fast), background-color var(--transition-fast);
-}
-
-.home-game-fallback-link:hover,
-.home-game-fallback-link:focus-visible {
-  border-color: var(--color-accent, #D6FF64);
-  background: rgba(var(--home-game-bg-rgb), 0.9);
-  color: var(--color-accent, #D6FF64);
-}
-
-.home-game-fallback-status {
-  font-family: var(--font-mono, monospace);
-  font-size: 10.5px;
-  color: var(--home-game-text-muted);
+.home-game-play:hover {
+  background: var(--color-accent-hover);
 }

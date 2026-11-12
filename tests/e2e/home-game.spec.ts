@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { openHomeGameHarness, getHomeGameSnapshot, HOME_GAME_HARNESS_PATH } from './fixtures/home-game';
+import { openHomeGameHarness, getHomeGameSnapshot } from './fixtures/home-game';
 
 test.describe('T06 HomeGame Integration, Atmosphere & Lifecycle Durable Suite', () => {
   test('Desktop (1585x992) — Measured Responsive Bounds, Soft Perimeter, Expand/Exit & Lifecycle', async ({ page }, testInfo) => {
@@ -119,15 +119,19 @@ test.describe('T06 HomeGame Integration, Atmosphere & Lifecycle Durable Suite', 
     expect(remountSnap.canvasCount).toBe(1);
 
     // 10. Viewport Intersection & Offscreen Rendering Suspension
-    await page.evaluate(() => window.scrollTo(0, 1000));
+    const gameSection = page.locator('#parkour-game');
+    await gameSection.scrollIntoViewIfNeeded();
+    await expect(gameSection).toBeInViewport();
+    await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+    await expect(gameSection).not.toBeInViewport();
     // Poll for frameloop suspension
     await expect.poll(async () => {
       const s = await getHomeGameSnapshot(page);
       return s.frameloop;
     }, { timeout: 4000 }).toBe('never');
 
-    // Scroll back to top resumes rendering
-    await page.evaluate(() => window.scrollTo(0, 0));
+    // Returning to the game resumes rendering.
+    await gameSection.scrollIntoViewIfNeeded();
     await expect.poll(async () => {
       const s = await getHomeGameSnapshot(page);
       return s.frameloop;
@@ -421,8 +425,7 @@ test.describe('T06 HomeGame Integration, Atmosphere & Lifecycle Durable Suite', 
     // Fallback UI should mount
     const fallback = page.getByTestId('home-game-fallback');
     await expect(fallback).toBeVisible();
-    await expect(fallback).toContainText('ROOFTOP COURSE · STATIC PREVIEW');
-    await expect(fallback).toContainText('WebGL error · Fast navigation active');
+    await expect(fallback).toContainText('The Parkour Game couldn’t load.');
 
     // Simulation cleanly unmounts
     await expect(page.locator('.scene-canvas-container canvas')).toHaveCount(0);
@@ -456,7 +459,8 @@ test.describe('T06 HomeGame Integration, Atmosphere & Lifecycle Durable Suite', 
       } as any;
     });
 
-    await page.goto(HOME_GAME_HARNESS_PATH);
+    await page.goto('/');
+    await page.getByTestId('enter-play-btn').click();
 
     // 1. Canvas is never created when WebGL is unavailable
     await expect(page.locator('canvas')).toHaveCount(0);
@@ -464,11 +468,10 @@ test.describe('T06 HomeGame Integration, Atmosphere & Lifecycle Durable Suite', 
     // 2. Themed static fallback is rendered immediately
     const fallback = page.getByTestId('home-game-fallback');
     await expect(fallback).toBeVisible();
-    await expect(fallback).toContainText('ROOFTOP COURSE · STATIC PREVIEW');
-    await expect(fallback).toContainText('WebGL unavailable · Fast navigation active');
+    await expect(fallback).toContainText('WebGL is unavailable.');
 
     // 3. Modified click on fallback link retains native browser action without navigating current view
-    const projectLink = fallback.getByRole('link', { name: /01 \/ Projects/i });
+    const projectLink = fallback.getByRole('link', { name: /View projects/i });
     await expect(projectLink).toBeVisible();
 
     const modifiedClick = await projectLink.evaluate((el) => {
@@ -486,34 +489,34 @@ test.describe('T06 HomeGame Integration, Atmosphere & Lifecycle Durable Suite', 
     // Our handler must NOT have called preventDefault
     expect((modifiedClick as any)?.defaultPrevented).toBe(false);
     // Active route is unchanged
-    await expect(page.locator('#harness-controls')).toContainText('Active Route: /');
+    await expect(page).toHaveURL(/\/$/);
 
     // 4. Ordinary unmodified primary click navigates to /projects route
     await projectLink.click();
-    await expect(page.locator('#harness-controls')).toContainText('Active Route: /projects');
-    await expect(page.locator('main')).toContainText(/SELECTED PROJECTS|Technical Projects/i);
+    await expect(page).toHaveURL(/\/projects$/);
+    await expect(page.getByRole('heading', { name: 'Projects', exact: true })).toBeVisible();
   });
 
   test('Lazy Load Rejection — Honest Fallback Error State & Working Content', async ({ page }) => {
-    // Abort GameExperience module request to simulate network failure during lazy loading
-    await page.route('**/src/game/GameExperience.tsx*', (route) => route.abort('failed'));
+    // Abort GameStage module request to simulate network failure during lazy loading
+    await page.route('**/src/game/GameStage.tsx*', (route) => route.abort('failed'));
 
-    await page.goto(HOME_GAME_HARNESS_PATH);
+    await page.goto('/');
+    await page.getByTestId('enter-play-btn').click();
 
     // 1. Fallback appears with honest error status (NOT "Course ready" or "3D SIMULATION")
     const fallback = page.getByTestId('home-game-fallback');
     await expect(fallback).toBeVisible();
-    await expect(fallback).toContainText('ROOFTOP COURSE · STATIC PREVIEW');
-    await expect(fallback).toContainText('WebGL error · Fast navigation active');
+    await expect(fallback).toContainText('The Parkour Game couldn’t load.');
     await expect(fallback).not.toContainText('Course ready');
 
     // 2. Zero 3D canvases rendered
     await expect(page.locator('canvas')).toHaveCount(0);
 
     // 3. Ordinary fallback navigation works
-    const aboutLink = fallback.getByRole('link', { name: /02 \/ Explorations/i });
-    await expect(aboutLink).toBeVisible();
-    await aboutLink.click();
-    await expect(page.locator('#harness-controls')).toContainText('Active Route: /about');
+    const projectLink = fallback.getByRole('link', { name: /View projects/i });
+    await expect(projectLink).toBeFocused();
+    await projectLink.click();
+    await expect(page).toHaveURL(/\/projects$/);
   });
 });

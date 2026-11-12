@@ -72,4 +72,6 @@ export interface GameExperienceProps {
   className?: string;
   style?: React.CSSProperties;
   forceDeterministic?: boolean;
+  startPlaying?: boolean;
+  onStop?: () => void;
 }

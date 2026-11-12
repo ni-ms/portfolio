@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { _roots } from '@react-three/fiber';
 import PortfolioPages from '../../../src/pages/PortfolioPages';
-import { HomeGame } from '../../../src/components/HomeGame';
+import GameStage from '../../../src/game/GameStage';
 import { gameStore } from '../../../src/game/gameStore';
 import { livePlayerTransform } from '../../../src/game/playerTransform';
 
@@ -144,7 +144,7 @@ function HarnessApp() {
       <PortfolioPages
         path={path}
         gameSlot={
-          <HomeGame
+          <GameStage
             theme={theme}
             onNavigate={(dest) => {
               setPath(dest);

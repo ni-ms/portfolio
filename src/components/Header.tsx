@@ -1,7 +1,7 @@
 import React from 'react';
 import { navigation, useNavigation } from '../routing/Router';
 import { useTheme } from '../theme/ThemeProvider';
-import { RouteEmblem } from './RouteEmblem';
+import { useNavIndicator } from '../motion/useNavIndicator';
 
 interface HeaderProps {
   isMenuOpen: boolean;
@@ -16,16 +16,16 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const { path } = useNavigation();
   const { theme, toggleTheme } = useTheme();
+  const { navRef, indicatorRef } = useNavIndicator(path);
   return (
     <header className="site-header" role="banner">
       <div className="header-container">
         <a href="/" className="header-brand" aria-label="Nikhil Sharma — Home">
-          <RouteEmblem size={24} />
-
+          <span className="route-emblem header-emblem" aria-hidden="true" />
         </a>
 
         {/* Desktop Navigation */}
-        <nav className="desktop-nav" aria-label="Primary navigation">
+        <nav ref={navRef} className="desktop-nav" aria-label="Primary navigation">
           <ul className="nav-list">
             {navigation.map((item) => (
               <li key={item.href} className="nav-item">
@@ -39,6 +39,7 @@ export const Header: React.FC<HeaderProps> = ({
               </li>
             ))}
           </ul>
+          <span ref={indicatorRef} className="nav-active-indicator" aria-hidden="true" />
         </nav>
 
         <button className="theme-toggle" type="button" onClick={toggleTheme} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`} title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>{theme === 'dark' ? '☾' : '☼'}</button>

@@ -9,12 +9,28 @@ import { gameStore, useGameStore, registerGlobalNavigateHandler } from './gameSt
 import { applyGameTheme } from './materials';
 import type { GameExperienceProps, Checkpoint } from '../types/game';
 
+function detectTouch() {
+  return typeof window !== 'undefined' && (
+    navigator.maxTouchPoints > 0 ||
+    window.matchMedia('(pointer: coarse)').matches ||
+    window.innerWidth <= 768 ||
+    (window.innerHeight <= 500 && window.innerWidth <= 1024)
+  );
+}
+
+function GameReady({ onReady }: { onReady: () => void }) {
+  useEffect(onReady, [onReady]);
+  return null;
+}
+
 export function GameExperience({
   theme = 'dark',
   onNavigate,
   className = '',
   style,
   forceDeterministic = false,
+  startPlaying = false,
+  onStop,
 }: GameExperienceProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const mode = useGameStore((s) => s.mode);
@@ -22,7 +38,11 @@ export function GameExperience({
   const currentCheckpointId = useGameStore((s) => s.currentCheckpointId);
   const isDeterministicReview = useGameStore((s) => s.isDeterministicReview) || forceDeterministic;
 
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(detectTouch);
+  const [ready, setReady] = useState(false);
+  const markReady = useCallback(() => setReady(true), []);
+  const started = useRef(false);
+  const played = useRef(false);
   const exitButtonRef = useRef<HTMLButtonElement>(null);
   const enterButtonRef = useRef<HTMLButtonElement>(null);
   const pendingFocusRestoreRef = useRef(false);
@@ -86,22 +106,9 @@ export function GameExperience({
 
   // Responsive and touch device detection (including phone landscape e.g. 844x390)
   useEffect(() => {
-    const detectTouch = () => {
-      const hasTouch =
-        'ontouchstart' in window ||
-        (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) ||
-        window.matchMedia('(pointer: coarse)').matches ||
-        window.innerWidth <= 768 ||
-        (window.innerHeight <= 500 && window.innerWidth <= 1024);
-      setIsTouchDevice(Boolean(hasTouch));
-    };
-    detectTouch();
-    window.addEventListener('resize', detectTouch);
-    window.addEventListener('orientationchange', detectTouch);
-    return () => {
-      window.removeEventListener('resize', detectTouch);
-      window.removeEventListener('orientationchange', detectTouch);
-    };
+    const updateInputMode = () => setIsTouchDevice(detectTouch());
+    window.addEventListener('resize', updateInputMode);
+    return () => window.removeEventListener('resize', updateInputMode);
   }, []);
 
   // Cleanup on unmount: cancel focus restoration, remove scroll lock, reset mode/input
@@ -223,6 +230,24 @@ export function GameExperience({
     }
   }, [isTouchDevice]);
 
+  useEffect(() => {
+    if (!startPlaying || !ready || started.current) return;
+    const frame = requestAnimationFrame(() => {
+      started.current = true;
+      handleEnterPlay();
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [startPlaying, ready, handleEnterPlay]);
+
+  useEffect(() => {
+    if (mode !== 'preview') {
+      played.current = true;
+      if (startPlaying && mode === 'play-inline') rootRef.current?.focus({ preventScroll: true });
+    } else if (played.current && onStop) {
+      onStop();
+    }
+  }, [mode, startPlaying, onStop]);
+
   const handleExitPlay = useCallback(() => {
     gameStore.getState().actions.setMode('preview');
   }, []);
@@ -289,6 +314,7 @@ export function GameExperience({
               ...style,
             }
       }
+      tabIndex={startPlaying && mode === 'play-inline' ? -1 : undefined}
       role={isOverlay ? 'dialog' : 'region'}
       aria-modal={isOverlay ? 'true' : undefined}
       aria-label={isOverlay ? 'Play course expanded overlay' : 'Interactive 3D Rooftop Course'}
@@ -327,12 +353,13 @@ export function GameExperience({
           <Physics gravity={[0, -18, 0]} paused={!isSimulating}>
             <PhysicsCourse showVisuals={false} />
             <PlayerController />
+            {startPlaying && <GameReady onReady={markReady} />}
           </Physics>
         </Scene>
       </div>
 
       {/* PREVIEW MODE UI: Click-to-Play CTA and Exploration Guidance */}
-      {mode === 'preview' && (
+      {mode === 'preview' && !startPlaying && (
         <div
           className="game-preview-controls-overlay"
           style={{

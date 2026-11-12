@@ -38,12 +38,12 @@ export const ProjectDetailTemplate: React.FC<ProjectDetailTemplateProps> = ({ pr
 
   return (
     <article
-      className="project-detail-container"
+      className="portfolio-frame project-detail-container"
       data-project-slug={project.slug}
       aria-labelledby="project-title"
     >
       {/* Top Breadcrumb Nav */}
-      <nav className="detail-breadcrumb-nav" aria-label="Breadcrumb">
+      <nav className="portfolio-cell detail-breadcrumb-nav" aria-label="Breadcrumb">
         <a href="/projects" className="detail-back-link">
           Projects
         </a>
@@ -52,8 +52,8 @@ export const ProjectDetailTemplate: React.FC<ProjectDetailTemplateProps> = ({ pr
       </nav>
 
       {/* Split Hero Header: Left Copy + Right Illustration */}
-      <header className="detail-split-hero">
-        <div className="detail-hero-left">
+      <header className="portfolio-row portfolio-split detail-split-hero">
+        <div className="portfolio-cell detail-hero-left">
           <div className="detail-identity-badge">
             <PhotoPlaceholder className="detail-photo" />
             <div className="detail-identity-meta">
@@ -88,7 +88,7 @@ export const ProjectDetailTemplate: React.FC<ProjectDetailTemplateProps> = ({ pr
 
         {/* Right Column: Technical Architecture Illustration */}
         {illustration && (
-          <div className="detail-hero-right">
+          <div className="portfolio-cell detail-hero-right">
             <figure
               className="detail-illustration-figure"
               data-testid="detail-illustration-figure"
@@ -106,15 +106,15 @@ export const ProjectDetailTemplate: React.FC<ProjectDetailTemplateProps> = ({ pr
       </header>
 
       {/* Structured Content Grid: Challenge & Approach beside Outcomes */}
-      <div className="detail-grid-layout">
+      <div className="portfolio-row portfolio-split detail-grid-layout">
         {/* Left Column: Challenge & Systems Approach */}
         <section className="detail-narrative-col" aria-label="Technical Details">
-          <div className="detail-block">
+          <div className="portfolio-cell detail-block">
             <h2 className="detail-section-heading">The problem</h2>
             <p className="detail-prose-text">{project.details.problem}</p>
           </div>
 
-          <div className="detail-block">
+          <div className="portfolio-cell detail-block">
             <h2 className="detail-section-heading">The approach</h2>
             <ol className="detail-approach-list">
               {project.details.approach.map((item, idx) => (
@@ -146,7 +146,7 @@ export const ProjectDetailTemplate: React.FC<ProjectDetailTemplateProps> = ({ pr
         </section>
       </div>
 
-      <footer className="detail-pagination-footer" aria-label="Projects navigation">
+      <footer className="portfolio-row portfolio-cell detail-pagination-footer" aria-label="Projects navigation">
         {isFastCode && (
           <div>
             <h2 className="portfolio-section-heading">What this demonstrates</h2>

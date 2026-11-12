@@ -26,14 +26,10 @@ test.describe('Parkour Portfolio Integrated Multi-Viewport & Route Suite (T08)',
     // 4. Verify 3 selected projects in home preview
     const projectCards = page.locator('.home-projects-grid .portfolio-project-card');
     await expect(projectCards).toHaveCount(3);
-    await expect(page.locator('#home-projects-heading')).toHaveText('SELECTED PROJECTS');
+    await expect(page.locator('#home-projects-heading')).toHaveText('Selected projects');
 
-    // 5. Verify 3D canvas is mounted in home game slot
-    const canvas = page.locator('.home-game-canvas-wrap canvas, .game-canvas-container canvas, canvas');
-    await expect(canvas.first()).toBeVisible();
-
-    // Allow frames to settle
-    await page.waitForTimeout(1000);
+    await expect(page.getByRole('button', { name: 'Play Parkour Game' })).toBeVisible();
+    await expect(page.locator('canvas')).toHaveCount(0);
 
     // Capture desktop reference screenshot
     await page.screenshot({
@@ -53,12 +49,8 @@ test.describe('Parkour Portfolio Integrated Multi-Viewport & Route Suite (T08)',
     await expect(page.locator('.mobile-menu-button')).toBeVisible();
     await expect(page.locator('.home-intro-paragraph')).toBeVisible();
 
-    // 2. Verify canvas mounted
-    const canvas = page.locator('canvas').first();
-    await expect(canvas).toBeVisible();
-
-    // Settle frames
-    await page.waitForTimeout(1000);
+    await expect(page.getByRole('button', { name: 'Play Parkour Game' })).toBeVisible();
+    await expect(page.locator('canvas')).toHaveCount(0);
 
     // Capture mobile landing reference screenshot
     await page.screenshot({
@@ -73,30 +65,17 @@ test.describe('Parkour Portfolio Integrated Multi-Viewport & Route Suite (T08)',
     await page.goto('/');
     await page.waitForLoadState('domcontentloaded');
 
-    // Look for play trigger or expand button
-    const enterPlayBtn = page.locator('[data-testid="enter-play-btn"], button:has-text("Play"), button:has-text("PLAY"), .mobile-play-btn').first();
-    if (await enterPlayBtn.isVisible()) {
-      await enterPlayBtn.click();
-      await page.waitForTimeout(600);
+    await page.getByRole('button', { name: 'Play Parkour Game' }).click();
+    await expect(page.getByTestId('touch-jump-btn')).toBeVisible({ timeout: 20000 });
+    await expect(page.locator('canvas')).toHaveCount(1);
 
-      // Verify touch controls
-      const touchControls = page.locator('.touch-controls-layer, .dpad-cluster, [data-testid="touch-jump-btn"]');
-      if (await touchControls.first().isVisible()) {
-        await expect(touchControls.first()).toBeVisible();
+    await page.screenshot({
+      path: 'design/verification/T08/mobile-390x844-play-mode-actual.png',
+      fullPage: false,
+    });
 
-        // Capture mobile expanded play screenshot
-        await page.screenshot({
-          path: 'design/verification/T08/mobile-390x844-play-mode-actual.png',
-          fullPage: false,
-        });
-
-        // Exit expanded mode
-        const exitBtn = page.locator('[data-testid="exit-play-btn"], button:has-text("Exit"), button:has-text("EXIT")').first();
-        if (await exitBtn.isVisible()) {
-          await exitBtn.click();
-        }
-      }
-    }
+    await page.getByTestId('overlay-exit-btn').click();
+    await expect(page.locator('canvas')).toHaveCount(0);
   });
 
   test('Project Navigation & Detail Technical Deep Dive', async ({ page }, testInfo) => {

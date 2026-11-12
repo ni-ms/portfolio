@@ -8,6 +8,7 @@ const routes = [
   ['/projects/langmetric', 'Langmetric', 'Langmetric'],
   ['/resume', 'Résumé', 'Résumé'],
   ['/about', 'About', 'About'],
+  ['/missing-page', 'Page Not Found', 'Page not found'],
 ] as const;
 
 test('mounted portfolio routes work in both themes with factual content and no overflow', async ({ page }) => {
@@ -17,6 +18,7 @@ test('mounted portfolio routes work in both themes with factual content and no o
     await page.goto('/about');
     const current = await page.locator('html').getAttribute('data-theme');
     if (current !== theme) await page.getByRole('button', { name: `Switch to ${theme} mode` }).click();
+    let homeFrame;
     for (const [route, text, title] of routes) {
       await page.goto(route);
       await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
@@ -25,6 +27,11 @@ test('mounted portfolio routes work in both themes with factual content and no o
       await expect(page.locator('main')).toContainText(text);
       await expect(page.locator('main')).not.toContainText(/YOUR NAME|PROJECT ONE|Portfolio content is being integrated/);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+      const frame = page.locator('main .portfolio-frame');
+      await expect(frame).toHaveCSS('border-left-width', '1px');
+      const { x, width } = (await frame.boundingBox())!;
+      if (route === '/') homeFrame = { x, width };
+      expect({ x, width }).toEqual(homeFrame);
       if (route !== '/') await expect(page.locator('canvas')).toHaveCount(0);
     }
   }

@@ -1,6 +1,7 @@
 import { ReactNode, useRef, useEffect } from 'react';
 import '../styles/pages.css';
 import '../styles/motion.css';
+import '../styles/portfolio-grid.css';
 import { HomePage } from './HomePage';
 import { ProjectsPage } from './ProjectsPage';
 import { ProjectDetailPage } from './ProjectDetailPage';
@@ -49,6 +50,7 @@ export default function PortfolioPages({ path, gameSlot }: PortfolioPagesProps) 
     containerRef: mainRef,
     pageKey: normalizedPath,
     isHome,
+    skipAnimation: normalizedPath === '/projects',
   });
 
   const renderContent = () => {

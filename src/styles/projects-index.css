@@ -1,0 +1,35 @@
+.projects-folder-item {
+  position: relative;
+  display: grid;
+  min-width: 0;
+}
+
+.projects-folder-tab {
+  display: none;
+}
+
+.projects-supporting-grid[data-folder-stack] .projects-folder-item {
+  background: var(--color-bg);
+}
+
+.projects-supporting-grid[data-folder-stack] .projects-folder-item:first-child {
+  z-index: 1;
+  box-shadow: 0 12px 36px rgba(16, 20, 20, 0.22);
+}
+
+@media (max-width: 900px) and (prefers-reduced-motion: no-preference) {
+  .projects-folder-tab {
+    display: block;
+    position: absolute;
+    inset: -9px 12px auto;
+    height: 24px;
+    border-radius: 5px 5px 0 0;
+    background: var(--color-accent);
+    pointer-events: none;
+  }
+
+  .projects-folder-tab[style=""],
+  .projects-folder-tab:not([style]) {
+    visibility: hidden;
+  }
+}

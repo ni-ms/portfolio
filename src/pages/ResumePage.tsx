@@ -6,10 +6,10 @@ export const ResumePage: React.FC = () => {
   const { identity, experience, education, skills, research, downloads, projects } = portfolioContent;
 
   return (
-    <div className="resume-page-container">
+    <div className="portfolio-page portfolio-frame resume-page-container">
       {/* Header with Prominent Page Heading, Name, Photo, Headline & Download Actions */}
-      <header className="resume-header">
-        <div className="resume-heading-row">
+      <header className="portfolio-split resume-header">
+        <div className="portfolio-cell resume-heading-row">
           <h1 className="page-main-heading">Résumé</h1>
           <div className="resume-download-actions">
             <a href={downloads.pdf.url} download={downloads.pdf.filename} className="download-btn download-btn-primary">
@@ -20,19 +20,21 @@ export const ResumePage: React.FC = () => {
             </a>
           </div>
         </div>
-        <div className="resume-identity-row">
-          <PhotoPlaceholder className="resume-photo" />
-          <div className="resume-title-block">
-            <h2 className="resume-person-name">{identity.name}</h2>
-            <p className="resume-role-sub">{identity.title}</p>
-            <p className="resume-location">{identity.location}</p>
+        <div className="portfolio-cell resume-profile">
+          <div className="resume-identity-row">
+            <PhotoPlaceholder className="resume-photo" />
+            <div className="resume-title-block">
+              <h2 className="resume-person-name">{identity.name}</h2>
+              <p className="resume-role-sub">{identity.title}</p>
+              <p className="resume-location">{identity.location}</p>
+            </div>
           </div>
+          <p className="resume-headline-text">Nearly 3 years building production backend services and enterprise web applications, with experience in applied AI and CPU optimization.</p>
         </div>
-        <p className="resume-headline-text">Nearly 3 years building production backend services and enterprise web applications, with experience in applied AI and CPU optimization.</p>
       </header>
 
       {/* Two-Column Layout: Left = Experience; Right = Education, Grouped Text Skills, Research, Projects */}
-      <div className="resume-content-grid">
+      <div className="portfolio-row portfolio-split resume-content-grid">
         {/* Left Column: Experience */}
         <div className="resume-col-main">
           <section className="resume-section" aria-labelledby="experience-heading">
@@ -114,12 +116,12 @@ export const ResumePage: React.FC = () => {
         </div>
       </div>
       {/* Selected Technical Projects Links */}
-      <section className="resume-section" aria-labelledby="resume-projects-heading">
-        <h2 id="resume-projects-heading" className="portfolio-section-heading">Selected projects</h2>
+      <section className="portfolio-row resume-section resume-projects-section" aria-labelledby="resume-projects-heading">
+        <h2 id="resume-projects-heading" className="portfolio-cell portfolio-section-heading">Selected projects</h2>
 
         <div className="resume-projects-list">
           {projects.map((p) => (
-            <a key={p.slug} href={`/projects/${p.slug}`} className="resume-project-link-card">
+            <a key={p.slug} href={`/projects/${p.slug}`} className="portfolio-cell resume-project-link-card">
               <div className="proj-link-top">
                 <span className="proj-link-name">{p.name}</span>
                 <span className="proj-link-arrow">→</span>
@@ -130,7 +132,7 @@ export const ResumePage: React.FC = () => {
         </div>
       </section>
       {/* Research */}
-      <section className="resume-section" aria-labelledby="research-heading">
+      <section className="portfolio-row portfolio-cell resume-section" aria-labelledby="research-heading">
         <h2 id="research-heading" className="portfolio-section-heading">Research</h2>
 
         <article className="research-entry-card">

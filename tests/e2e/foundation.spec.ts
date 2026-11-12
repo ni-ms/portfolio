@@ -60,6 +60,8 @@ test('history navigation closes an open mobile menu and releases scroll', async 
 });
 
 test('fragment focus follows its section and Back restores the reading position', async ({ page }) => {
+  const viewport = page.viewportSize();
+  if (viewport && viewport.height > 900) await page.setViewportSize({ ...viewport, height: 900 });
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/about#contact');
   await expect(page.locator('#contact')).toBeFocused();

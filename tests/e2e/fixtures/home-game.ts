@@ -34,6 +34,11 @@ export async function openHomeGameHarness(page: Page) {
     const snap = (window as any).__homeGame?.snapshot();
     return snap && snap.canvasCount === 1 && (window as any).__homeGame?.getPlayerBody();
   }, { timeout: 15000 });
+  await page.locator('#parkour-game').evaluate(section => {
+    section.tabIndex = -1;
+    section.focus({ preventScroll: true });
+    section.scrollIntoView({ behavior: 'instant', block: 'center' });
+  });
   // Physics readiness precedes the asynchronous Html portal commit. Wait for
   // rendered badge boxes before tests inspect their required bounds or hits.
   await expect.poll(async () => {

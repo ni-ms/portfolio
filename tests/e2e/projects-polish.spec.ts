@@ -150,39 +150,44 @@ test('Home reveals the words individually and settles in under a second', async 
   expect(samples.find(({ time }) => time >= 650)?.offsets).toEqual([0, 0, 0, 0, 0]);
 });
 
-test('the cursor outlines links, buttons, and text, then returns to a circle', async ({ page }) => {
+test('the cursor outlines buttons and stays circular over regular links and text', async ({ page }) => {
   test.skip(!await page.evaluate(() => matchMedia('(hover: hover) and (pointer: fine)').matches), 'Pointer hover');
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.goto('/resume');
   await page.evaluate(() => document.fonts.ready);
   const cursor = page.locator('.portfolio-cursor');
-  const link = page.locator('.header-brand');
-  await expect(link.locator('.header-emblem')).toHaveCount(0);
-  await link.hover({ position: { x: 8, y: 20 } });
-  await expect(cursor).toBeVisible();
-  await expect(cursor).toHaveAttribute('data-active', 'true');
-  await expect(link).toHaveCSS('cursor', 'none');
-  const shape = () => cursor.locator('.portfolio-cursor-ring').evaluate(element => {
+  const ring = cursor.locator('.portfolio-cursor-ring');
+  const shape = () => ring.evaluate(element => {
     const style = getComputedStyle(element, '::before');
     return { width: parseFloat(style.width), height: parseFloat(style.height), radius: style.borderRadius };
   });
-  await expect.poll(async () => (await shape()).radius).toBe('5px');
-  const linkBounds = (await link.boundingBox())!;
-  await expect.poll(async () => (await shape()).width).toBeCloseTo(linkBounds.width + 10, 0);
-  await expect.poll(async () => (await cursor.locator('.portfolio-cursor-ring').boundingBox())!.x)
-    .toBeCloseTo(linkBounds.x + linkBounds.width / 2, 0);
+  const circle = { width: 35, height: 35, radius: '50%' };
 
   const theme = page.getByRole('button', { name: 'Switch to light mode' });
-  expect(Math.abs((await theme.boundingBox())!.y - linkBounds.y)).toBeLessThan(1);
-  await theme.hover();
-  await expect.poll(async () => (await shape()).width).toBeCloseTo(54, 0);
+  await theme.hover({ position: { x: 8, y: 20 } });
+  await expect(cursor).toBeVisible();
+  await expect(cursor).toHaveAttribute('data-active', 'true');
+  await expect.poll(shape).toEqual({ width: 54, height: 52, radius: '5px' });
+  const themeBounds = (await theme.boundingBox())!;
+  await expect.poll(async () => (await ring.boundingBox())!.x).toBeCloseTo(themeBounds.x + themeBounds.width / 2, 0);
+
+  const download = page.getByRole('link', { name: 'Download résumé ↓' });
+  await download.hover();
+  await expect.poll(async () => (await shape()).width).toBeCloseTo((await download.boundingBox())!.width + 10, 0);
+
+  const link = page.locator('.header-brand');
+  await expect(link.locator('.header-emblem')).toHaveCount(0);
+  const linkBounds = (await link.boundingBox())!;
+  expect(Math.abs(themeBounds.y - linkBounds.y)).toBeLessThan(1);
+  await link.hover();
+  await expect(link).toHaveCSS('cursor', 'none');
+  await expect(cursor).not.toHaveAttribute('data-active', 'true');
+  await expect.poll(shape).toEqual(circle);
 
   const heading = page.getByRole('heading', { name: 'Résumé', exact: true });
   const headingBounds = (await heading.boundingBox())!;
   await page.mouse.move(headingBounds.x + 20, headingBounds.y + headingBounds.height / 2);
-  await expect.poll(async () => (await shape()).width).toBeGreaterThan(100);
-  await page.mouse.move(5, 110);
-  await expect.poll(shape).toEqual({ width: 35, height: 35, radius: '50%' });
+  await expect.poll(shape).toEqual(circle);
 
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await expect(cursor).toBeHidden();

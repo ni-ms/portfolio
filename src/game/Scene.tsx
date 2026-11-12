@@ -1,3 +1,4 @@
+import { sitePath } from '../routing/sitePath';
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { Canvas } from '@react-three/fiber';
@@ -333,7 +334,7 @@ export const Scene: React.FC<SceneProps> = ({
 
         {/* Procedural Local Reflection Environment (Bake-once per theme) */}
         {theme === 'dark' ? (
-          <Environment files="/rooftop/sunset.hdr" environmentIntensity={0.8} />
+          <Environment files={sitePath('/rooftop/sunset.hdr')} environmentIntensity={0.8} />
         ) : <StudioEnvironment theme={theme} />}
 
         {/* Calibrated Lighting Rig */}

@@ -1,3 +1,4 @@
+import { sitePath } from '../routing/sitePath';
 import { Fragment, useRef, type ReactNode } from 'react';
 import { useHomeMotion } from '../motion/useHomeMotion';
 import { portfolioContent } from '../content/realPortfolio';
@@ -37,10 +38,10 @@ export function HomePage({ gameSlot }: HomePageProps) {
                     ))}
                   </p>
                   <div className="home-hero-actions">
-                    <a href="/projects" className="home-primary-link">
+                    <a href={sitePath('/projects')} className="home-primary-link">
                       View projects <span aria-hidden="true">↗</span>
                     </a>
-                    <a href="/#parkour-game" className="home-game-link">
+                    <a href={sitePath('/#parkour-game')} className="home-game-link">
                       Parkour Game <span aria-hidden="true">↓</span>
                     </a>
                   </div>
@@ -61,8 +62,8 @@ export function HomePage({ gameSlot }: HomePageProps) {
                     <p className="home-intro-paragraph">{home.intro}</p>
                     <p className="home-education-line">{home.education}</p>
                     <div className="home-cta-row">
-                      <a href="/resume">{home.ctaResume}</a>
-                      <a href="/about">About me →</a>
+                      <a href={sitePath('/resume')}>{home.ctaResume}</a>
+                      <a href={sitePath('/about')}>About me →</a>
                     </div>
                   </div>
                 </div>
@@ -75,7 +76,7 @@ export function HomePage({ gameSlot }: HomePageProps) {
 
             <div className="home-section-heading home-projects-heading">
               <h2 id="home-projects-heading">Selected projects</h2>
-              <a href="/projects">All projects <span aria-hidden="true">↗</span></a>
+              <a href={sitePath('/projects')}>All projects <span aria-hidden="true">↗</span></a>
             </div>
           </div>
           <section className="home-projects-reveal" aria-labelledby="home-projects-heading">

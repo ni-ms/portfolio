@@ -1,3 +1,4 @@
+import { sitePath } from '../routing/sitePath';
 import React from 'react';
 import { isNavigationCurrent, navigation, useNavigation } from '../routing/Router';
 import { portfolioContent } from '../content/realPortfolio';
@@ -20,7 +21,7 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="site-header" role="banner">
       <div className="header-container">
-        <a href="/" className="header-brand" aria-label={`${name} — Home`} aria-current={path === '/' ? 'page' : undefined}>
+        <a href={sitePath('/')} className="header-brand" aria-label={`${name} — Home`} aria-current={path === '/' ? 'page' : undefined}>
           <span>{name}</span>
         </a>
 
@@ -30,7 +31,7 @@ export const Header: React.FC<HeaderProps> = ({
             {navigation.slice(1).map((item) => (
               <li key={item.href} className="nav-item">
                 <a
-                  href={item.href}
+                  href={sitePath(item.href)}
                   className="nav-link"
                   aria-current={isNavigationCurrent(path, item.href) ? 'page' : undefined}
                 >

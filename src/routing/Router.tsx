@@ -2,10 +2,11 @@ import { createContext, useContext, useEffect, useRef, useState, type ReactNode 
 
 import { blogPosts } from '../content/blogPosts';
 
-export const routes = ['/', '/projects', '/projects/fastcode', '/projects/scottypi', '/projects/langmetric', '/blog', ...blogPosts.map(({ slug }) => `/blog/${slug}`), '/resume', '/about'];
+import { routePath, sitePath } from './sitePath';
+
 const titles: Record<string, string> = { '/': 'Home', '/projects': 'Projects', '/projects/fastcode': 'FastCode', '/projects/scottypi': 'ScottyPi', '/projects/langmetric': 'Langmetric', '/blog': 'Blog', '/resume': 'Résumé', '/about': 'About' };
 const RouterContext = createContext({ path: '/', navigate: (_href: string) => {} });
-const pathname = () => window.location.pathname.replace(/\/$/, '') || '/';
+const pathname = () => routePath(window.location.pathname)?.replace(/\/$/, '') || '/';
 const newKey = () => `portfolio-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
 export function RouterProvider({ children }: { children: ReactNode }) {
@@ -23,9 +24,9 @@ export function RouterProvider({ children }: { children: ReactNode }) {
   const navigate = (href: string) => {
     positions.current.set(historyKey.current, [window.scrollX, window.scrollY]);
     historyKey.current = newKey();
-    const url = new URL(href, location.href);
+    const url = new URL(sitePath(href), location.href);
     smoothFragment.current = url.pathname === location.pathname && Boolean(url.hash);
-    history.pushState({ ...history.state, portfolioKey: historyKey.current }, '', href);
+    history.pushState({ ...history.state, portfolioKey: historyKey.current }, '', url);
     restorePosition.current = null;
     commitNavigation();
   };
@@ -47,9 +48,10 @@ export function RouterProvider({ children }: { children: ReactNode }) {
       const a = (event.target as Element)?.closest('a');
       if (!a || a.target || a.hasAttribute('download')) return;
       const url = new URL(a.href, location.href);
-      if (url.origin !== location.origin || a.getAttribute('href')?.startsWith('#')) return;
+      const route = routePath(url.pathname);
+      if (url.origin !== location.origin || route === null || a.getAttribute('href')?.startsWith('#')) return;
       event.preventDefault();
-      navigate(url.pathname + url.search + url.hash);
+      navigate(route + url.search + url.hash);
     };
     window.addEventListener('popstate', sync);
     window.addEventListener('scroll', recordScroll, { passive: true });

@@ -1,3 +1,4 @@
+import { sitePath } from '../routing/sitePath';
 import React from 'react';
 
 interface NotFoundPageProps {
@@ -17,10 +18,10 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({ path }) => {
           </p>
 
           <div className="not-found-actions">
-            <a href="/" className="cta-btn cta-btn-primary">
+            <a href={sitePath('/')} className="cta-btn cta-btn-primary">
               Return to Home →
             </a>
-            <a href="/projects" className="cta-btn cta-btn-secondary">
+            <a href={sitePath('/projects')} className="cta-btn cta-btn-secondary">
               Explore Selected Projects →
             </a>
           </div>

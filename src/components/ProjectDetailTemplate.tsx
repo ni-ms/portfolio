@@ -1,3 +1,4 @@
+import { sitePath } from '../routing/sitePath';
 import React from 'react';
 import { PortfolioProject, portfolioContent } from '../content/realPortfolio';
 import { PhotoPlaceholder } from './PhotoPlaceholder';
@@ -44,7 +45,7 @@ export const ProjectDetailTemplate: React.FC<ProjectDetailTemplateProps> = ({ pr
     >
       {/* Top Breadcrumb Nav */}
       <nav className="portfolio-cell detail-breadcrumb-nav" aria-label="Breadcrumb">
-        <a href="/projects" className="detail-back-link">
+        <a href={sitePath('/projects')} className="detail-back-link">
           Projects
         </a>
         <span aria-hidden="true"> / </span>
@@ -95,7 +96,7 @@ export const ProjectDetailTemplate: React.FC<ProjectDetailTemplateProps> = ({ pr
               data-project-slug={project.slug}
             >
               <img
-                src={illustration.src}
+                src={sitePath(illustration.src)}
                 alt={illustration.alt}
                 className="detail-illustration-img"
                 loading="eager"
@@ -153,7 +154,7 @@ export const ProjectDetailTemplate: React.FC<ProjectDetailTemplateProps> = ({ pr
             <p>Low-level performance work across vectorization, data layout, and CPU efficiency.</p>
           </div>
         )}
-        <a href={`/projects/${nextProject.slug}`} className="detail-next-link">
+        <a href={sitePath(`/projects/${nextProject.slug}`)} className="detail-next-link">
           Next project · {nextProject.name} →
         </a>
       </footer>

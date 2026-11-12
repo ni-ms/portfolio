@@ -1,3 +1,4 @@
+import { sitePath } from '../routing/sitePath';
 import { useEffect, useRef, type RefObject } from 'react';
 
 type PosterStatus = 'idle' | 'loading' | 'unsupported' | 'error';
@@ -28,7 +29,7 @@ export function GamePoster({
       aria-label="Parkour Game preview"
       data-testid={failed ? 'home-game-fallback' : 'home-game-poster'}
     >
-      <img src={`/images/rooftop-preview/${theme}.jpg`} width={960} height={390} alt="" />
+      <img src={sitePath(`/images/rooftop-preview/${theme}.jpg`)} width={960} height={390} alt="" />
       <div className="home-game-poster-actions">
         {status === 'idle' && (
           <button ref={playRef} type="button" className="home-game-play" data-testid="enter-play-btn" onClick={onPlay}>
@@ -44,7 +45,7 @@ export function GamePoster({
         {failed && (
           <>
             <p role="status">{status === 'unsupported' ? 'WebGL is unavailable.' : 'The Parkour Game couldn’t load.'}</p>
-            <a ref={failureLink} href="/projects">View projects →</a>
+            <a ref={failureLink} href={sitePath('/projects')}>View projects →</a>
           </>
         )}
       </div>

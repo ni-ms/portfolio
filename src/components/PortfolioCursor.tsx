@@ -1,17 +1,11 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap/dist/gsap';
 
-function outlineBounds(target: Element, x: number, y: number) {
-  const control = target.closest('a[href]:not(.card-media-link), button:not(:disabled), [role="button"]');
-  if (control) return control.getBoundingClientRect();
-
-  const text = target.closest('h1, h2, h3, h4, p, li, dt, dd');
-  if (!text) return;
-  const range = document.createRange();
-  range.selectNodeContents(text);
-  return Array.from(range.getClientRects()).find((rect) =>
-    rect.width > 0 && x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom);
-}
+const buttonSelector = [
+  'button:not(:disabled):not([aria-disabled="true"])',
+  '[role="button"]:not([aria-disabled="true"])',
+  'a[href]:is(.home-primary-link, .download-btn, .cta-btn, .card-primary-cta, .detail-cta-button)',
+].join(', ');
 
 export function PortfolioCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
@@ -47,7 +41,7 @@ export function PortfolioCursor() {
           return;
         }
 
-        const bounds = outlineBounds(target, x, y);
+        const bounds = target.closest(buttonSelector)?.getBoundingClientRect();
         const centerX = bounds ? bounds.left + bounds.width / 2 : x;
         const centerY = bounds ? bounds.top + bounds.height / 2 : y;
         dot.style.transform = `translate3d(${x}px, ${y}px, 0)`;

@@ -1,3 +1,4 @@
+import { sitePath } from '../routing/sitePath';
 import { useSyncExternalStore } from 'react';
 import type {
   GameMode,
@@ -145,7 +146,7 @@ const createInitialState = (): GameStoreState => ({
         globalNavigateHandler(route);
       } else if (typeof window !== 'undefined') {
         // Fallback History API navigation
-        window.history.pushState(null, '', route);
+        window.history.pushState(null, '', sitePath(route));
         window.dispatchEvent(new PopStateEvent('popstate'));
       }
     },

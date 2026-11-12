@@ -1,3 +1,4 @@
+import { sitePath } from '../routing/sitePath';
 import React from 'react';
 import { portfolioContent } from '../content/realPortfolio';
 import { PhotoPlaceholder } from '../components/PhotoPlaceholder';
@@ -12,10 +13,10 @@ export const ResumePage: React.FC = () => {
         <div className="portfolio-cell resume-heading-row">
           <h1 className="page-main-heading">Résumé</h1>
           <div className="resume-download-actions">
-            <a href={downloads.pdf.url} download={downloads.pdf.filename} className="download-btn download-btn-primary">
+            <a href={sitePath(downloads.pdf.url)} download={downloads.pdf.filename} className="download-btn download-btn-primary">
               Download résumé ↓
             </a>
-            <a href={downloads.docx.url} download={downloads.docx.filename} className="download-btn download-btn-secondary">
+            <a href={sitePath(downloads.docx.url)} download={downloads.docx.filename} className="download-btn download-btn-secondary">
               DOCX
             </a>
           </div>
@@ -120,7 +121,7 @@ export const ResumePage: React.FC = () => {
 
         <div className="resume-projects-list">
           {projects.map((p) => (
-            <a key={p.slug} href={`/projects/${p.slug}`} className="portfolio-cell resume-project-link-card">
+            <a key={p.slug} href={sitePath(`/projects/${p.slug}`)} className="portfolio-cell resume-project-link-card">
               <div className="proj-link-top">
                 <span className="proj-link-name">{p.name}</span>
                 <span className="proj-link-arrow">→</span>

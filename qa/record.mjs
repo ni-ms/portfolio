@@ -282,6 +282,23 @@ const tickets = [
     await expect(grid).not.toBeInViewport();
     await expect(page.locator('.home-role-title')).toBeInViewport();
   }],
+  ['cursor-buttons-only', desktop, async (page) => {
+    await page.goto('/resume');
+    await page.evaluate(() => document.fonts.ready);
+    const heading = page.getByRole('heading', { name: 'Résumé', exact: true });
+    const bounds = await heading.boundingBox();
+    await page.mouse.move(bounds.x + 25, bounds.y + bounds.height / 2);
+    await caption(page, 'The cursor stays circular over text.');
+    await pause(page, 900);
+    await page.getByRole('link', { name: 'Download résumé ↓' }).hover();
+    await caption(page, 'The ring fits the download button.');
+    await pause(page, 950);
+    await name(page).hover();
+    await caption(page, 'It returns to a circle over a regular link.');
+    await pause(page, 950);
+    await theme(page, 'light').hover();
+    await caption(page, 'The theme button gets its own fitted outline.');
+  }],
 ];
 
 try {

@@ -1,3 +1,4 @@
+import { sitePath } from '../routing/sitePath';
 import React, { useRef } from 'react';
 import { isNavigationCurrent, navigation, useNavigation } from '../routing/Router';
 import { portfolioContent } from '../content/realPortfolio';
@@ -65,7 +66,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
             {navigation.map((item) => (
               <li key={item.href} className="mobile-menu-item">
                 <a
-                  href={item.href}
+                  href={sitePath(item.href)}
                   className="mobile-menu-link"
                   aria-current={isNavigationCurrent(path, item.href) ? 'page' : undefined}
                   onClick={() => {

@@ -105,3 +105,9 @@ The build, 87 unit tests, and 21 desktop/mobile browser checks passed. The two f
 [Compare the live screenshots](evidence/selected-projects-heading.jpg) and [watch the before-and-after recording](recordings/home-projects-heading-before-after.webm). The Selected projects heading begins shrinking before the cards enter. Both the box and its lettering shrink. The measured height goes from 269 px to 68 px at 959 × 894. The grid takes the space directly beneath it. Reverse scrolling restores the opening heading.
 
 The build and unit tests passed. The final focused desktop and mobile browser checks passed, including the initial card delay and the desktop heading's height, type size, and restored state. Next action is owner review of the comparison or the new clip, which is open in the in-app browser.
+
+## Button-only cursor outline
+
+[Watch the cursor demo](recordings/cursor-buttons-only.webm). The outline fits buttons and links styled as buttons, including the résumé download. The cursor stays circular over body text, headings, and ordinary links. The reduced-motion preference still uses the native pointer.
+
+The production build, 87 unit tests, and the desktop cursor check passed. Next action is owner review of the demo or hovering the heading and download button on the local Résumé page.

@@ -1,3 +1,4 @@
+import { sitePath } from '../routing/sitePath';
 import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { Html } from '@react-three/drei';
@@ -303,7 +304,7 @@ export const SceneMarkers: React.FC<SceneMarkersProps> = ({
             {/* Clickable Monospace Label Badge */}
             <a
               ref={badgeRefs[index]}
-              href={marker.targetRoute || `#${marker.sectionId}`}
+              href={marker.targetRoute ? sitePath(marker.targetRoute) : `#${marker.sectionId}`}
               onClick={(e) => handleClick(e, marker)}
               aria-label={`Jump to ${marker.labelNumber} ${marker.labelTitle} section`}
               tabIndex={0}

@@ -53,4 +53,4 @@ Superseded mockups and old reference screenshots were removed. Keep fresh verifi
 
 ## Route hosting
 
-The app uses browser History API routes. Vite dev/preview supports direct page refresh. A production static host must rewrite document requests such as /projects/fastcode, /resume and /about to /index.html while serving assets normally; no deployment is performed by this task.
+Pushes to `master` build, test, and deploy the portfolio to [GitHub Pages](https://ni-ms.github.io/portfolio/). The workflow reads the Pages base path, and the production build includes an HTML entry for each route so direct links and refreshes work on the static host. To preview the Pages build locally, run `npm run build -- --base /portfolio/` followed by `npm run preview`, then open the preview at `/portfolio/`.

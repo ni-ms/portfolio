@@ -1,3 +1,4 @@
+import { sitePath } from '../routing/sitePath';
 import React, { useRef, useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
@@ -440,7 +441,7 @@ const Stairs: React.FC<StairsProps> = ({
 
 // Fit the visual asset inside the existing HVAC collider, preserving the clear path.
 function HVACUnit({ position, size }: { position: [number, number, number]; size: [number, number, number] }) {
-  const { scene } = useGLTF('/rooftop/aircon.glb');
+  const { scene } = useGLTF(sitePath('/rooftop/aircon.glb'));
   const { model, offset, dimensions } = useMemo(() => {
     const model = scene.clone();
     model.traverse((object) => {
@@ -1150,7 +1151,7 @@ export const CourseGeometry: React.FC<CourseGeometryProps> = ({
   theme = 'dark',
   isDeterministicReview = false,
 }) => {
-  const [concreteColor, concreteNormal] = useTexture(['/rooftop/concrete.jpg', '/rooftop/concrete-normal.jpg']);
+  const [concreteColor, concreteNormal] = useTexture([sitePath('/rooftop/concrete.jpg'), sitePath('/rooftop/concrete-normal.jpg')]);
   const terraceMaterial = useMemo(() => {
     concreteColor.colorSpace = THREE.SRGBColorSpace;
     for (const map of [concreteColor, concreteNormal]) {

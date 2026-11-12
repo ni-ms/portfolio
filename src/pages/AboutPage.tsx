@@ -1,3 +1,4 @@
+import { sitePath } from '../routing/sitePath';
 import { portfolioContent } from '../content/realPortfolio';
 import { PhotoPlaceholder } from '../components/PhotoPlaceholder';
 
@@ -25,7 +26,7 @@ export function AboutPage() {
         </div>
         <div className="about-col-right">
           <img
-            src="/images/about/systems-architecture.svg"
+            src={sitePath('/images/about/systems-architecture.svg')}
             alt=""
             className="about-illustration-img"
           />
@@ -51,7 +52,7 @@ export function AboutPage() {
           <a href={links.email}>{identity.email}</a>
           <a href={links.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a>
           <a href={links.github} target="_blank" rel="noreferrer">GitHub ↗</a>
-          <a href="/resume">View résumé ↗</a>
+          <a href={sitePath('/resume')}>View résumé ↗</a>
         </div>
       </section>
     </div>

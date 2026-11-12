@@ -1,3 +1,4 @@
+import { sitePath } from '../routing/sitePath';
 import type { PortfolioProject } from '../content/realPortfolio';
 import { useTheme } from '../theme/ThemeProvider';
 
@@ -36,10 +37,10 @@ export function ProjectCard({ project, variant = 'full' }: ProjectCardProps) {
       data-testid={`project-card-${slug}`}
       aria-labelledby={headingId}
     >
-      <a href={href} className="card-media-link" tabIndex={-1} aria-hidden="true">
+      <a href={sitePath(href)} className="card-media-link" tabIndex={-1} aria-hidden="true">
         <div className={`card-media-wrapper${featured ? ' featured-media' : ''}`}>
           <img
-            src={image}
+            src={sitePath(image)}
             alt=""
             className="card-media-img"
             width={useDiagram ? undefined : fastCode ? 562 : 460}
@@ -52,7 +53,7 @@ export function ProjectCard({ project, variant = 'full' }: ProjectCardProps) {
       <div className="card-content-body">
         {featured && <p className="card-meta-row">Systems / {dates.replace(' – ', '–')}</p>}
         <h3 id={headingId} className={`card-title${featured ? ' featured-title' : ''}`}>
-          <a href={href} className="card-title-link">{name}{landing && <span aria-hidden="true">↗</span>}</a>
+          <a href={sitePath(href)} className="card-title-link">{name}{landing && <span aria-hidden="true">↗</span>}</a>
         </h3>
         {!compact && <p className="card-subtitle">{subtitle}</p>}
         <p className="card-description">{compact ? previews[slug] : description}</p>
@@ -70,7 +71,7 @@ export function ProjectCard({ project, variant = 'full' }: ProjectCardProps) {
             <div className="card-project-links">
               <p className="card-stack">{stack}</p>
               <div className="card-actions-row">
-                <a href={href} className="card-primary-cta" aria-label={`View project ${name}`}>View project →</a>
+                <a href={sitePath(href)} className="card-primary-cta" aria-label={`View project ${name}`}>View project →</a>
                 {url && (
                   <a href={url} target="_blank" rel="noreferrer" className="card-external-link">
                     {slug === 'fastcode' ? 'GitHub ↗' : 'Visit site ↗'}
